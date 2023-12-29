@@ -1,0 +1,31 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 https://maven.apache.org/xsd/assembly-2.2.0.xsd">
+    <id>VPPluginZip</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <includes>
+                <include>plugin.xml</include>
+            </includes>
+            <outputDirectory>.</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/target/classes/cz</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>classes/cz</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/target/classes/icons</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>icons</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>

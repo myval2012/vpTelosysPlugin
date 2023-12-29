@@ -1,0 +1,32 @@
+<plugin
+        id="cz.fit.vut.xvrana32.telosysplugin"
+        name="Telosys Plugin"
+        description="Plugin for creating Telosys DSL files from class diagrams"
+        provider="Ondřej Vrána"
+        class="cz.fit.vut.xvrana32.telosysplugin.VPPluginClass">
+
+    <runtime>
+        <library path="classes" relativePath="true"/>
+    </runtime>
+
+    <actionSets>
+        <actionSet id="cz.fit.vut.xvrana32.telosysplugin.actionSet1">
+            <toolbar
+                    id="cz.fit.vut.xvrana32.telosysplugin.toolbar1"
+                    orientation="north"
+                    index="last"/>
+            <action
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet1.geneateAction"
+                    actionType="generalAction"
+                    label="Hello World"
+                    tooltip="Hello World"
+                    style="normal"
+                    menuPath="Tools/#"
+                    icon="icons/green.png"
+                    toolbarPath="cz.fit.vut.xvrana32.telosysplugin.toolbar1/#">
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.VPHelloWorldActionController"/>
+            </action>
+        </actionSet>
+
+    </actionSets>
+</plugin>

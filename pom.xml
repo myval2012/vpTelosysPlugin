@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cz.fit.vut.xvrana32</groupId>
+    <artifactId>telosys-plugin</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+<!--            for executing jar file, probably useless in this project-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>Demo</mainClass>
+                </configuration>
+            </plugin>
+<!--            to install local .jar into local maven repositories aka the com.vp.plugin from openapi.jar-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+<!--            go zip the important files for visual paradigm installation. -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>pom-assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+<!--    TODO look at this and find better way-->
+    <dependencies>
+        <dependency>
+            <groupId>com.vp</groupId>
+            <artifactId>plugin</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+</project>
