@@ -228,12 +228,15 @@ public class ModelParser {
                 Logger.log(String.format("Association class of this association is named %s",
                         associationEntity == null ? null : associationEntity.getName()));
 
+                boolean isArray = ((IAttribute) vPAttr).getMultiplicity().endsWith("*");
+
                 entity.addLink(new Link(
                         vPAttr.getId(),
                         vPAttr.getName(),
                         entity.getParentModel().getEntityByVpId(((IAttribute) vPAttr).getTypeAsModel().getId()),
                         vPAssociationId,
-                        associationEntity
+                        associationEntity,
+                        isArray
                 ));
             } else {
                 // this attribute is just an attribute
@@ -330,8 +333,8 @@ public class ModelParser {
 //        }
 
         // add association entities that are marked with @JoinEntity (should be printed as well) to standard entities
-        for(Entity entity:associationEntities){
-            if (entity.containsAnnoType(Anno.AnnoType.JOIN_ENTITY)){
+        for (Entity entity : associationEntities) {
+            if (entity.containsAnnoType(Anno.AnnoType.JOIN_ENTITY)) {
                 standardEntities.add(entity);
             }
         }

@@ -8,6 +8,7 @@ package cz.fit.vut.xvrana32.telosysplugin.elements;
 public class Link extends DecoratedElement {
     private final Entity associationEntity;
     private final String vPAssociationId;
+    private final boolean isArray;
 
     private final Entity linkTo;
     private Entity parentEntity = null;
@@ -24,11 +25,13 @@ public class Link extends DecoratedElement {
      * @param _associationEntity Entity (that represents the association class) if relationship
      *                             has an association class, null otherwise.
      */
-    public Link(String _vpId, String _name, Entity _linkTo, String _vPAssociationId, Entity _associationEntity) {
+    public Link(String _vpId, String _name, Entity _linkTo, String _vPAssociationId,
+                Entity _associationEntity, boolean _isArray) {
         super(_vpId, _name);
         linkTo = _linkTo;
         vPAssociationId = _vPAssociationId;
         associationEntity = _associationEntity;
+        isArray = _isArray;
     }
 
     /**
@@ -51,6 +54,10 @@ public class Link extends DecoratedElement {
         StringBuilder stringBuilder = new StringBuilder(name);
         stringBuilder.append(" : ");
         stringBuilder.append(linkTo.getName());
+
+        if (isArray){
+            stringBuilder.append("[]");
+        }
 
         if (annos.size() > 0 || tags.size() > 0) {
             stringBuilder.append(" { ");
