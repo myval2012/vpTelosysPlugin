@@ -42,12 +42,25 @@
         </plugins>
     </build>
 
-<!--    TODO look at this and find better way-->
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+    <!--    TODO look at this and find better way-->
     <dependencies>
         <dependency>
             <groupId>com.vp</groupId>
             <artifactId>plugin</artifactId>
             <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.telosys</groupId>
+            <artifactId>telosys-tools-all</artifactId>
+            <version>4.1.1</version>
         </dependency>
     </dependencies>
 </project>
