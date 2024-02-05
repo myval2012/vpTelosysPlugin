@@ -3,11 +3,11 @@ package cz.fit.vut.xvrana32.telosysplugin.parser;
 import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
-import cz.fit.vut.xvrana32.telosysplugin.elements.Parameter;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoCommon;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ParamDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
+import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 import java.util.Iterator;
 
@@ -50,9 +50,8 @@ public class EntityDecorationParser {
             for (ISimpleRelationship vPRel : vPRels) {
                 if (vPRel.getModelType().equals("Generalization")) {
                     Anno newAnno = new Anno(Anno.AnnoType.EXTENDS);
-
-                    newAnno.addParameter(new Parameter(
-                            Parameter.ValueType.LINK_ENTITY,
+                    newAnno.addParameter(ParameterFactory.CreateParameter(
+                            ParameterFactory.ValueType.LINK_ENTITY,
                             entity.getParentModel().getEntityByVpId(vPRel.getFrom().getId())
 //                            vPRel.getFrom().getName() // TODO replace with link to Entity for semantic analysis
                     ));
@@ -69,9 +68,9 @@ public class EntityDecorationParser {
             IStereotype stereotype = (IStereotype) stereotypes.next();
             if (stereotype.getName().startsWith("@")) // annotation
             {
-                Logger.log(String.format("Found a annotation in class: %s, has name: %s",
-                        vPClass.getName(),
-                        stereotype.getName()));
+//                Logger.log(String.format("Found a annotation in class: %s, has name: %s",
+//                        vPClass.getName(),
+//                        stereotype.getName()));
                 AnnoDeclaration annoDeclaration = getAnnoDeclarationByName(stereotype.getName().substring(1));
                 if (annoDeclaration != null) {
                     Anno newAnno = annoDeclaration.createAnno(vPClass,
@@ -84,9 +83,9 @@ public class EntityDecorationParser {
             } else if (stereotype.getName().startsWith("#")) // tags
             {
                 entity.addTag(TagParser.parseTag(vPClass, stereotype, entity));
-                Logger.log(String.format("Found a tag in class: %s, has name: %s",
-                        vPClass.getName(),
-                        stereotype.getName()));
+//                Logger.log(String.format("Found a tag in class: %s, has name: %s",
+//                        vPClass.getName(),
+//                        stereotype.getName()));
             }
         }
     }

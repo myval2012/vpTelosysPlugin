@@ -9,7 +9,7 @@ import java.util.List;
  * <br> <br>
  * Used mostly as a data class for storing and accessing information during the project compilation.
  * Each annotation contains {@link AnnoType annotation type} to determine what annotation it is
- * and a list of {@link Parameter parameters}.
+ * and a list of {@link IParameter parameters}.
  */
 public class Anno {
 
@@ -101,7 +101,7 @@ public class Anno {
     }
 
     private final AnnoType annotationType;
-    private final List<Parameter> parameters = new ArrayList<>();
+    private final List<IParameter> parameters = new ArrayList<>();
 
     /**
      * Creates an annotation of given {@link AnnoType} with no parameters.
@@ -124,17 +124,16 @@ public class Anno {
         return ((Anno) obj).annotationType == annotationType;
     }
 
-    public void addParameter(Parameter parameter) {
+    public void addParameter(IParameter parameter) {
         parameters.add(parameter);
     }
 
-
     /**
-     * Adds all {@link Parameter parameters} into the list.
+     * Adds all {@link IParameter parameters} into the list.
      *
      * @param ps Parameters to add.
      */
-    public void addParameters(Parameter... ps) {
+    public void addParameters(IParameter... ps) {
         parameters.addAll(Arrays.asList(ps));
     }
 
@@ -153,7 +152,7 @@ public class Anno {
 
         stringBuilder.append("(");
         boolean oneParamPrinted = false; // print comma after the first printed parameter
-        for (Parameter parameter : parameters) {
+        for (IParameter parameter : parameters) {
             if (parameter.getValue() != null) { // parameters with null as value should be ignored
                 if (oneParamPrinted) {
                     stringBuilder.append(", ");
@@ -164,11 +163,6 @@ public class Anno {
 
         }
 
-//        stringBuilder.append(parameters.get(0).toString());
-//        for (int i = 1; i < parameters.size(); i++) {
-//            stringBuilder.append(",");
-//            stringBuilder.append(parameters.get(i).toString());
-//        }
         stringBuilder.append(")");
         return stringBuilder.toString();
     }

@@ -3,6 +3,7 @@ package cz.fit.vut.xvrana32.telosysplugin.parser;
 import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.*;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
+import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +63,7 @@ public class ModelParser {
         Entity entity = new Entity(cls.getName(), cls.getId());
         if (!currentPackage.isEmpty()) {
             Anno newAnno = new Anno(Anno.AnnoType.PACKAGE);
-            newAnno.addParameter(new Parameter(Parameter.ValueType.STRING, currentPackage));
+            newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING, currentPackage));
             entity.addAnno(newAnno);
         }
 
@@ -217,16 +218,16 @@ public class ModelParser {
         for (IModelElement vPAttr : vPAttrs) {
             if (vPLinksIds.contains(vPAttr.getId())) {
                 // this attribute is a link
-                Logger.log(String.format("%s is a link", vPAttr.getName()));
+//                Logger.log(String.format("%s is a link", vPAttr.getName()));
                 String vPAssociationId =
                         vPRelEnds.get(vPLinksIds.indexOf(vPAttr.getId())).getEndRelationship().getId();
-                Logger.log(String.format("The association ID is %s", vPAssociationId));
+//                Logger.log(String.format("The association ID is %s", vPAssociationId));
                 int associationEntityIndex = associationVPIds.indexOf(vPAssociationId);
                 Entity associationEntity = associationEntityIndex == -1
                         ? null : associationEntities.get(associationEntityIndex);
 
-                Logger.log(String.format("Association class of this association is named %s",
-                        associationEntity == null ? null : associationEntity.getName()));
+//                Logger.log(String.format("Association class of this association is named %s",
+//                        associationEntity == null ? null : associationEntity.getName()));
 
                 boolean isArray = ((IAttribute) vPAttr).getMultiplicity().endsWith("*");
 
@@ -240,7 +241,7 @@ public class ModelParser {
                 ));
             } else {
                 // this attribute is just an attribute
-                Logger.log(String.format("%s is an attribute", vPAttr.getName()));
+//                Logger.log(String.format("%s is an attribute", vPAttr.getName()));
 //                    Logger.log(String.format("The attrType has a name: %s",
 //                            ((IAttribute) vPAttr).getTypeAsModel().getName()));
                 try {
@@ -338,7 +339,7 @@ public class ModelParser {
                 standardEntities.add(entity);
             }
         }
-        Logger.log("Let's continue");
+//        Logger.log("Let's continue");
 
     }
 }

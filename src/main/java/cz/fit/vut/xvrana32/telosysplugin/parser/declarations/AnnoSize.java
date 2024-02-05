@@ -5,9 +5,10 @@ import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Anno;
+import cz.fit.vut.xvrana32.telosysplugin.elements.IParameter;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
-import cz.fit.vut.xvrana32.telosysplugin.elements.Parameter;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
+import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class AnnoSize extends AnnoDeclaration {
         ITaggedValueContainer vPTaggedValueContainer = vPElement.getTaggedValues();
 
         Anno newAnno = new Anno(annoType);
-        List<Parameter> splitParameters = new ArrayList<>(params.length);
+        List<IParameter> splitParameters = new ArrayList<>(params.length);
 
         for (ParamDeclaration paramDeclaration : params) {
             ITaggedValue vPTaggedValue = vPTaggedValueContainer.getTaggedValueByName(paramDeclaration.name);
@@ -40,18 +41,21 @@ public class AnnoSize extends AnnoDeclaration {
                     || !vPTaggedValue.getTagDefinitionStereotype().equals(vPStereotype)
                     || vPTaggedValue.getType() != paramDeclaration.paramType
             ) {
-                Logger.log("The proper tagged value for the stereotype was not found.");
+//                Logger.log("The proper tagged value for the stereotype was not found.");
                 return null;
             }
 
-            splitParameters.add(new Parameter(vPTaggedValue, model, paramDeclaration.textQuoted));
-            Logger.log(String.format("Parameter %s added to the Annotation with value: %s",
-                    vPTaggedValue.getName(),
-                    vPTaggedValue.getValueAsText()));
+            splitParameters.add(ParameterFactory.CreateParameter(vPTaggedValue, model, paramDeclaration.textQuoted));
+//            Logger.log(String.format("Parameter %s added to the Annotation with value: %s",
+//                    vPTaggedValue.getName(),
+//                    vPTaggedValue.getValueAsText()));
         }
 
-        newAnno.addParameter(new Parameter(Parameter.ValueType.STRING, splitParameters.get(0).getValue().toString() +
-                (splitParameters.get(1).getValue() == null ? "" : "," + splitParameters.get(1).getValue().toString())));
+        newAnno.addParameter(
+                ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING,
+                splitParameters.get(0).getValue().toString() +
+                        (splitParameters.get(1).getValue() == null ? "" :
+                                "," + splitParameters.get(1).getValue().toString())));
 
         return newAnno;
     }

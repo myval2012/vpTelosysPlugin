@@ -6,7 +6,9 @@ import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import cz.fit.vut.xvrana32.telosysplugin.elements.*;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
+import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class AnnoLinkByAttr extends AnnoDeclaration {
                 || !vPTaggedValue.getTagDefinitionStereotype().equals(vPStereotype)
                 || vPTaggedValue.getType() != params[0].paramType
         ) {
-            Logger.log("The proper tagged value for the stereotype was not found.");
+//            Logger.log("The proper tagged value for the stereotype was not found.");
             return null;
         }
         String supportClassId = vPTaggedValue.getValueAsModel().getId();
@@ -38,7 +40,7 @@ public class AnnoLinkByAttr extends AnnoDeclaration {
         // find the support entity
         Entity supportEntity = model.getSupportEntityByVpId(supportClassId);
         if (supportEntity == null){
-            Logger.log("Support entity was not found.");
+//            Logger.log("Support entity was not found.");
             return null;
         }
 
@@ -48,7 +50,7 @@ public class AnnoLinkByAttr extends AnnoDeclaration {
 
         for (Attr attr:supportEntity.getAttrs()){
             parentEntity.addAttr(attr);
-            newAnno.addParameter(new Parameter(Parameter.ValueType.LINK_ATTRIBUTE, attr));
+            newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.LINK_ATTRIBUTE, attr));
         }
 
         return newAnno;

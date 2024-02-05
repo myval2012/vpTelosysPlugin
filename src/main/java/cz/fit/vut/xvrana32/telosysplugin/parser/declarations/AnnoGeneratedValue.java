@@ -5,9 +5,10 @@ import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Anno;
+import cz.fit.vut.xvrana32.telosysplugin.elements.IParameter;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
-import cz.fit.vut.xvrana32.telosysplugin.elements.Parameter;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
+import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 /**
  * Special annotation declaration for parsing @GeneratedValue
@@ -33,15 +34,15 @@ public class AnnoGeneratedValue extends AnnoDeclaration {
         Anno newAnno = new Anno(annoType);
 
         // add the fist parameter
-        Parameter firstParameter;
+        IParameter firstParameter;
         if (name.endsWith("AUTO")) {
-            firstParameter = new Parameter(Parameter.ValueType.STRING, "AUTO");
+            firstParameter = ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING, "AUTO");
         } else if (name.endsWith("IDENTITY")) {
-            firstParameter = new Parameter(Parameter.ValueType.STRING, "IDENTITY");
+            firstParameter = ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING, "IDENTITY");
         } else if (name.endsWith("SEQUENCE")) {
-            firstParameter = new Parameter(Parameter.ValueType.STRING, "SEQUENCE");
+            firstParameter = ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING, "SEQUENCE");
         } else {
-            firstParameter = new Parameter(Parameter.ValueType.STRING, "TABLE");
+            firstParameter = ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING, "TABLE");
         }
         newAnno.addParameter(firstParameter);
 
@@ -52,14 +53,14 @@ public class AnnoGeneratedValue extends AnnoDeclaration {
                     || !vPTaggedValue.getTagDefinitionStereotype().equals(vPStereotype)
                     || vPTaggedValue.getType() != paramDeclaration.paramType
             ) {
-                Logger.log("The proper tagged value for the stereotype was not found.");
+//                Logger.log("The proper tagged value for the stereotype was not found.");
                 return null;
             }
 
-            newAnno.addParameter(new Parameter(vPTaggedValue, model, paramDeclaration.textQuoted));
-            Logger.log(String.format("Parameter %s added to the Annotation with value: %s",
-                    vPTaggedValue.getName(),
-                    vPTaggedValue.getValueAsText()));
+            newAnno.addParameter(ParameterFactory.CreateParameter(vPTaggedValue, model, paramDeclaration.textQuoted));
+//            Logger.log(String.format("Parameter %s added to the Annotation with value: %s",
+//                    vPTaggedValue.getName(),
+//                    vPTaggedValue.getValueAsText()));
         }
         return newAnno;
     }

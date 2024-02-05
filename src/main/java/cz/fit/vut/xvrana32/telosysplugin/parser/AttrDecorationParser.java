@@ -3,9 +3,9 @@ package cz.fit.vut.xvrana32.telosysplugin.parser;
 import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Attr;
-import cz.fit.vut.xvrana32.telosysplugin.elements.Parameter;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.*;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
+import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 import java.util.Iterator;
 
@@ -91,7 +91,7 @@ public class AttrDecorationParser {
         if (vPAttr.getInitialValue() != null && !vPAttr.getInitialValue().isEmpty()) {
 //            Logger.log(String.format("Added INITIAL_VALUE annotation to Parameter: %s", attr.getName()));
             Anno newAnno = new Anno(Anno.AnnoType.INITIAL_VALUE);
-            newAnno.addParameter(new Parameter(Parameter.ValueType.STRING, vPAttr.getInitialValue()));
+            newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING, vPAttr.getInitialValue()));
             attr.addAnno(newAnno);
         }
 
@@ -114,6 +114,7 @@ public class AttrDecorationParser {
                     Anno newAnno = annoDeclaration.createAnno(vPAttr,
                             stereotype, attr.getParentEntity().getParentModel());
                     if (newAnno != null) {
+                        Logger.log("Annotation created successfully");
                         attr.addAnno(newAnno);
                     }
                 }
@@ -124,9 +125,9 @@ public class AttrDecorationParser {
             } else if (stereotype.getName().startsWith("#")) // tags
             {
                 attr.addTag(TagParser.parseTag(vPAttr, stereotype, attr.getParentEntity()));
-                Logger.log(String.format("Found a tag in attribute: %s, has name: %s",
-                        vPAttr.getName(),
-                        stereotype.getName()));
+//                Logger.log(String.format("Found a tag in attribute: %s, has name: %s",
+//                        vPAttr.getName(),
+//                        stereotype.getName()));
             }
         }
     }

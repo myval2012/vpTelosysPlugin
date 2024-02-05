@@ -6,8 +6,8 @@ import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
-import cz.fit.vut.xvrana32.telosysplugin.elements.Parameter;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
+import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 /**
  *  Common annotation declaration. Used if VP stereotype (and its tagged values) are in 1:1 relationship
@@ -31,14 +31,14 @@ public class AnnoCommon extends AnnoDeclaration {
                     || !vPTaggedValue.getTagDefinitionStereotype().equals(vPStereotype)
                     || vPTaggedValue.getType() != paramDeclaration.paramType
             ) {
-                Logger.log("The proper tagged value for the stereotype was not found.");
+//                Logger.log("The proper tagged value for the stereotype was not found.");
                 return null;
             }
 
-            newAnno.addParameter(new Parameter(vPTaggedValue, model, paramDeclaration.textQuoted));
-            Logger.log(String.format("Parameter %s added to the Annotation with value: %s",
-                    vPTaggedValue.getName(),
-                    vPTaggedValue.getValueAsText()));
+            newAnno.addParameter(ParameterFactory.CreateParameter(vPTaggedValue, model, paramDeclaration.textQuoted));
+//            Logger.log(String.format("Parameter %s added to the Annotation with value: %s",
+//                    vPTaggedValue.getName(),
+//                    vPTaggedValue.getValueAsText()));
         }
         return newAnno;
     }
