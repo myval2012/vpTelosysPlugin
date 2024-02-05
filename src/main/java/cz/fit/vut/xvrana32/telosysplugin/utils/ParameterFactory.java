@@ -15,7 +15,7 @@ public class ParameterFactory {
         LINK_ENTITY,
         LINK_ATTRIBUTE,
         LINK_LINK,
-        ENUM_ORDINAL,
+        ENUM_CASCADE,
         INT,
         FLOAT,
         BOOLEAN,
@@ -50,7 +50,7 @@ public class ParameterFactory {
             case STRING:
                 return new ParameterQuoted(_value);
             case TEXT:
-            case ENUM_ORDINAL:
+            case ENUM_CASCADE:
             case INT:
             case FLOAT:
             case BOOLEAN:

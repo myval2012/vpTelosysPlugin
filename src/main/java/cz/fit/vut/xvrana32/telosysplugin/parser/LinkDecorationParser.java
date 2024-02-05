@@ -12,8 +12,6 @@ import java.util.Iterator;
 
 public class LinkDecorationParser {
     private static final AnnoDeclaration[] annoDeclarations = {
-//            new AnnoCommon("Cascade", Anno.AnnoType.CASCADE, new ParamDeclaration[]
-//                    {new ParamDeclaration("cascade", ITaggedValueDefinition.TYPE_MODEL_ELEMENT)}), // TODO special logic
             new AnnoCommon("Embedded", Anno.AnnoType.EMBEDDED, new ParamDeclaration[]{}),
             new AnnoCommon("FetchTypeEager", Anno.AnnoType.FETCH_TYPE_EAGER, new ParamDeclaration[]{}),
             new AnnoCommon("FetchTypeLazy", Anno.AnnoType.FETCH_TYPE_LAZY, new ParamDeclaration[]{}),
@@ -25,7 +23,10 @@ public class LinkDecorationParser {
                     {new ParamDeclaration("foreignKeyName", false)}),
             new AnnoCommon("OrphanRemoval", Anno.AnnoType.ORPHAN_REMOVAL, new ParamDeclaration[]{}),
             new AnnoCommon("Updatable", Anno.AnnoType.UPDATABLE, new ParamDeclaration[]
-                    {new ParamDeclaration("updatable", ITaggedValueDefinition.TYPE_BOOLEAN)})
+                    {new ParamDeclaration("updatable", ITaggedValueDefinition.TYPE_BOOLEAN)}),
+
+            new AnnoCascade("Cascade", Anno.AnnoType.CASCADE, new ParamDeclaration[]
+                    {new ParamDeclaration("cascade", ITaggedValueDefinition.TYPE_MODEL_ELEMENT )})
     };
 
     public static void parse(IProject vPProject, Link link) throws Exception {
