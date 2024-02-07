@@ -5,12 +5,14 @@ import com.vp.plugin.ViewManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.model.IProject;
+import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
 import cz.fit.vut.xvrana32.telosysplugin.parser.ProjectParser;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Constants;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import org.telosys.tools.api.TelosysProject;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -31,28 +33,37 @@ public class VPHelloWorldActionController implements VPActionController {
         ProjectParser projectParser = new ProjectParser();
         List<Model> models = projectParser.parse(project);
 
-        Logger.log("Creating log file...");
-        try {
-            for (Model model:models){
-                Logger.logFile.write(model.toString());
-            }
-            Logger.log("Log file generated successfully");
-            Logger.logFile.close();
-        } catch (Exception e) {
-            Logger.log(String.format("Unable to write to log file: %s", e.getMessage()));
-        }
-
-//        Logger.log("Before...");
+        // faster creation for debugging and testing
+//        Logger.log("Creating log file...");
 //        try {
-//            TelosysProject telosysProject = new TelosysProject(Logger.TELOSYS_TEST_FOLDER);
-//            telosysProject.initProject();
+//            for (Model model:models){
+//                Logger.logFile.write(model.toString());
+//            }
+//            Logger.log("Log file generated successfully");
+//            Logger.logFile.close();
 //        } catch (Exception e) {
-//            Logger.log(e.getMessage());
+//            Logger.log(String.format("Unable to write to log file: %s", e.getMessage()));
 //        }
-//        Logger.log("After...");
 
-        // TODO use Telosys API to initialize and create models / entities of the project
+        Logger.log("Before...");
+        try {
+            TelosysProject telosysProject = new TelosysProject(Logger.TELOSYS_TEST_FOLDER);
+            telosysProject.initProject();
 
+            for (Model model: models){
+                String modelName = model.getName();
+                File modelF = telosysProject.createNewDslModel(modelName);
+                for (Entity entity: model.getEntities()){
+                    File entityF = telosysProject.createNewDslEntity(modelName, entity.getName());
+                    FileWriter entityFW = new FileWriter(entityF);
+                    entityFW.write(entity.toString());
+                    entityFW.close();
+                }
+            }
+        } catch (Exception e) {
+            Logger.log(e.getMessage());
+        }
+        Logger.log("After...");
 
         // get all root models and their model types
 //        Iterator iter = project.modelElementIterator();

@@ -14,7 +14,7 @@
 
     <build>
         <plugins>
-<!--            for executing jar file, probably useless in this project-->
+            <!--            for executing jar file, probably useless in this project-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -23,21 +23,29 @@
                     <mainClass>Demo</mainClass>
                 </configuration>
             </plugin>
-<!--            to install local .jar into local maven repositories aka the com.vp.plugin from openapi.jar-->
+            <!--            to install local .jar into local maven repositories aka the com.vp.plugin from openapi.jar-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
                 <version>3.1.0</version>
             </plugin>
-<!--            go zip the important files for visual paradigm installation. -->
+            <!--            go zip the important files for visual paradigm installation. -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.6.0</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>pom-assembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>pom-assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

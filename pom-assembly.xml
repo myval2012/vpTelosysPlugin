@@ -28,4 +28,15 @@
             <outputDirectory>icons</outputDirectory>
         </fileSet>
     </fileSets>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <useProjectArtifact>false</useProjectArtifact>
+            <excludes>
+                <exclude>com.vp:plugin</exclude>
+            </excludes>
+<!--            <scope>runtime</scope>-->
+        </dependencySet>
+    </dependencySets>
 </assembly>
