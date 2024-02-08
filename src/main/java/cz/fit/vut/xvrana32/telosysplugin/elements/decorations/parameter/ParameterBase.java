@@ -1,4 +1,4 @@
-package cz.fit.vut.xvrana32.telosysplugin.elements;
+package cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter;
 
 /**
  * Shared implementation of parameters.

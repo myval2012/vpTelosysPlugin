@@ -2,6 +2,8 @@ package cz.fit.vut.xvrana32.telosysplugin.parser.declarations;
 
 import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.*;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.CascadeOptions;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
@@ -17,17 +19,15 @@ public class AnnoCascade extends AnnoDeclaration {
     }
 
     @Override
-    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) throws Exception {
-        // check if the tagged value is there and read the Id of the model
+    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) {
+        // check if the tagged value is there and read the ID of the model
+
         ITaggedValueContainer vPTaggedValueContainer = vPElement.getTaggedValues();
         ITaggedValue vPTaggedValue = vPTaggedValueContainer.getTaggedValueByName(params[0].name);
-        if (vPTaggedValue == null
-                || !vPTaggedValue.getTagDefinitionStereotype().equals(vPStereotype)
-                || vPTaggedValue.getType() != params[0].paramType
-        ) {
-//            Logger.log("The proper tagged value for the stereotype was not found.");
-            return null;
+        if (!checkTaggedValue(vPStereotype, vPTaggedValue, params[0])){
+            return null; // TODO error
         }
+
         String supportClassId = vPTaggedValue.getValueAsModel().getId();
 
         // find the support entity

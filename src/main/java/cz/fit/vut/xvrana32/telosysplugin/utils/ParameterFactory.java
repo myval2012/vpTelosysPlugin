@@ -3,6 +3,10 @@ package cz.fit.vut.xvrana32.telosysplugin.utils;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueDefinition;
 import cz.fit.vut.xvrana32.telosysplugin.elements.*;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterLink;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterNonQuoted;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterQuoted;
 
 public class ParameterFactory {
 

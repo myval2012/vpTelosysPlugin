@@ -1,12 +1,11 @@
 package cz.fit.vut.xvrana32.telosysplugin.parser;
 
 import com.vp.plugin.model.*;
-import cz.fit.vut.xvrana32.telosysplugin.elements.Anno;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoCommon;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ParamDeclaration;
-import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 import java.util.Iterator;
@@ -53,7 +52,6 @@ public class EntityDecorationParser {
                     newAnno.addParameter(ParameterFactory.CreateParameter(
                             ParameterFactory.ValueType.LINK_ENTITY,
                             entity.getParentModel().getEntityByVpId(vPRel.getFrom().getId())
-//                            vPRel.getFrom().getName() // TODO replace with link to Entity for semantic analysis
                     ));
                     entity.addAnno(newAnno);
                 }
@@ -63,12 +61,13 @@ public class EntityDecorationParser {
         // TODO constraints
 
         // TODO annotations and tags
+        // TODO common implementation
         Iterator stereotypes = vPClass.stereotypeModelIterator();
         while (stereotypes.hasNext()) {
             IStereotype stereotype = (IStereotype) stereotypes.next();
             if (stereotype.getName().startsWith("@")) // annotation
             {
-//                Logger.log(String.format("Found a annotation in class: %s, has name: %s",
+//                Logger.log(String.format("Found an annotation in class: %s, has name: %s",
 //                        vPClass.getName(),
 //                        stereotype.getName()));
                 AnnoDeclaration annoDeclaration = getAnnoDeclarationByName(stereotype.getName().substring(1));
@@ -90,6 +89,7 @@ public class EntityDecorationParser {
         }
     }
 
+    // TODO common implementation
     private static AnnoDeclaration getAnnoDeclarationByName(String name) {
         for (AnnoDeclaration annoDeclaration : annoDeclarations) {
             if (annoDeclaration.name.equals(name)) {

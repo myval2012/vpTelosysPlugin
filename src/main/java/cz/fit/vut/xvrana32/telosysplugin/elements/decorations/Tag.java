@@ -1,4 +1,6 @@
-package cz.fit.vut.xvrana32.telosysplugin.elements;
+package cz.fit.vut.xvrana32.telosysplugin.elements.decorations;
+
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
 
 /**
  * Inner representation of Telosys DSL tag.

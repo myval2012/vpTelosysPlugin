@@ -1,5 +1,8 @@
-package cz.fit.vut.xvrana32.telosysplugin.elements;
+package cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter;
 
+/**
+ * Enum of all possible @Cascade arguments.
+ */
 public enum CascadeOptions {
     ALL,
     MERGE,

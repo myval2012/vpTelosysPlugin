@@ -9,7 +9,7 @@ import java.util.List;
  * Used mostly as a data class for storing and accessing information during the project compilation.
  */
 public class Entity extends DecoratedElement {
-    private Model parentModel = null;
+    private Model parentModel = null; // Back ref to owning model.
     final List<Attr> attrs = new ArrayList<>();
     final List<Link> links = new ArrayList<>();
 

@@ -6,12 +6,12 @@ package cz.fit.vut.xvrana32.telosysplugin.elements;
  * Used mostly as a data class for storing and accessing information during the project compilation.
  */
 public class Link extends DecoratedElement {
-    private final Entity associationEntity;
-    private final String vPAssociationId;
-    private final boolean isArray;
+    private final Entity associationEntity; // Inner representation of association class.
+    private final String vPAssociationId; // ID of associations
+    private final boolean isArray; // multiplicity
 
     private final Entity linkTo;
-    private Entity parentEntity = null;
+    private Entity parentEntity = null; // Back ref to owning entity.
 
     /**
      * Creates a link with no annotations or tags.
@@ -41,14 +41,24 @@ public class Link extends DecoratedElement {
         return linkTo;
     }
 
+    /**
+     * @return Entity that owns this link.
+     */
     public Entity getParentEntity() {
         return parentEntity;
     }
 
+    /**
+     * Sets a reference to owning entity.
+     * @param parentEntity Entity that owns this link.
+     */
     public void setParentEntity(Entity parentEntity) {
         this.parentEntity = parentEntity;
     }
 
+    /**
+     * @return Link in Telosys DSL format.
+     */
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder(name);
@@ -68,8 +78,6 @@ public class Link extends DecoratedElement {
 
         return stringBuilder.toString();
     }
-
-
 
     public String getVPAssociationId() {
         return vPAssociationId;

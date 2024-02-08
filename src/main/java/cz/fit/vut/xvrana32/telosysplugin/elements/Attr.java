@@ -83,19 +83,6 @@ public class Attr extends DecoratedElement {
         }
         stringBuilder.append(";");
 
-//        stringBuilder.append("{ ");
-//
-//        for (Anno anno : annos) {
-//            stringBuilder.append(anno.toString());
-//            stringBuilder.append(" ");
-//        }
-//
-//        for (Tag tag : tags) {
-//            stringBuilder.append(tag.toString());
-//            stringBuilder.append(" ");
-//        }
-//        stringBuilder.append("};");
-
         return stringBuilder.toString();
     }
 }

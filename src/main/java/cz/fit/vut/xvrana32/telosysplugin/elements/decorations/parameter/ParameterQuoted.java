@@ -1,4 +1,4 @@
-package cz.fit.vut.xvrana32.telosysplugin.elements;
+package cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter;
 
 
 /**
@@ -9,6 +9,9 @@ public class ParameterQuoted extends ParameterBase {
         super(_value);
     }
 
+    /**
+     * @return Value of parameter in Telosys DSL format.
+     */
     @Override
     public String toString() {
         return String.format("\"%s\"", value.toString());

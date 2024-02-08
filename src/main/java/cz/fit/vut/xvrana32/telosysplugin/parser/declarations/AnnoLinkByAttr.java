@@ -5,12 +5,8 @@ import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import cz.fit.vut.xvrana32.telosysplugin.elements.*;
-import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
-
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Special annotation declaration for parsing @LinkByAttr
@@ -24,16 +20,12 @@ public class AnnoLinkByAttr extends AnnoDeclaration {
     }
 
     @Override
-    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) throws Exception {
-        // check if the tagged value is there and read the Id of the model
+    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) {
+        // check if the tagged value is there and read the ID of the model
         ITaggedValueContainer vPTaggedValueContainer = vPElement.getTaggedValues();
         ITaggedValue vPTaggedValue = vPTaggedValueContainer.getTaggedValueByName(params[0].name);
-        if (vPTaggedValue == null
-                || !vPTaggedValue.getTagDefinitionStereotype().equals(vPStereotype)
-                || vPTaggedValue.getType() != params[0].paramType
-        ) {
-//            Logger.log("The proper tagged value for the stereotype was not found.");
-            return null;
+        if (!checkTaggedValue(vPStereotype, vPTaggedValue, params[0])){
+            return null; // TODO error
         }
         String supportClassId = vPTaggedValue.getValueAsModel().getId();
 

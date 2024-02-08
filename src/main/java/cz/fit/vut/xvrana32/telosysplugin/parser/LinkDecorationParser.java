@@ -1,11 +1,10 @@
 package cz.fit.vut.xvrana32.telosysplugin.parser;
 
 import com.vp.plugin.model.*;
-import cz.fit.vut.xvrana32.telosysplugin.elements.Anno;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Link;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.*;
-import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 import java.util.Iterator;
@@ -32,30 +31,10 @@ public class LinkDecorationParser {
     public static void parse(IProject vPProject, Link link) throws Exception {
         Iterator stereotypes;
         IClass vPClass = (IClass) vPProject.getModelElementById(link.getParentEntity().getVpId());
-//        if (vPClass == null){
-//            Logger.log("Entity was not found");
-//        }
-//        else{
-//            Logger.log(String.format("The entity %s was found ", vPClass.getName()));
-//        }
-
         IAssociation vPAssociation = (IAssociation) vPProject.getModelElementById(link.getVPAssociationId());
-//        if (vPAssociation == null){
-//            Logger.log("Association was not found");
-//        }
-//        else{
-//            Logger.log(String.format("The association %s was found ", vPAssociation.getName()));
-//        }
-
         IAttribute vPAttr = (IAttribute) vPClass.getChildById(link.getVpId());
-//        if (vPAttribute == null){
-//            Logger.log("Link (attribute) was not found");
-//        }
-//        else{
-//            Logger.log(String.format("The link (attribute) %s was found ", vPAttribute.getName()));
-//        }
 
-        // TODO special annotations
+        // special annotations
         String multiplicityFrom = ((IAssociationEnd) vPAssociation.getFromEnd()).getMultiplicity();
         String multiplicityTo = ((IAssociationEnd) vPAssociation.getToEnd()).getMultiplicity();
         boolean isOnFromSide = vPAssociation.getFrom().getId().equals(link.getParentEntity().getVpId());
@@ -75,20 +54,13 @@ public class LinkDecorationParser {
         if (multiplicityFrom.endsWith("*") && multiplicityTo.endsWith("*")) {
             // it's many-to-many relationship
             link.addAnno(new Anno(Anno.AnnoType.MANY_TO_MANY));
-//            Logger.log("Added annotation @ManyToMany");
             // add association class to standard entities if it is not already there
             Entity joinEntity = link.getAssociationEntity();
 
             if (joinEntity == null) {
-//                Logger.log("Join entity does not exist.");
-                return;
+                return; // Join entity does not exist
             }
-
-//            if (!link.getParentEntity().getParentModel().getEntities().contains(joinEntity)) {
             joinEntity.addAnno(new Anno(Anno.AnnoType.JOIN_ENTITY));
-//                link.getParentEntity().getParentModel().addEntity(joinEntity);
-//            Logger.log("Added join entity");
-//            }
 
             // if this is the owning side add LinkByJoinEntity
             if ((isOnFromSide && vPAssociation.getDirection() == 0) ||
@@ -96,13 +68,10 @@ public class LinkDecorationParser {
                 Anno newAnno = new Anno(Anno.AnnoType.LINK_BY_JOIN_ENTITY);
                 newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.LINK_ENTITY, joinEntity));
                 link.addAnno(newAnno);
-//                Logger.log("Added annotation @LinkByJoinEntity");
-
             }
         }
 
 
-//        Logger.log("Checking mappedBy");
         // MappedBy
         // if this is the inverse side of the relationship and there is a link on the owning side add MappedBy
         IAttribute owningAttribute = isOnFromSide ?
@@ -116,27 +85,21 @@ public class LinkDecorationParser {
         if ((isOnFromSide && vPAssociation.getDirection() == 1 && owningAttribute != null) ||
                 (isOnToSide && vPAssociation.getDirection() == 0 && owningAttribute != null)) {
             Anno newAnno = new Anno(Anno.AnnoType.MAPPED_BY);
-//            Logger.log("Trying to add MappedBy...");
             for (Link owningLink : link.getToEntity().getLinks()) {
 
-//                Logger.log(String.format("Trying Link %s with id %s", owningLink.getName(), owningLink.getVpId()));
                 if (owningLink.getVpId().equals(owningAttribute.getId())) {
                     newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.LINK_LINK, owningLink));
                     link.addAnno(newAnno);
-//                    Logger.log("Added annotation @MappedBy");
                     break;
                 }
             }
         }
 
-//        Logger.log("Checking OneToOne");
         // OneToOne
         if (multiplicityFrom.contains("1") && multiplicityTo.contains("1")) {
             link.addAnno(new Anno(Anno.AnnoType.ONE_TO_ONE));
-//            Logger.log("Added annotation @OneToOne");
         }
 
-//        Logger.log("Checking optional");
         // Optional
         if ((isOnFromSide
                 && multiplicityTo.startsWith("0")) ||
@@ -144,37 +107,18 @@ public class LinkDecorationParser {
                         && multiplicityFrom.startsWith("0")
                 )) {
             link.addAnno(new Anno(Anno.AnnoType.OPTIONAL));
-//            Logger.log("Added annotation @Optional");
         }
-//        Logger.log("Checking ended");
-
-//        IClass vPClass = (IClass) vPProject.getModelElementById(link.getParentEntity().getVpId());
-//        Logger.log(vPClass == null ? "vPClass not found" : "Found vPClass");
-//        IAttribute vPAttr = (IAttribute) vPClass.getChildById(link.getVpId());
-//        Logger.log(vPAttr == null ? "VP Attribute not found" : "Found VP Attribute");
-
-//        // check for special annotation
-//        if (vPAttr.isID()) {
-//            link.addAnno(new Anno(Anno.AnnoType.ID));
-////            Logger.log(String.format("Added ID annotation to Parameter: %s", attr.getName()));
-//        }
-//
-//        if (vPAttr.getInitialValue() != null && !vPAttr.getInitialValue().isEmpty()) {
-////            Logger.log(String.format("Added INITIAL_VALUE annotation to Parameter: %s", attr.getName()));
-//            Anno newAnno = new Anno(Anno.AnnoType.INITIAL_VALUE);
-//            newAnno.addParameter(new Parameter(Parameter.ValueType.STRING, vPAttr.getInitialValue()));
-//            link.addAnno(newAnno);
-//        }
 
         // TODO constraints
 
         // TODO annotations and tags
+        // TODO common implementation
         stereotypes = vPAttr.stereotypeModelIterator();
         while (stereotypes.hasNext()) {
             IStereotype stereotype = (IStereotype) stereotypes.next();
             if (stereotype.getName().startsWith("@")) // annotation
             {
-//                Logger.log(String.format("Found a annotation in Link: %s, has name: %s",
+//                Logger.log(String.format("Found an annotation in Link: %s, has name: %s",
 //                        vPAttr.getName(),
 //                        stereotype.getName()));
 
@@ -202,6 +146,7 @@ public class LinkDecorationParser {
         }
     }
 
+    // TODO common implementation
     private static AnnoDeclaration getAnnoDeclarationByName(String name) {
         for (AnnoDeclaration annoDeclaration : annoDeclarations) {
             if (annoDeclaration.name.equals(name)) {

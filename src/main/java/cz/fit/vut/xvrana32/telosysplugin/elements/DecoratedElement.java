@@ -1,6 +1,7 @@
 package cz.fit.vut.xvrana32.telosysplugin.elements;
 
-import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * <br> <br>
  * Use these methods to manipulate with annotations / tags.
  */
-abstract class DecoratedElement extends Element {
+public abstract class DecoratedElement extends Element {
     final List<Anno> annos = new ArrayList<>();
     final List<Tag> tags = new ArrayList<>();
 
@@ -57,7 +58,7 @@ abstract class DecoratedElement extends Element {
     }
 
     /**
-     * Set can not contain two annotation of the same {@link cz.fit.vut.xvrana32.telosysplugin.elements.Anno.AnnoType}.
+     * Set can not contain two annotation of the same {@link Anno.AnnoType}.
      * @param anno Annotation to add.
      * @return True if annotation added successfully, false otherwise.
      */
@@ -91,29 +92,21 @@ abstract class DecoratedElement extends Element {
      * @return Decorations in Telosys DSL format separated by separator. Not including curly brackets.
      */
     public String decorationsToString(String separator) {
-        // all annotations and tags should be on one line
         StringBuilder stringBuilder = new StringBuilder();
 
         // TODO remove null check.
         for (Anno anno : annos) {
             if (anno != null) {
-                stringBuilder.append(anno.toString());
+                stringBuilder.append(anno);
                 stringBuilder.append(separator);
             }
-//            else {
-//                Logger.log("We have null");
-//            }
         }
         for (Tag tag : tags) {
             if (tag != null) {
-                stringBuilder.append(tag.toString());
+                stringBuilder.append(tag);
                 stringBuilder.append(separator);
             }
-//            else {
-//                Logger.log("We have null");
-//            }
         }
-
 
         return stringBuilder.toString();
     }

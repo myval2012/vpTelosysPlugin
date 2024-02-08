@@ -9,7 +9,7 @@ import java.util.List;
  * Used mostly as a data class for storing and accessing information during the project compilation.
  */
 public class Model extends Element {
-    private List<Entity> entities = new ArrayList<Entity>();
+    private List<Entity> entities = new ArrayList<>();
     private List<Entity> associationEntities = new ArrayList<>();
 
     private List<Entity> supportEntities = new ArrayList<>();
@@ -73,7 +73,6 @@ public class Model extends Element {
         }
         return null;
     }
-
 
     /**
      * For development use only.

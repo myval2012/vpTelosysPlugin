@@ -2,6 +2,7 @@ package cz.fit.vut.xvrana32.telosysplugin.parser;
 
 import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.*;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
@@ -67,7 +68,7 @@ public class ModelParser {
             entity.addAnno(newAnno);
         }
 
-        // decide if this is a association class or standard
+        // decide if this is an association class or standard
         IAssociationClass vPAssociationClass = getAssociationClass(cls);
         if (vPAssociationClass != null) {
             IAssociation vPAssociation;

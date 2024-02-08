@@ -1,7 +1,7 @@
 package cz.fit.vut.xvrana32.telosysplugin.parser;
 
 import com.vp.plugin.model.*;
-import cz.fit.vut.xvrana32.telosysplugin.elements.Anno;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Attr;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.*;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
@@ -78,18 +78,14 @@ public class AttrDecorationParser {
         Iterator stereotypes;
 
         IClass vPClass = (IClass) vPProject.getModelElementById(attr.getParentEntity().getVpId());
-//        Logger.log(vPClass == null ? "vPClass not found" : "Found vPClass");
         IAttribute vPAttr = (IAttribute) vPClass.getChildById(attr.getVpId());
-//        Logger.log(vPAttr == null ? "VP Attribute not found" : "Found VP Attribute");
 
         // check for special annotation
         if (vPAttr.isID()) {
             attr.addAnno(new Anno(Anno.AnnoType.ID));
-//            Logger.log(String.format("Added ID annotation to Parameter: %s", attr.getName()));
         }
 
         if (vPAttr.getInitialValue() != null && !vPAttr.getInitialValue().isEmpty()) {
-//            Logger.log(String.format("Added INITIAL_VALUE annotation to Parameter: %s", attr.getName()));
             Anno newAnno = new Anno(Anno.AnnoType.INITIAL_VALUE);
             newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING, vPAttr.getInitialValue()));
             attr.addAnno(newAnno);
@@ -97,7 +93,7 @@ public class AttrDecorationParser {
 
         // TODO constraints
 
-        // TODO annotations and tags
+        // TODO common implementation of this loop
         stereotypes = vPAttr.stereotypeModelIterator();
         while (stereotypes.hasNext()) {
             IStereotype stereotype = (IStereotype) stereotypes.next();
@@ -132,6 +128,7 @@ public class AttrDecorationParser {
         }
     }
 
+    // TODO common implementation
     private static AnnoDeclaration getAnnoDeclarationByName(String name) {
         for (AnnoDeclaration annoDeclaration : annoDeclarations) {
             if (annoDeclaration.name.equals(name)) {

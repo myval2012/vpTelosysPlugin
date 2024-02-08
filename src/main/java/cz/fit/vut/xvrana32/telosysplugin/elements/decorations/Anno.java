@@ -1,4 +1,6 @@
-package cz.fit.vut.xvrana32.telosysplugin.elements;
+package cz.fit.vut.xvrana32.telosysplugin.elements.decorations;
+
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +31,7 @@ public class Anno {
         DB_DEFAULT_VALUE,
         DB_NAME,
         DB_SCHEMA,
-        DB_SIZE,
+        DB_SIZE, // TODO why
         DB_TABLE,
         DB_TABLESPACE,
         DB_TYPE,
@@ -138,6 +140,15 @@ public class Anno {
     }
 
     /**
+     * Adds all {@link IParameter parameters} into the list.
+     *
+     * @param ps Parameters to add.
+     */
+    public void addParameters(List<IParameter> ps) {
+        parameters.addAll(ps);
+    }
+
+    /**
      * @return Annotation in Telosys DSL format.
      */
     @Override
@@ -158,7 +169,7 @@ public class Anno {
                     stringBuilder.append(", ");
                 }
                 oneParamPrinted = true;
-                stringBuilder.append(parameter.toString());
+                stringBuilder.append(parameter);
             }
 
         }

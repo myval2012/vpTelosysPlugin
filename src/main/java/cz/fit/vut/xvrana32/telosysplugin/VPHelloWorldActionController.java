@@ -8,7 +8,6 @@ import com.vp.plugin.model.IProject;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
 import cz.fit.vut.xvrana32.telosysplugin.parser.ProjectParser;
-import cz.fit.vut.xvrana32.telosysplugin.utils.Constants;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import org.telosys.tools.api.TelosysProject;
 
@@ -34,36 +33,36 @@ public class VPHelloWorldActionController implements VPActionController {
         List<Model> models = projectParser.parse(project);
 
         // faster creation for debugging and testing
-//        Logger.log("Creating log file...");
-//        try {
-//            for (Model model:models){
-//                Logger.logFile.write(model.toString());
-//            }
-//            Logger.log("Log file generated successfully");
-//            Logger.logFile.close();
-//        } catch (Exception e) {
-//            Logger.log(String.format("Unable to write to log file: %s", e.getMessage()));
-//        }
-
-        Logger.log("Before...");
+        Logger.log("Creating log file...");
         try {
-            TelosysProject telosysProject = new TelosysProject(Logger.TELOSYS_TEST_FOLDER);
-            telosysProject.initProject();
-
-            for (Model model: models){
-                String modelName = model.getName();
-                File modelF = telosysProject.createNewDslModel(modelName);
-                for (Entity entity: model.getEntities()){
-                    File entityF = telosysProject.createNewDslEntity(modelName, entity.getName());
-                    FileWriter entityFW = new FileWriter(entityF);
-                    entityFW.write(entity.toString());
-                    entityFW.close();
-                }
+            for (Model model:models){
+                Logger.logFile.write(model.toString());
             }
+            Logger.log("Log file generated successfully");
+            Logger.logFile.close();
         } catch (Exception e) {
-            Logger.log(e.getMessage());
+            Logger.log(String.format("Unable to write to log file: %s", e.getMessage()));
         }
-        Logger.log("After...");
+
+//        Logger.log("Before...");
+//        try {
+//            TelosysProject telosysProject = new TelosysProject(Logger.TELOSYS_TEST_FOLDER);
+//            telosysProject.initProject();
+//
+//            for (Model model: models){
+//                String modelName = model.getName();
+//                File modelF = telosysProject.createNewDslModel(modelName);
+//                for (Entity entity: model.getEntities()){
+//                    File entityF = telosysProject.createNewDslEntity(modelName, entity.getName());
+//                    FileWriter entityFW = new FileWriter(entityF);
+//                    entityFW.write(entity.toString());
+//                    entityFW.close();
+//                }
+//            }
+//        } catch (Exception e) {
+//            Logger.log(e.getMessage());
+//        }
+//        Logger.log("After...");
 
         // get all root models and their model types
 //        Iterator iter = project.modelElementIterator();
