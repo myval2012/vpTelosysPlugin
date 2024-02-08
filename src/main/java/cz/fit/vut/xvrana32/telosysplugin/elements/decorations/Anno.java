@@ -31,7 +31,7 @@ public class Anno {
         DB_DEFAULT_VALUE,
         DB_NAME,
         DB_SCHEMA,
-        DB_SIZE, // TODO why
+        DB_SIZE,
         DB_TABLE,
         DB_TABLESPACE,
         DB_TYPE,
@@ -75,6 +75,8 @@ public class Anno {
         PRIMITIVE_TYPE,
         READ_ONLY,
         SIZE,
+        SIZE_MAX,
+        SIZE_MIN,
         TRANSIENT,
         UNIQUE,
         UNSIGNED_TYPE,

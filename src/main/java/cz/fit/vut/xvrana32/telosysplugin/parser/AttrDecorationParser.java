@@ -6,6 +6,7 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.Attr;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.*;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
+import org.apache.commons.collections.Factory;
 
 import java.util.Iterator;
 
@@ -72,6 +73,14 @@ public class AttrDecorationParser {
                     new ParamDeclaration("precision", ITaggedValueDefinition.TYPE_INTEGER),
                     new ParamDeclaration("scale", ITaggedValueDefinition.TYPE_INTEGER)
             }),
+
+            // deprecated
+            new AnnoCommon("DbSize", Anno.AnnoType.DB_SIZE, new ParamDeclaration[]
+                    {new ParamDeclaration("dbSize", false)}),
+            new AnnoCommon("SizeMax", Anno.AnnoType.SIZE_MAX, new ParamDeclaration[]
+                    {new ParamDeclaration("sizeMax", ITaggedValueDefinition.TYPE_INTEGER)}),
+            new AnnoCommon("SizeMin", Anno.AnnoType.SIZE_MIN, new ParamDeclaration[]
+                    {new ParamDeclaration("sizeMin", ITaggedValueDefinition.TYPE_INTEGER)}),
     };
 
     public static void parse(IProject vPProject, Attr attr) throws Exception {
