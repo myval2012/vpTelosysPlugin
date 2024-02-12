@@ -13,6 +13,8 @@ specified in Telosys DSL language.
 
 ![Attribute example](imgs/attributeExample.png)
 
+*Attribute example*
+
 ### Link
 Links are the most complicated part of Graphical Telosys DSL. The aim is to make relations between 
 objects clearer and more graphical. For this reason Telosys link is represented with association, 
@@ -23,18 +25,21 @@ association end to class instead of association. Visual paradigm automatically g
 opposing class.
 
 ![link, one representative attribute](imgs/linkOneReprAttr.png)
+
 *One representative attribute. One-To-Many / Many-To-One*
 
 ![link, two representative attributes](imgs/linkTwoReprAttr.png)
+
 *Both representative attributes. Many-To-Many*
 
 Multiplicity together with type modifier (only type modifier used is '[]') describe whether link references a 
 single entity or a collection. Association class is used to specify join entity (if the association is many-to-many). 
 
 ![One-To-One relationship](imgs/oneToOne.png)
+
 *One-To-One*
 
-There are multiple ways of connecting representative attribute and FK attributes in Telosys. (TODO use better sentence)
+There are multiple ways of connecting representative attribute and FK attributes in Telosys.
 <ul>
     <li>Inference - Not supported.</li>
     <li>@LinkByAttr - Stereotype.</li>
@@ -48,7 +53,7 @@ two entities depending on direction. Direction is used to describe owning and in
 
 ### Annotation 
 Most of the annotations are represented as stereotypes, some also as constraints and other as their UML counterparts.
-The list of all annotations and their representations can be found here (TODO link to new file).
+The list of all annotations and their representations can be found [here](annotations.md).
 
 ### Tag
 User has to define a stereotype that begins with '#'. Parameter is added as a tagged value to this stereotype 
