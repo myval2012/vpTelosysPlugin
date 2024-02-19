@@ -28,6 +28,8 @@ public class AnnoCascade extends AnnoDeclaration {
             return null; // TODO error
         }
 
+        // TODO check mandatory values, for cascade it is at least one cascade option
+
         String supportClassId = vPTaggedValue.getValueAsModel().getId();
 
         // find the support entity

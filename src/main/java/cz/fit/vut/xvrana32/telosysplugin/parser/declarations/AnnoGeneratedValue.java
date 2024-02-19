@@ -45,6 +45,8 @@ public class AnnoGeneratedValue extends AnnoDeclarationMultiple {
         }
         newAnno.addParameter(firstParameter);
 
+        // TODO check mandatory values, for generated value all values are mandatory
+
         // proceed as in AnnoCommon
         List<IParameter> parameters = new ArrayList<>(params.length);
         findTaggedValues(vPElement, vPStereotype, model, parameters);

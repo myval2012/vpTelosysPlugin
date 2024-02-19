@@ -26,7 +26,7 @@ public class AttrDecorationParser {
                     {new ParamDeclaration("defaultValue", ITaggedValueDefinition.TYPE_TEXT)}),
             new AnnoCommon("FK", Anno.AnnoType.F_K, new ParamDeclaration[]{
                     new ParamDeclaration("fkName", false),
-                    new ParamDeclaration("referencedEntity", ITaggedValueDefinition.TYPE_MODEL_ELEMENT)}),
+                    new ParamDeclaration("referencedEntity", ITaggedValueDefinition.TYPE_MODEL_ELEMENT)}), // TODO change to referenced once the init is regenerated for testing models
             new AnnoCommon("InputType", Anno.AnnoType.INPUT_TYPE, new ParamDeclaration[]
                     {new ParamDeclaration("inputType", ITaggedValueDefinition.TYPE_TEXT)}),
             new AnnoCommon("Label", Anno.AnnoType.LABEL, new ParamDeclaration[]
@@ -84,7 +84,7 @@ public class AttrDecorationParser {
     };
 
     public static void parse(IProject vPProject, Attr attr) throws Exception {
-        Iterator stereotypes;
+//        Iterator stereotypes;
 
         IClass vPClass = (IClass) vPProject.getModelElementById(attr.getParentEntity().getVpId());
         IAttribute vPAttr = (IAttribute) vPClass.getChildById(attr.getVpId());
@@ -102,48 +102,48 @@ public class AttrDecorationParser {
 
         // TODO constraints
 
-        // TODO common implementation of this loop
-        stereotypes = vPAttr.stereotypeModelIterator();
-        while (stereotypes.hasNext()) {
-            IStereotype stereotype = (IStereotype) stereotypes.next();
-            if (stereotype.getName().startsWith("@")) // annotation
-            {
-                Logger.log(String.format("Found a annotation in attribute: %s, has name: %s",
-                        vPAttr.getName(),
-                        stereotype.getName()));
+        DecorationParser.parseNonSpecialAnnosAndTags(annoDeclarations, vPAttr, attr, attr.getParentEntity());
 
-                AnnoDeclaration annoDeclaration = getAnnoDeclarationByName(stereotype.getName().substring(1));
-                if (annoDeclaration != null) {
-                    Logger.log(String.format("Annotation declaration for %s was found",
-                            stereotype.getName()));
-                    Anno newAnno = annoDeclaration.createAnno(vPAttr,
-                            stereotype, attr.getParentEntity().getParentModel());
-                    if (newAnno != null) {
-                        Logger.log("Annotation created successfully");
-                        attr.addAnno(newAnno);
-                    }
-                }
-//                Anno newAnno = evaluateAnno(vPAttr, stereotype, attr);
-//                if (newAnno != null){
-//                    attr.addAnno(newAnno);
-//                }
-            } else if (stereotype.getName().startsWith("#")) // tags
-            {
-                attr.addTag(TagParser.parseTag(vPAttr, stereotype, attr.getParentEntity()));
-//                Logger.log(String.format("Found a tag in attribute: %s, has name: %s",
+//        stereotypes = vPAttr.stereotypeModelIterator();
+//        while (stereotypes.hasNext()) {
+//            IStereotype stereotype = (IStereotype) stereotypes.next();
+//            if (stereotype.getName().startsWith("@")) // annotation
+//            {
+//                Logger.log(String.format("Found a annotation in attribute: %s, has name: %s",
 //                        vPAttr.getName(),
 //                        stereotype.getName()));
-            }
-        }
+//
+//                AnnoDeclaration annoDeclaration = getAnnoDeclarationByName(stereotype.getName().substring(1));
+//                if (annoDeclaration != null) {
+//                    Logger.log(String.format("Annotation declaration for %s was found",
+//                            stereotype.getName()));
+//                    Anno newAnno = annoDeclaration.createAnno(vPAttr,
+//                            stereotype, attr.getParentEntity().getParentModel());
+//                    if (newAnno != null) {
+//                        Logger.log("Annotation created successfully");
+//                        attr.addAnno(newAnno);
+//                    }
+//                }
+////                Anno newAnno = evaluateAnno(vPAttr, stereotype, attr);
+////                if (newAnno != null){
+////                    attr.addAnno(newAnno);
+////                }
+//            } else if (stereotype.getName().startsWith("#")) // tags
+//            {
+//                attr.addTag(TagParser.parseTag(vPAttr, stereotype, attr.getParentEntity()));
+////                Logger.log(String.format("Found a tag in attribute: %s, has name: %s",
+////                        vPAttr.getName(),
+////                        stereotype.getName()));
+//            }
+//        }
     }
 
-    // TODO common implementation
-    private static AnnoDeclaration getAnnoDeclarationByName(String name) {
-        for (AnnoDeclaration annoDeclaration : annoDeclarations) {
-            if (annoDeclaration.name.equals(name)) {
-                return annoDeclaration;
-            }
-        }
-        return null;
-    }
+//    private static AnnoDeclaration getAnnoDeclarationByName(String name) {
+//        for (AnnoDeclaration annoDeclaration : annoDeclarations) {
+//            if (annoDeclaration.name.equals(name)) {
+//                return annoDeclaration;
+//            }
+//        }
+//        return null;
+//    }
 }

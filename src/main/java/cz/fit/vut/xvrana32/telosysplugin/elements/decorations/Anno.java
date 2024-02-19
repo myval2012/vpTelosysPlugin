@@ -120,13 +120,12 @@ public class Anno {
         return annotationType;
     }
 
-    // TODO check if necessary
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Anno)) {
-            return false;
-        }
-        return ((Anno) obj).annotationType == annotationType;
-    }
+//    public boolean equals(Object obj) {
+//        if (!(obj instanceof Anno)) {
+//            return false;
+//        }
+//        return ((Anno) obj).annotationType == annotationType;
+//    }
 
     public void addParameter(IParameter parameter) {
         parameters.add(parameter);

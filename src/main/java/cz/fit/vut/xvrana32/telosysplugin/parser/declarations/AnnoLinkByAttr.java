@@ -35,6 +35,7 @@ public class AnnoLinkByAttr extends AnnoDeclaration {
 //            Logger.log("Support entity was not found.");
             return null;
         }
+        // TODO check mandatory values, for link by attr at least one parameter in supp class
 
         // add all attributes of the support entity to both the ParentEntity and the Annotation
         Entity parentEntity = model.getEntityByVpId(vPElement.getParent().getId());

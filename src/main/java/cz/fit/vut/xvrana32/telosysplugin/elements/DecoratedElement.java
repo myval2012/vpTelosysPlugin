@@ -94,18 +94,13 @@ public abstract class DecoratedElement extends Element {
     public String decorationsToString(String separator) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        // TODO remove null check.
         for (Anno anno : annos) {
-            if (anno != null) {
                 stringBuilder.append(anno);
                 stringBuilder.append(separator);
-            }
         }
         for (Tag tag : tags) {
-            if (tag != null) {
                 stringBuilder.append(tag);
                 stringBuilder.append(separator);
-            }
         }
 
         return stringBuilder.toString();

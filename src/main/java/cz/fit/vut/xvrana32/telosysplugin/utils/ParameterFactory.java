@@ -33,7 +33,8 @@ public class ParameterFactory {
                 }
                 return new ParameterNonQuoted(vPTaggedValue.getValueAsText());
             case ITaggedValueDefinition.TYPE_MODEL_ELEMENT:
-                return new ParameterLink(model.getEntityByVpId(vPTaggedValue.getValueAsModel().getId()));
+                boolean isAbsolute = vPTaggedValue.getValueAsModel().getModelType().equals("Attribute");
+                return new ParameterLink(model.getEntityByVpId(vPTaggedValue.getValueAsModel().getId()), isAbsolute);
             case ITaggedValueDefinition.TYPE_INTEGER:
             case ITaggedValueDefinition.TYPE_FLOATING_POINT_NUMBER:
             case ITaggedValueDefinition.TYPE_BOOLEAN:
@@ -62,7 +63,7 @@ public class ParameterFactory {
             case LINK_ENTITY:
             case LINK_ATTRIBUTE:
             case LINK_LINK:
-                return new ParameterLink(_value);
+                return new ParameterLink(_value, false);
             default:
                 return null;
         }

@@ -7,8 +7,10 @@ import com.vp.plugin.model.ITaggedValueContainer;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
+import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class AnnoDeclarationMultiple extends AnnoDeclaration {
@@ -20,7 +22,6 @@ public abstract class AnnoDeclarationMultiple extends AnnoDeclaration {
                                     IStereotype vPStereotype,
                                     Model model,
                                     List<IParameter> parameters) {
-
         ITaggedValueContainer vPTaggedValueContainer = vPElement.getTaggedValues();
         for (ParamDeclaration paramDeclaration : params) {
             ITaggedValue vPTaggedValue = vPTaggedValueContainer.getTaggedValueByName(paramDeclaration.name);

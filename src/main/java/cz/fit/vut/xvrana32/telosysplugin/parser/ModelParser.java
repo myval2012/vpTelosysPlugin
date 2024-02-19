@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ModelParser {
+    // TODO refactoring
     List<Entity> standardEntities = new ArrayList<>();
     List<Entity> supportEntities = new ArrayList<>();
     List<Entity> associationEntities = new ArrayList<>();
@@ -23,13 +24,13 @@ public class ModelParser {
         model.setAssociationEntities(associationEntities);
         model.setSupportEntities(supportEntities);
 
-        // TODO loop through all classes and create their annotations, tags, attributes and links
+        // loop through all classes and create their annotations, tags, attributes and links
         phase1(vPModel.getProject());
 
-        // TODO loop through all classes and add annotations and tags to attributes
+        // loop through all classes and add annotations and tags to attributes
         phase2(vPModel.getProject());
 
-        // TODO loop through all classes and add annotations and tags to links
+        // loop through all classes and add annotations and tags to links
         phase3(vPModel.getProject());
 
         return model;
@@ -100,11 +101,6 @@ public class ModelParser {
         for (ISimpleRelationship rel : rels) {
             if (rel.getModelType().equals("AssociationClass")) {
                 return (IAssociationClass) rel;
-//                IAssociationClass vPAssociationClass = (IAssociationClass) rel;
-//                if (vPAssociationClass.getFrom().getModelType().equals("Association")){
-//                    return (IAssociation) vPAssociationClass.getFrom();
-//                }
-//                return (IAssociation) vPAssociationClass.getTo();
             }
         }
         return null;
@@ -112,6 +108,8 @@ public class ModelParser {
 
     private void phase1(IProject vPProject) {
         // loop through all classes and create their annotations, tags, attributes and links
+        Logger.log("Phase1");
+
         for (Entity entity : standardEntities) {
 //            Logger.log(String.format("Parsing Class: %s", vPClass.getName()));
 
@@ -125,51 +123,6 @@ public class ModelParser {
             // create attributes and links
             createAttrsLinksOfEntity(entity, vPProject);
 
-            // list of all vPLinks Ids, to determine if attribute is a part of a link or just an attribute
-//            IModelElement vPClass = vPProject.getModelElementById(entity.getVpId());
-//            List<String> vPLinksIds = new ArrayList<>();
-//            List<IRelationshipEnd> vPRelEnds = new ArrayList<>();
-//            Collections.addAll(vPRelEnds, vPClass.toFromRelationshipEndArray());
-//            Collections.addAll(vPRelEnds, vPClass.toToRelationshipEndArray());
-//            for (IRelationshipEnd vpRelEnd : vPRelEnds) {
-//                if (vpRelEnd.getModelType().equals("AssociationEnd")) {
-//                    IAttribute vPLink = ((IAssociationEnd) vpRelEnd.getOppositeEnd()).getRepresentativeAttribute();
-//                    vPLinksIds.add(vPLink == null ? null : vPLink.getId());
-//                }
-//            }
-
-//            IModelElement[] vPAttrs = vPClass.toChildArray("Attribute");
-//            for (IModelElement vPAttr : vPAttrs) {
-//                if (vPLinksIds.contains(vPAttr.getId())) {
-//                    // this attribute is a link
-//                    Logger.log(String.format("%s is a link", vPAttr.getName()));
-//                    String vPAssociationId =
-//                            vPRelEnds.get(vPLinksIds.indexOf(vPAttr.getId())).getEndRelationship().getId();
-//                    Logger.log(String.format("The association ID is %s", vPAssociationId));
-//                    int associationEntityIndex = associationVPIds.indexOf(vPAssociationId);
-//                    Entity associationEntity = associationEntityIndex == -1
-//                            ? null : associationEntities.get(associationEntityIndex);
-//
-//                    Logger.log(String.format("Association class of this association is named %s",
-//                            associationEntity == null ? null : associationEntity.getName()));
-//
-//                    entity.addLink(new Link(
-//                            vPAttr.getId(),
-//                            vPAttr.getName(),
-//                            entity.getParentModel().getEntityByVpId(((IAttribute) vPAttr).getTypeAsModel().getId()),
-//                            vPAssociationId,
-//                            associationEntity
-//                    ));
-//                } else {
-//                    // this attribute is just an attribute
-////                    Logger.log(String.format("%s is an attribute", vPAttr.getName()));
-////                    Logger.log(String.format("The attrType has a name: %s",
-////                            ((IAttribute) vPAttr).getTypeAsModel().getName()));
-//
-//                    entity.addAttr(new Attr(vPAttr.getId(), vPAttr.getName(),
-//                            Attr.AttrType.valueOf(((IAttribute) vPAttr).getTypeAsModel().getName().toUpperCase())));
-//                }
-//            }
         }
 
         for (Entity entity : associationEntities) {
@@ -308,31 +261,6 @@ public class ModelParser {
                 }
             }
         }
-//        for (Entity entity : associationEntities) {
-//            for (Attr attr : entity.getAttrs()) {
-//                Logger.log(String.format("phase 2 entity: %s", entity.getName()));
-////                Logger.log(String.format("Parsing Attribute: %s", attr.getName()));
-//
-//                try {
-//                    AttrDecorationParser.parse(vPProject, attr);
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }
-
-//        for (Entity entity : supportEntities) {
-//            for (Attr attr : entity.getAttrs()) {
-//                Logger.log(String.format("phase 2 entity: %s", entity.getName()));
-////                Logger.log(String.format("Parsing Attribute: %s", attr.getName()));
-//
-//                try {
-//                    AttrDecorationParser.parse(vPProject, attr);
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }
 
         // add association entities that are marked with @JoinEntity (should be printed as well) to standard entities
         for (Entity entity : associationEntities) {
@@ -340,7 +268,5 @@ public class ModelParser {
                 standardEntities.add(entity);
             }
         }
-//        Logger.log("Let's continue");
-
     }
 }

@@ -31,6 +31,8 @@ public class AnnoSize extends AnnoDeclarationMultiple {
         List<IParameter> splitParameters = new ArrayList<>(params.length);
         findTaggedValues(vPElement, vPStereotype, model,splitParameters);
 
+        // TODO check mandatory values, for size "precision" is mandatory
+
         newAnno.addParameter(
                 ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING,
                 splitParameters.get(0).getValue().toString() +
