@@ -13,9 +13,33 @@ public class Logger {
 
     /**
      * Prints given text to VP message with {@link Constants.PluginConstants#MESSAGE_TAG}.
-     * @param msg message to print.
+     * @param msg Message to print.
      */
     public static void log(String msg){
         ApplicationManager.instance().getViewManager().showMessage(msg, Constants.PluginConstants.MESSAGE_TAG);
+    }
+
+    /**
+     * Prints a user message of severity level WARNING.
+     * @param msg Message to print.
+     */
+    public static void logW(String msg){
+        log("WARNING: " + msg);
+    }
+
+    /**
+     * Prints a user message of severity level ERROR.
+     * @param msg Message to print.
+     */
+    public static void logE(String msg){
+        log("ERROR: " + msg);
+    }
+
+    /**
+     * Prints a user message of severity level INFO.
+     * @param msg Message to print.
+     */
+    public static void logI(String msg){
+        log("INFO: " + msg);
     }
 }

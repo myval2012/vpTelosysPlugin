@@ -26,12 +26,15 @@ public class AnnoSize extends AnnoDeclarationMultiple {
     }
 
     @Override
-    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) {
+    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) throws Exception {
         Anno newAnno = new Anno(annoType);
         List<IParameter> splitParameters = new ArrayList<>(params.length);
         findTaggedValues(vPElement, vPStereotype, model,splitParameters);
 
         // TODO check mandatory values, for size "precision" is mandatory
+        if (splitParameters.get(0).getValue() == null){
+            throw new Exception("The tagged value precision is mandatory for stereotype @Size.");
+        }
 
         newAnno.addParameter(
                 ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING,

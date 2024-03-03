@@ -3,8 +3,10 @@ package cz.fit.vut.xvrana32.telosysplugin.parser.declarations;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.ITaggedValue;
+import com.vp.plugin.model.ITaggedValueContainer;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
+import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
 /**
  * Base for annotation declaration.
@@ -36,11 +38,42 @@ public abstract class AnnoDeclaration {
      */
     public abstract Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) throws Exception;
 
+    /**
+     * Checks that the tagged value follows the conditions described below:
+     * <ul>
+     *     <li>The tagged value is from the vpStereotype.</li>
+     *     <li>Type of the tagged value is same as the type in paramDeclaration.</li>
+     * </ul>
+     *
+     * @param vPStereotype     Object for condition.
+     * @param vPTaggedValue    Tagged value to check.
+     * @param paramDeclaration Object for condition.
+     * @return true if conditions are met, false otherwise.
+     */
     protected boolean checkTaggedValue(IStereotype vPStereotype,
                                        ITaggedValue vPTaggedValue,
                                        ParamDeclaration paramDeclaration) {
-        return vPTaggedValue != null
-                && vPTaggedValue.getTagDefinitionStereotype().equals(vPStereotype)
-                && vPTaggedValue.getType() == paramDeclaration.paramType;
+        return
+//                vPTaggedValue != null &&
+                vPTaggedValue.getTagDefinitionStereotype() != null &&
+                        vPTaggedValue.getTagDefinitionStereotype().equals(vPStereotype) &&
+                        vPTaggedValue.getType() == paramDeclaration.paramType;
+    }
+
+    protected ITaggedValue getValidTaggedValue(ITaggedValueContainer vPTaggedValueContainer,
+                                               IStereotype vPStereotype,
+                                               ParamDeclaration paramDeclaration) {
+        if (vPTaggedValueContainer == null) {
+            return null;
+        }
+
+        for (ITaggedValue vPTaggedValue : vPTaggedValueContainer.toTaggedValueArray()) {
+            if (vPTaggedValue.getName().equals(paramDeclaration.name) &&
+                    checkTaggedValue(vPStereotype, vPTaggedValue, paramDeclaration)
+            ) {
+                return vPTaggedValue;
+            }
+        }
+        return null;
     }
 }

@@ -4,6 +4,7 @@ import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Tag;
+import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 public class TagParser {
@@ -20,7 +21,15 @@ public class TagParser {
                 }
                 else
                 {
-                    param = ParameterFactory.CreateParameter(vPTaggedValue, entity.getParentModel(), true); // always quoted
+                    try {
+                        param = ParameterFactory.CreateParameter(vPTaggedValue, entity.getParentModel(), true); // always quoted
+                    }
+                    catch (Exception e){
+                        Logger.logE(String.format(
+                                "In %s while parsing tag stereotypes: %s",
+                                vpElement.getName(),
+                                e.getMessage()));
+                    }
                 }
             }
         }

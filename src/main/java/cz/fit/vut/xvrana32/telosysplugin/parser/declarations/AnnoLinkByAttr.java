@@ -3,7 +3,6 @@ package cz.fit.vut.xvrana32.telosysplugin.parser.declarations;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IStereotype;
 import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
 import cz.fit.vut.xvrana32.telosysplugin.elements.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
@@ -20,27 +19,42 @@ public class AnnoLinkByAttr extends AnnoDeclaration {
     }
 
     @Override
-    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) {
+    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) throws Exception {
         // check if the tagged value is there and read the ID of the model
-        ITaggedValueContainer vPTaggedValueContainer = vPElement.getTaggedValues();
-        ITaggedValue vPTaggedValue = vPTaggedValueContainer.getTaggedValueByName(params[0].name);
-        if (!checkTaggedValue(vPStereotype, vPTaggedValue, params[0])){
-            return null; // TODO error
+        ITaggedValue vPTaggedValue = getValidTaggedValue(vPElement.getTaggedValues(), vPStereotype, params[0]);
+
+        if (vPTaggedValue == null){
+            throw new Exception(String.format(
+                    "Tagged value %s is missing or is not associated with %s stereotype.",
+                    params[0].name,
+                    vPStereotype.getName()));
         }
+
+        if (vPTaggedValue.getValueAsModel() == null){
+            throw new Exception(String.format("Mandatory tagged value %s does not have a value.", params[0].name));
+        }
+
         String supportClassId = vPTaggedValue.getValueAsModel().getId();
 
         // find the support entity
         Entity supportEntity = model.getSupportEntityByVpId(supportClassId);
         if (supportEntity == null){
+            throw new Exception(String.format("Support class %s was not found inside the supported class",
+                    vPTaggedValue.getValueAsModel().getName()));
 //            Logger.log("Support entity was not found.");
-            return null;
+//            return null;
         }
-        // TODO check mandatory values, for link by attr at least one parameter in supp class
+
+        // check mandatory values, for link by attr at least one parameter in supp class
+        if (supportEntity.getAttrs().size() == 0){
+            throw new Exception(String.format(
+                    "There has to be at least one attribute in the %s support class.",
+                    supportEntity.getName()));
+        }
 
         // add all attributes of the support entity to both the ParentEntity and the Annotation
         Entity parentEntity = model.getEntityByVpId(vPElement.getParent().getId());
         Anno newAnno = new Anno(annoType);
-
         for (Attr attr:supportEntity.getAttrs()){
             parentEntity.addAttr(attr);
             newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.LINK_ATTRIBUTE, attr));

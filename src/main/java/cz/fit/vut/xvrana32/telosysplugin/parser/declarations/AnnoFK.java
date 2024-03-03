@@ -21,7 +21,7 @@ public class AnnoFK extends AnnoDeclarationMultiple {
     }
 
     @Override
-    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) {
+    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) throws Exception {
         Anno newAnno = new Anno(annoType);
 
         List<IParameter> parameters = new ArrayList<>(params.length);
@@ -29,7 +29,7 @@ public class AnnoFK extends AnnoDeclarationMultiple {
 
         // check if parameter "referenced" has a value
         if (parameters.get(1).getValue() == null){
-            // TODO error mandatory parameter has no value
+            throw new Exception("The tagged value referenced is mandatory for stereotype @FK.");
         }
 
         newAnno.addParameters(parameters);

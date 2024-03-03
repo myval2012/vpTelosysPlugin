@@ -25,7 +25,7 @@ public class ParameterFactory {
         BOOLEAN,
     }
 
-    public static IParameter CreateParameter(ITaggedValue vPTaggedValue, Model model, boolean textQuoted) {
+    public static IParameter CreateParameter(ITaggedValue vPTaggedValue, Model model, boolean textQuoted) throws Exception {
         switch (vPTaggedValue.getType()) {
             case ITaggedValueDefinition.TYPE_TEXT:
                 if (textQuoted) {
@@ -33,6 +33,9 @@ public class ParameterFactory {
                 }
                 return new ParameterNonQuoted(vPTaggedValue.getValueAsText());
             case ITaggedValueDefinition.TYPE_MODEL_ELEMENT:
+                if (vPTaggedValue.getValueAsModel() == null){
+                    return new ParameterLink(null, false);
+                }
                 boolean isAbsolute = vPTaggedValue.getValueAsModel().getModelType().equals("Attribute");
                 return new ParameterLink(model.getEntityByVpId(vPTaggedValue.getValueAsModel().getId()), isAbsolute);
             case ITaggedValueDefinition.TYPE_INTEGER:

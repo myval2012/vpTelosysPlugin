@@ -20,13 +20,19 @@ public class AnnoCommon extends AnnoDeclarationMultiple {
     }
 
     @Override
-    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) {
+    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) throws Exception {
         Anno newAnno = new Anno(annoType);
 
         List<IParameter> parameters = new ArrayList<>(params.length);
         findTaggedValues(vPElement, vPStereotype, model, parameters);
 
-        // TODO check mandatory values, assume all values are mandatory
+        // check mandatory values, assume all values are mandatory
+        for (IParameter parameter : parameters){
+            if (parameter.getValue() == null){
+                throw new Exception("One of the mandatory tagged values does not have a value.");
+            }
+        }
+
         newAnno.addParameters(parameters);
 
         return newAnno;

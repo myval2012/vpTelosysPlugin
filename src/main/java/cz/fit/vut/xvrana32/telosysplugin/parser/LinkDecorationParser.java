@@ -9,8 +9,6 @@ import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.*;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
-import java.util.Iterator;
-
 public class LinkDecorationParser {
     private static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("Embedded", Anno.AnnoType.EMBEDDED, new ParamDeclaration[]{}),
@@ -21,7 +19,7 @@ public class LinkDecorationParser {
             new AnnoLinkByAttr("LinkByAttr", Anno.AnnoType.LINK_BY_ATTR, new ParamDeclaration[]
                     {new ParamDeclaration("linkByAttrClass", ITaggedValueDefinition.TYPE_MODEL_ELEMENT)}),
             new AnnoCommon("LinkByFK", Anno.AnnoType.LINK_BY_FK, new ParamDeclaration[]
-                    {new ParamDeclaration("foreignKeyName", false)}),
+                    {new ParamDeclaration("fkName", false)}),
             new AnnoCommon("OrphanRemoval", Anno.AnnoType.ORPHAN_REMOVAL, new ParamDeclaration[]{}),
             new AnnoCommon("Updatable", Anno.AnnoType.UPDATABLE, new ParamDeclaration[]
                     {new ParamDeclaration("updatable", ITaggedValueDefinition.TYPE_BOOLEAN)}),
@@ -32,9 +30,7 @@ public class LinkDecorationParser {
             new AnnoCommon("Optional", Anno.AnnoType.OPTIONAL, new ParamDeclaration[]{}),
     };
 
-    public static void parse(IProject vPProject, Link link) throws Exception {
-        // TODO refactor conditions
-//        Iterator stereotypes;
+    public static void parse(IProject vPProject, Link link) {
         IClass vPClass = (IClass) vPProject.getModelElementById(link.getParentEntity().getVpId());
         IAssociation vPAssociation = (IAssociation) vPProject.getModelElementById(link.getVPAssociationId());
         IAttribute vPAttr = (IAttribute) vPClass.getChildById(link.getVpId());
@@ -44,12 +40,21 @@ public class LinkDecorationParser {
         // direction == 1 if direction is not from RelationshipEndFrom to RelationshipEndTo
         String multiplicityFrom = ((IAssociationEnd) vPAssociation.getFromEnd()).getMultiplicity();
         String multiplicityTo = ((IAssociationEnd) vPAssociation.getToEnd()).getMultiplicity();
-        boolean isOnFromSide = vPAssociation.getFrom().getId().equals(link.getParentEntity().getVpId());
-        boolean isOnToSide = !isOnFromSide;
-
-        boolean isFromSideOwning = vPAssociation.getDirection() == 0;
+        // TODO multiplicity has to be either 0..1 or 0..* other are not allowed --> error
+        boolean isOnToSide = vPAssociation.getFrom().getId().equals(link.getParentEntity().getVpId());
+        boolean isOnFromSide = !isOnToSide;
+        boolean isFromSideOwning = vPAssociation.getDirection() == 1;
         boolean isToSideOwning = !isFromSideOwning;
 
+        // !!! use only these in the upcoming conditions
+        String multiplicityThisSide = isOnFromSide ? multiplicityFrom : multiplicityTo;
+        String multiplicityOtherSide = isOnFromSide ? multiplicityTo : multiplicityFrom;
+        boolean isCollection = multiplicityThisSide.endsWith("*"); // this link has multiplicity ToMany
+        boolean isOtherSideCollection = multiplicityOtherSide.endsWith("*"); // opposite link has multiplicity ToMany
+        boolean isManyToMany = isCollection && isOtherSideCollection;
+        boolean isManyToOne = !isCollection && isOtherSideCollection;
+        boolean isOneToMany = isCollection && !isOtherSideCollection;
+        boolean isOneToOne = !isCollection && !isOtherSideCollection;
         boolean isOwningSide = (isOnFromSide && isFromSideOwning) || (isOnToSide && isToSideOwning);
         boolean isInverseSide = !isOwningSide;
         IAttribute owningVPAttr = isFromSideOwning ?
@@ -59,16 +64,34 @@ public class LinkDecorationParser {
                 ((IAssociationEnd) vPAssociation.getFromEnd()).getRepresentativeAttribute() :
                 ((IAssociationEnd) vPAssociation.getToEnd()).getRepresentativeAttribute();
 
-        // TODO test that owning side of relationship is not many side (only if it is not Many-To-Many)
+//        Logger.log(String.format("This link is on %s side", isOnFromSide ? "from" : "to"));
+//        Logger.log(String.format("The owning side is %s", isFromSideOwning ? "from" : "to"));
+//        Logger.log(String.format("Multiplicity of this side is %s", multiplicityThisSide));
+//        Logger.log(String.format("Which means that this side %s a collection", isCollection ? "is" : "isn't"));
+//        Logger.log(String.format("This relationship %s ManyToMany", isManyToMany ? "is" : "isn't"));
+//        Logger.log(String.format("This is the %s side", isOwningSide ? "owning" : "inverse"));
+//        if (owningVPAttr != null) {
+//            Logger.log(String.format("There is an owning attr: %s", owningVPAttr.getName()));
+//        }
+//        if (inverseVPAttr != null) {
+//            Logger.log(String.format("There is an inverse attr: %s", inverseVPAttr.getName()));
+//        }
 
-//        IAttribute inverseVPAttr = ((IAssociationEnd) owningVPAttr.getReferencingAssociationEnd().getOppositeEnd())
-//                .getRepresentativeAttribute();
+        // preconditions:
+        // * in case of a non-ManyToMany relationship, the many side cannot be owning side.
+        if (!isManyToMany && isOwningSide && isCollection) {
+            Logger.logE(String.format(
+                    "Link %s in class %s has the inverse side set to Many side on non-ManyToMany relationship.",
+                    link.getName(),
+                    link.getParentEntity().getName()));
+            return;
+        }
 
-//        Logger.log("JoinEntity, LinkByJoinEntity and ManyToMany...");
         // JoinEntity
         // LinkByJoinEntity
         // ManyToMany
-        if (multiplicityFrom.endsWith("*") && multiplicityTo.endsWith("*")) {
+        if (isManyToMany) {
+            // TODO ?
             // it's many-to-many relationship
             link.addAnno(new Anno(Anno.AnnoType.MANY_TO_MANY));
             // add association class to standard entities if it is not already there
@@ -82,15 +105,13 @@ public class LinkDecorationParser {
             joinEntity.addAnno(new Anno(Anno.AnnoType.JOIN_ENTITY));
 
             // if this is the owning side add LinkByJoinEntity
-            if ((isOnFromSide && vPAssociation.getDirection() == 0) ||
-                    (isOnToSide && vPAssociation.getDirection() == 1)) {
+            if (isOwningSide) {
                 Anno newAnno = new Anno(Anno.AnnoType.LINK_BY_JOIN_ENTITY);
                 newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.LINK_ENTITY, joinEntity));
                 link.addAnno(newAnno);
             }
         } else if (link.getAssociationEntity() != null && isOwningSide) {
-//            Logger.log("Auto-generating FK");
-
+            // TODO ?
             // this is not Many-To-Many relationship and if:
             // * there is an association class and
             // * this is the owning side of the link
@@ -100,8 +121,8 @@ public class LinkDecorationParser {
 
             // check association attributes do not already have FK annotation.
             boolean noFK = true;
-            for (Attr attr : associationEntity.getAttrs()){
-                if (attr.containsAnnoType(Anno.AnnoType.F_K)){
+            for (Attr attr : associationEntity.getAttrs()) {
+                if (attr.containsAnnoType(Anno.AnnoType.F_K)) {
                     noFK = false;
                     break;
                 }
@@ -118,38 +139,27 @@ public class LinkDecorationParser {
 
             // add linkByFK to this link
             Anno linkByFKAnno = new Anno(Anno.AnnoType.LINK_BY_FK);
-            if (!link.addAnno(linkByFKAnno)){
+            if (!link.addAnno(linkByFKAnno)) {
                 // TODO error
                 return; // this link already contains this annotation
             }
 
             // add FK annotation to all FK attributes.
-            for (Attr attr:associationEntity.getAttrs()){
+            for (Attr attr : associationEntity.getAttrs()) {
                 attr.addAnno(fKAnno);
             }
 
             // add association entity attributes to this entity
             Entity thisEntity = link.getParentEntity();
-            for (Attr attr: associationEntity.getAttrs()){
+            for (Attr attr : associationEntity.getAttrs()) {
                 thisEntity.addAttr(attr);
             }
         }
 
-
         // MappedBy
-        // if this is the inverse side of the relationship and there is a link on the owning side add MappedBy
-//        IAttribute owningAttribute = isOnFromSide ?
-//                ((IAssociationEnd) vPAssociation.getFromEnd()).getRepresentativeAttribute() :
-//                ((IAssociationEnd) vPAssociation.getToEnd()).getRepresentativeAttribute();
-
-//        Logger.log(String.format("The owning attribute is named %s with %s",
-//                owningAttribute == null ? null : owningAttribute.getName(),
-//                owningAttribute == null ? null : owningAttribute.getId()));
-
-//        Logger.log("MappedBy...");
-
-        if ((isOnFromSide && vPAssociation.getDirection() == 1 && owningVPAttr != null) ||
-                (isOnToSide && vPAssociation.getDirection() == 0 && owningVPAttr != null)) {
+        // if this is the inverse side of the relationship and there is a link attribute on the owning side...
+        if (isInverseSide && owningVPAttr != null) {
+            Logger.log("Generating MappedBy");
             Anno newAnno = new Anno(Anno.AnnoType.MAPPED_BY);
             for (Link owningLink : link.getToEntity().getLinks()) {
 
@@ -161,65 +171,13 @@ public class LinkDecorationParser {
             }
         }
 
-//        Logger.log("OneToOne");
         // OneToOne
-        if (multiplicityFrom.endsWith("1") && multiplicityTo.endsWith("1")) {
+        if (isOneToOne) {
             link.addAnno(new Anno(Anno.AnnoType.ONE_TO_ONE));
         }
 
-//        // Optional
-//        if ((isOnFromSide
-//                && multiplicityTo.startsWith("0")) ||
-//                (isOnToSide
-//                        && multiplicityFrom.startsWith("0")
-//                )) {
-//            link.addAnno(new Anno(Anno.AnnoType.OPTIONAL));
-//        }
-
         // TODO constraints
-
+        DecorationParser.checkTaggedValuesStereotype(vPAttr.getTaggedValues());
         DecorationParser.parseNonSpecialAnnosAndTags(annoDeclarations, vPAttr, link, link.getParentEntity());
-
-////        Logger.log("OtherAnnotations");
-//        stereotypes = vPAttr.stereotypeModelIterator();
-//        while (stereotypes.hasNext()) {
-//            IStereotype stereotype = (IStereotype) stereotypes.next();
-//            if (stereotype.getName().startsWith("@")) // annotation
-//            {
-////                Logger.log(String.format("Found an annotation in Link: %s, has name: %s",
-////                        vPAttr.getName(),
-////                        stereotype.getName()));
-//
-//                AnnoDeclaration annoDeclaration = getAnnoDeclarationByName(stereotype.getName().substring(1));
-//                if (annoDeclaration != null) {
-////                    Logger.log(String.format("Annotation declaration for %s was found",
-////                            stereotype.getName()));
-//                    Anno newAnno = annoDeclaration.createAnno(vPAttr,
-//                            stereotype, link.getParentEntity().getParentModel());
-//                    if (newAnno != null) {
-//                        link.addAnno(newAnno);
-//                    }
-//                }
-////                Anno newAnno = evaluateAnno(vPAttr, stereotype, attr);
-////                if (newAnno != null){
-////                    attr.addAnno(newAnno);
-////                }
-//            } else if (stereotype.getName().startsWith("#")) // tags
-//            {
-//                link.addTag(TagParser.parseTag(vPAttr, stereotype, link.getParentEntity()));
-////                Logger.log(String.format("Found a tag in link: %s, has name: %s",
-////                        vPAttr.getName(),
-////                        stereotype.getName()));
-//            }
-//        }
     }
-//
-//    private static AnnoDeclaration getAnnoDeclarationByName(String name) {
-//        for (AnnoDeclaration annoDeclaration : annoDeclarations) {
-//            if (annoDeclaration.name.equals(name)) {
-//                return annoDeclaration;
-//            }
-//        }
-//        return null;
-//    }
 }

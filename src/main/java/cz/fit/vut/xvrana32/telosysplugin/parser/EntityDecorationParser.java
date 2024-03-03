@@ -6,6 +6,7 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoCommon;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ParamDeclaration;
+import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 
@@ -35,7 +36,7 @@ public class EntityDecorationParser {
 //            "@ReadOnly"
 //    };
 
-    public static void parse(IProject vPProject, Entity entity) throws Exception {
+    public static void parse(IProject vPProject, Entity entity) {
         IClass vPClass = (IClass) vPProject.getModelElementById(entity.getVpId());
 
         if (vPClass.isAbstract()) {
@@ -48,17 +49,27 @@ public class EntityDecorationParser {
             for (ISimpleRelationship vPRel : vPRels) {
                 if (vPRel.getModelType().equals("Generalization")) {
                     Anno newAnno = new Anno(Anno.AnnoType.EXTENDS);
-                    newAnno.addParameter(ParameterFactory.CreateParameter(
-                            ParameterFactory.ValueType.LINK_ENTITY,
-                            entity.getParentModel().getEntityByVpId(vPRel.getFrom().getId())
-                    ));
-                    entity.addAnno(newAnno);
+
+                    try {
+                        newAnno.addParameter(ParameterFactory.CreateParameter(
+                                ParameterFactory.ValueType.LINK_ENTITY,
+                                entity.getParentModel().getEntityByVpId(vPRel.getFrom().getId())
+                        ));
+                        entity.addAnno(newAnno);
+                    }
+                    catch (Exception e){
+                        Logger.logE(String.format(
+                                "While creating @Extends for class %s: %s",
+                                entity.getName(),
+                                e.getMessage()));
+                    }
+
                 }
             }
         }
 
         // TODO constraints
-
+        DecorationParser.checkTaggedValuesStereotype(vPClass.getTaggedValues());
         DecorationParser.parseNonSpecialAnnosAndTags(annoDeclarations, vPClass, entity, entity);
 
 //        Iterator stereotypes = vPClass.stereotypeModelIterator();

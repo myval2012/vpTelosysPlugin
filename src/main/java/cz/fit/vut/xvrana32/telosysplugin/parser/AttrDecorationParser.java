@@ -24,9 +24,9 @@ public class AttrDecorationParser {
                     {new ParamDeclaration("dbType", ITaggedValueDefinition.TYPE_TEXT)}),
             new AnnoCommon("DefaultValue", Anno.AnnoType.DEFAULT_VALUE, new ParamDeclaration[]
                     {new ParamDeclaration("defaultValue", ITaggedValueDefinition.TYPE_TEXT)}),
-            new AnnoCommon("FK", Anno.AnnoType.F_K, new ParamDeclaration[]{
+            new AnnoFK("FK", Anno.AnnoType.F_K, new ParamDeclaration[]{
                     new ParamDeclaration("fkName", false),
-                    new ParamDeclaration("referencedEntity", ITaggedValueDefinition.TYPE_MODEL_ELEMENT)}), // TODO change to referenced once the init is regenerated for testing models
+                    new ParamDeclaration("referenced", ITaggedValueDefinition.TYPE_MODEL_ELEMENT)}), // TODO change to referenced once the init is regenerated for testing models
             new AnnoCommon("InputType", Anno.AnnoType.INPUT_TYPE, new ParamDeclaration[]
                     {new ParamDeclaration("inputType", ITaggedValueDefinition.TYPE_TEXT)}),
             new AnnoCommon("Label", Anno.AnnoType.LABEL, new ParamDeclaration[]
@@ -83,7 +83,7 @@ public class AttrDecorationParser {
                     {new ParamDeclaration("sizeMin", ITaggedValueDefinition.TYPE_INTEGER)}),
     };
 
-    public static void parse(IProject vPProject, Attr attr) throws Exception {
+    public static void parse(IProject vPProject, Attr attr) {
 //        Iterator stereotypes;
 
         IClass vPClass = (IClass) vPProject.getModelElementById(attr.getParentEntity().getVpId());
@@ -102,6 +102,7 @@ public class AttrDecorationParser {
 
         // TODO constraints
 
+        DecorationParser.checkTaggedValuesStereotype(vPAttr.getTaggedValues());
         DecorationParser.parseNonSpecialAnnosAndTags(annoDeclarations, vPAttr, attr, attr.getParentEntity());
 
 //        stereotypes = vPAttr.stereotypeModelIterator();

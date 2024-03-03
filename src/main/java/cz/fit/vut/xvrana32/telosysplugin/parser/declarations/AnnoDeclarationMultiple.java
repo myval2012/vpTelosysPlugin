@@ -10,7 +10,6 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParamet
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
-import java.util.Iterator;
 import java.util.List;
 
 public abstract class AnnoDeclarationMultiple extends AnnoDeclaration {
@@ -21,19 +20,36 @@ public abstract class AnnoDeclarationMultiple extends AnnoDeclaration {
     protected void findTaggedValues(IModelElement vPElement,
                                     IStereotype vPStereotype,
                                     Model model,
-                                    List<IParameter> parameters) {
+                                    List<IParameter> parameters) throws Exception {
+
         ITaggedValueContainer vPTaggedValueContainer = vPElement.getTaggedValues();
+//        if (vPTaggedValueContainer == null){
+//            throw new Exception(String.format("No tagged values in %s", vPElement.getName()));
+//        }
+
         for (ParamDeclaration paramDeclaration : params) {
-            ITaggedValue vPTaggedValue = vPTaggedValueContainer.getTaggedValueByName(paramDeclaration.name);
-            if (checkTaggedValue(vPStereotype, vPTaggedValue, paramDeclaration)) {
+
+//            ITaggedValue vPTaggedValue = vPTaggedValueContainer.getTaggedValueByName(paramDeclaration.name);
+            ITaggedValue vPTaggedValue = getValidTaggedValue(vPTaggedValueContainer, vPStereotype, paramDeclaration);
+
+            if (vPTaggedValue != null) {
                 parameters.add(ParameterFactory.CreateParameter(vPTaggedValue, model, paramDeclaration.textQuoted));
-//                Logger.log(String.format("Parameter %s added to the Annotation with value: %s",
-//                        vPTaggedValue.getName(),
-//                        vPTaggedValue.getValueAsText()));
             } else {
-//                Logger.log("The proper tagged value for the stereotype was not found.");
-                return; // TODO error
+                throw new Exception(String.format(
+                        "Tagged value %s is missing or is not associated with %s stereotype.",
+                        paramDeclaration.name,
+                        vPStereotype.getName()));
             }
+
+//            if (checkTaggedValue(vPStereotype, vPTaggedValue, paramDeclaration)) {
+//                parameters.add(ParameterFactory.CreateParameter(vPTaggedValue, model, paramDeclaration.textQuoted));
+////                Logger.log(String.format("Parameter %s added to the Annotation with value: %s",
+////                        vPTaggedValue.getName(),
+////                        vPTaggedValue.getValueAsText()));
+//            } else {
+////                Logger.log("The proper tagged value for the stereotype was not found.");
+//                return; // TODO error, tagged value is missing
+//            }
         }
     }
 }

@@ -3,6 +3,7 @@ package cz.fit.vut.xvrana32.telosysplugin.parser;
 import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
+import cz.fit.vut.xvrana32.telosysplugin.utils.Constants;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
@@ -24,6 +25,11 @@ public class ModelParser {
         model.setAssociationEntities(associationEntities);
         model.setSupportEntities(supportEntities);
 
+        if (standardEntities.size() == 0) {
+            Logger.logW(String.format("No class found in model %s, created Telosys model will be empty",
+                    model.getName()));
+        }
+
         // loop through all classes and create their annotations, tags, attributes and links
         phase1(vPModel.getProject());
 
@@ -44,8 +50,18 @@ public class ModelParser {
 //                    ", whose parent is : " + vPChild.getParent().getName() + ", id is: " + vPChild.getId());
             String modelType = vPChild.getModelType();
             if (modelType.equals("Package")) {
+
+                String nextPackage = currentPackage;
+                if (vPChild.getName().isEmpty()) {
+                    Logger.logW("Name of the package cannot be empty. Package name skipped in concatenation.");
+                } else {
+                    nextPackage = currentPackage.isEmpty() ? vPChild.getName() : currentPackage + "." + vPChild.getName();
+                }
+
                 LoopThroughModel(vPChild,
-                        currentPackage.isEmpty() ? vPChild.getName() : currentPackage + "." + vPChild.getName());
+//                        currentPackage.isEmpty() ? vPChild.getName() : currentPackage + "." + vPChild.getName()
+                        nextPackage
+                );
             } else if (modelType.equals("Class")) {
                 sortClass(vPChild, currentPackage);
                 addSupportEntities((IClass) vPChild);
@@ -56,6 +72,11 @@ public class ModelParser {
     private void addSupportEntities(IClass vPClass) {
         IModelElement[] vPElements = vPClass.toChildArray("Class");
         for (IModelElement vPElement : vPElements) {
+            if (vPElement.stereotypeCount() > 0) {
+                Logger.logW(String.format(
+                        "Support class %s: stereotypes on support classes are ignored.",
+                        vPElement.getName()));
+            }
             // class inside another class = support class
             supportEntities.add(new Entity(vPElement.getName(), vPElement.getId()));
         }
@@ -111,14 +132,9 @@ public class ModelParser {
         Logger.log("Phase1");
 
         for (Entity entity : standardEntities) {
-//            Logger.log(String.format("Parsing Class: %s", vPClass.getName()));
-
             // create annotations and tags of the class
-            try {
-                EntityDecorationParser.parse(vPProject, entity);
-            } catch (Exception e) {
-                Logger.log(String.format("There was some error: %s", e.getMessage()));
-            }
+            Logger.log(String.format("phase 1 entity: %s", entity.getName()));
+            EntityDecorationParser.parse(vPProject, entity);
 
             // create attributes and links
             createAttrsLinksOfEntity(entity, vPProject);
@@ -128,13 +144,8 @@ public class ModelParser {
         for (Entity entity : associationEntities) {
             // create annotations and tags of the class
             Logger.log(String.format("phase 1 entity: %s", entity.getName()));
-            try {
-                EntityDecorationParser.parse(vPProject, entity);
-            } catch (Exception e) {
-                Logger.log(String.format("There was some error: %s", e.getMessage()));
-            }
+            EntityDecorationParser.parse(vPProject, entity);
 
-            Logger.log("creating attributes and links...");
             // create attributes and links
             createAttrsLinksOfEntity(entity, vPProject);
         }
@@ -142,13 +153,8 @@ public class ModelParser {
         for (Entity entity : supportEntities) {
             // create annotations and tags of the class
             Logger.log(String.format("phase 1 entity: %s", entity.getName()));
-            try {
-                EntityDecorationParser.parse(vPProject, entity);
-            } catch (Exception e) {
-                Logger.log(String.format("There was some error: %s", e.getMessage()));
-            }
+            EntityDecorationParser.parse(vPProject, entity);
 
-            Logger.log("creating attributes and links...");
             // create attributes and links
             createAttrsLinksOfEntity(entity, vPProject);
         }
@@ -185,24 +191,43 @@ public class ModelParser {
 
                 boolean isArray = ((IAttribute) vPAttr).getMultiplicity().endsWith("*");
 
-                entity.addLink(new Link(
-                        vPAttr.getId(),
-                        vPAttr.getName(),
-                        entity.getParentModel().getEntityByVpId(((IAttribute) vPAttr).getTypeAsModel().getId()),
-                        vPAssociationId,
-                        associationEntity,
-                        isArray
-                ));
+                try {
+                    entity.addLink(new Link(
+                            vPAttr.getId(),
+                            vPAttr.getName(),
+                            entity.getParentModel().getEntityByVpId(((IAttribute) vPAttr).getTypeAsModel().getId()),
+                            vPAssociationId,
+                            associationEntity,
+                            isArray
+                    ));
+                } catch (Exception e) {
+                    // should not be a problem here
+                    Logger.logE(String.format(
+                            "In entity %s, while creating link %s: %s",
+                            entity.getName(),
+                            vPAttr.getName(),
+                            e.getMessage()));
+                }
             } else {
                 // this attribute is just an attribute
 //                Logger.log(String.format("%s is an attribute", vPAttr.getName()));
 //                    Logger.log(String.format("The attrType has a name: %s",
 //                            ((IAttribute) vPAttr).getTypeAsModel().getName()));
+
+                if (((IAttribute) vPAttr).getTypeAsString().equals(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME)) {
+                    // Attributes of type Cascade Option will be parsed later
+                    continue;
+                }
+
                 try {
                     entity.addAttr(new Attr(vPAttr.getId(), vPAttr.getName(),
-                            Attr.AttrType.valueOf(((IAttribute) vPAttr).getTypeAsModel().getName().toUpperCase())));
+                            Attr.AttrType.valueOf(((IAttribute) vPAttr).getTypeAsString().toUpperCase())));
                 } catch (IllegalArgumentException e) {
-                    Logger.log(String.format("Error occurred while parsing attribute: %s", e.getMessage()));
+                    Logger.logE(String.format(
+                            "In entity %s attribute %s: %s is not a valid data type.",
+                            entity.getName(),
+                            vPAttr.getName(),
+                            ((IAttribute) vPAttr).getTypeAsString()));
                 }
             }
         }

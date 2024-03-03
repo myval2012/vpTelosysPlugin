@@ -8,6 +8,8 @@ package cz.fit.vut.xvrana32.telosysplugin.elements;
 public class Link extends DecoratedElement {
     private final Entity associationEntity; // Inner representation of association class.
     private final String vPAssociationId; // ID of associations
+
+    // TODO join with multiplicity from link parser
     private final boolean isArray; // multiplicity
 
     private final Entity linkTo;

@@ -4,6 +4,7 @@ import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.CascadeOptions;
+import cz.fit.vut.xvrana32.telosysplugin.utils.Constants;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
@@ -19,36 +20,70 @@ public class AnnoCascade extends AnnoDeclaration {
     }
 
     @Override
-    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) {
+    public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) throws Exception {
         // check if the tagged value is there and read the ID of the model
 
-        ITaggedValueContainer vPTaggedValueContainer = vPElement.getTaggedValues();
-        ITaggedValue vPTaggedValue = vPTaggedValueContainer.getTaggedValueByName(params[0].name);
-        if (!checkTaggedValue(vPStereotype, vPTaggedValue, params[0])){
-            return null; // TODO error
+        ITaggedValue vPTaggedValue = getValidTaggedValue(vPElement.getTaggedValues(), vPStereotype, params[0]);
+        if (vPTaggedValue == null) {
+            throw new Exception(String.format(
+                    "Tagged value %s is missing or is not associated with %s stereotype.",
+                    params[0].name,
+                    vPStereotype.getName()));
         }
 
-        // TODO check mandatory values, for cascade it is at least one cascade option
+        if (vPTaggedValue.getValueAsModel() == null) {
+            throw new Exception(String.format("Mandatory tagged value %s does not have a value.", params[0].name));
+        }
 
         String supportClassId = vPTaggedValue.getValueAsModel().getId();
 
         // find the support entity
         Entity supportEntity = model.getSupportEntityByVpId(supportClassId);
-        if (supportEntity == null){
-            Logger.log("Support entity was not found.");
-            return null;
+        if (supportEntity == null) {
+            throw new Exception(String.format("Support class %s was not found inside the supported class",
+                    vPTaggedValue.getValueAsModel().getName()));
         }
 
         // add all attributes of the support entity to both the ParentEntity and the Annotation
         Anno newAnno = new Anno(annoType);
+        for (IModelElement vPAttrAsModel : vPTaggedValue.getValueAsModel().toChildArray("Attribute")) {
+            // check if they are all type "Cascade options"
+            IAttribute vPAttr = (IAttribute) vPAttrAsModel;
+            if (vPAttr.stereotypeCount() > 0) {
+                Logger.logW(String.format(
+                        "Support class %s: Attributes in @Cascade support class can't have stereotypes. Stereotypes of attribute %s skipped.",
+                        vPAttr.getParent().getName(),
+                        vPAttr.getName()));
+            }
 
-        for(IModelElement vPAttr : vPTaggedValue.getValueAsModel().toChildArray("Attribute")){
-            // TODO check if they are all of type "Cascade options"
-           newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.ENUM_CASCADE,
-                   CascadeOptions.valueOf(((IAttribute)vPAttr).getInitialValue())));
-            Logger.log(String.format("********* Added param to anno %s with value %s", vPAttr.getName(),
-                    ((IAttribute)vPAttr).getInitialValue()));
+            if (!vPAttr.getTypeAsString().equals(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME)) {
+
+                Logger.logW(String.format(
+                        "Support class %s for stereotype @Cascade only uses attribute of type %s, attribute %s of type %s ignored.",
+                        vPAttr.getParent().getName(),
+                        Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME,
+                        vPAttr.getName(),
+                        vPAttr.getTypeAsString()));
+                continue;
+            }
+            if (vPAttr.getInitialValue() == null) {
+                Logger.logW(String.format("Attributes in support class %s without initial value are ignored." +
+                                " Set initial value to indicate what cascade option you want.",
+                        vPAttr.getParent().getName()));
+                continue;
+            }
+
+            newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.ENUM_CASCADE,
+                    CascadeOptions.valueOf(vPAttr.getInitialValue())));
         }
+
+        // check mandatory values, for cascade it is at least one cascade option
+        if (newAnno.getParameters().size() == 0) {
+            throw new Exception(String.format(
+                    "There has to be at least one Cascade option with initial value in the %s support class.",
+                    supportEntity.getName()));
+        }
+
         return newAnno;
     }
 }

@@ -1,6 +1,7 @@
 package cz.fit.vut.xvrana32.telosysplugin.elements.decorations;
 
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -126,6 +127,10 @@ public class Anno {
 //        }
 //        return ((Anno) obj).annotationType == annotationType;
 //    }
+
+    public List<IParameter> getParameters() {
+        return parameters;
+    }
 
     public void addParameter(IParameter parameter) {
         parameters.add(parameter);

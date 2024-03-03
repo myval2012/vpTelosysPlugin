@@ -53,25 +53,32 @@ public class Model extends Element {
         }
     }
 
-    public Entity getEntityByVpId(String vpId) {
+    public Entity getEntityByVpId(String vpId) throws Exception {
         return getEntityFromSetByVpId(entities, vpId);
     }
 
     public Entity getSupportEntityByVpId(String vpId) {
-        return getEntityFromSetByVpId(supportEntities, vpId);
-    }
-
-    public Entity getAssociationEntityByVpId(String vpId) {
-        return getEntityFromSetByVpId(associationEntities, vpId);
-    }
-
-    private Entity getEntityFromSetByVpId(List<Entity> entities, String vpId) {
-        for (Entity entity : entities) {
+        for (Entity entity : supportEntities) {
             if (entity.getVpId().equals(vpId)) {
                 return entity;
             }
         }
         return null;
+    }
+
+    public Entity getAssociationEntityByVpId(String vpId) throws Exception {
+        return getEntityFromSetByVpId(associationEntities, vpId);
+    }
+
+    private Entity getEntityFromSetByVpId(List<Entity> entities, String vpId) throws Exception {
+        for (Entity entity : entities) {
+            if (entity.getVpId().equals(vpId)) {
+                return entity;
+            }
+        }
+        throw new Exception(String.format(
+                "Entity does not exist in the current model %s",
+                name));
     }
 
     /**

@@ -9,9 +9,7 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
 import cz.fit.vut.xvrana32.telosysplugin.parser.ProjectParser;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
-import org.telosys.tools.api.TelosysProject;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -30,12 +28,26 @@ public class VPHelloWorldActionController implements VPActionController {
 
         IProject project = ApplicationManager.instance().getProjectManager().getProject();
         ProjectParser projectParser = new ProjectParser();
-        List<Model> models = projectParser.parse(project);
+        List<Model> models;
+
+        try {
+            models = projectParser.parse(project);
+        } catch (Exception e) {
+            if (e.getMessage() == null) {
+                Logger.logE(String.format("Unhandled error occurred: %s", e));
+                for (StackTraceElement stackTraceElement : e.getStackTrace()){
+                    Logger.log(stackTraceElement.toString());
+                }
+            } else {
+                Logger.logE(e.getMessage());
+            }
+            return;
+        }
 
         // faster creation for debugging and testing
         Logger.log("Creating log file...");
         try {
-            for (Model model:models){
+            for (Model model : models) {
                 Logger.logFile.write(model.toString());
             }
             Logger.log("Log file generated successfully");
