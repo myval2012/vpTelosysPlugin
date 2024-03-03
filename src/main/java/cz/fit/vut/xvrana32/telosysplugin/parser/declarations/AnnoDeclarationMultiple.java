@@ -23,13 +23,8 @@ public abstract class AnnoDeclarationMultiple extends AnnoDeclaration {
                                     List<IParameter> parameters) throws Exception {
 
         ITaggedValueContainer vPTaggedValueContainer = vPElement.getTaggedValues();
-//        if (vPTaggedValueContainer == null){
-//            throw new Exception(String.format("No tagged values in %s", vPElement.getName()));
-//        }
-
         for (ParamDeclaration paramDeclaration : params) {
 
-//            ITaggedValue vPTaggedValue = vPTaggedValueContainer.getTaggedValueByName(paramDeclaration.name);
             ITaggedValue vPTaggedValue = getValidTaggedValue(vPTaggedValueContainer, vPStereotype, paramDeclaration);
 
             if (vPTaggedValue != null) {
@@ -40,16 +35,6 @@ public abstract class AnnoDeclarationMultiple extends AnnoDeclaration {
                         paramDeclaration.name,
                         vPStereotype.getName()));
             }
-
-//            if (checkTaggedValue(vPStereotype, vPTaggedValue, paramDeclaration)) {
-//                parameters.add(ParameterFactory.CreateParameter(vPTaggedValue, model, paramDeclaration.textQuoted));
-////                Logger.log(String.format("Parameter %s added to the Annotation with value: %s",
-////                        vPTaggedValue.getName(),
-////                        vPTaggedValue.getValueAsText()));
-//            } else {
-////                Logger.log("The proper tagged value for the stereotype was not found.");
-//                return; // TODO error, tagged value is missing
-//            }
         }
     }
 }

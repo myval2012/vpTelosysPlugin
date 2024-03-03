@@ -22,6 +22,7 @@ public class Entity extends DecoratedElement {
         super(_vpId, _name);
     }
 
+    // TODO if attr with same name is already in the entity, merge the two decorations
     public void addAttr(Attr attr) {
         attrs.add(attr);
         attr.setParentEntity(this);

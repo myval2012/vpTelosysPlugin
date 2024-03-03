@@ -30,7 +30,7 @@ public class LinkDecorationParser {
             new AnnoCommon("Optional", Anno.AnnoType.OPTIONAL, new ParamDeclaration[]{}),
     };
 
-    public static void parse(IProject vPProject, Link link) {
+    public static void parse(IProject vPProject, Link link) throws Exception {
         IClass vPClass = (IClass) vPProject.getModelElementById(link.getParentEntity().getVpId());
         IAssociation vPAssociation = (IAssociation) vPProject.getModelElementById(link.getVPAssociationId());
         IAttribute vPAttr = (IAttribute) vPClass.getChildById(link.getVpId());
@@ -40,16 +40,22 @@ public class LinkDecorationParser {
         // direction == 1 if direction is not from RelationshipEndFrom to RelationshipEndTo
         String multiplicityFrom = ((IAssociationEnd) vPAssociation.getFromEnd()).getMultiplicity();
         String multiplicityTo = ((IAssociationEnd) vPAssociation.getToEnd()).getMultiplicity();
-        // TODO multiplicity has to be either 0..1 or 0..* other are not allowed --> error
+
+        // multiplicity has to be either 0..1 or 0..* other are not allowed --> error
+        if ((!multiplicityFrom.equals("0..1") && !multiplicityFrom.equals("0..*")) ||
+                !multiplicityTo.equals("0..1") && !multiplicityTo.equals("0..*")) {
+            throw new Exception("The multiplicity of association ends has to be set to '0..1' or '0..*'.");
+        }
+
         boolean isOnToSide = vPAssociation.getFrom().getId().equals(link.getParentEntity().getVpId());
         boolean isOnFromSide = !isOnToSide;
         boolean isFromSideOwning = vPAssociation.getDirection() == 1;
         boolean isToSideOwning = !isFromSideOwning;
 
         // !!! use only these in the upcoming conditions
-        String multiplicityThisSide = isOnFromSide ? multiplicityFrom : multiplicityTo;
+//        String multiplicityThisSide = isOnFromSide ? multiplicityFrom : multiplicityTo;
         String multiplicityOtherSide = isOnFromSide ? multiplicityTo : multiplicityFrom;
-        boolean isCollection = multiplicityThisSide.endsWith("*"); // this link has multiplicity ToMany
+        boolean isCollection = link.getIsCollection(); // this link has multiplicity ToMany
         boolean isOtherSideCollection = multiplicityOtherSide.endsWith("*"); // opposite link has multiplicity ToMany
         boolean isManyToMany = isCollection && isOtherSideCollection;
         boolean isManyToOne = !isCollection && isOtherSideCollection;
@@ -91,10 +97,8 @@ public class LinkDecorationParser {
         // LinkByJoinEntity
         // ManyToMany
         if (isManyToMany) {
-            // TODO ?
             // it's many-to-many relationship
             link.addAnno(new Anno(Anno.AnnoType.MANY_TO_MANY));
-            // add association class to standard entities if it is not already there
             Entity joinEntity = link.getAssociationEntity();
 
             if (joinEntity == null) {
@@ -111,7 +115,6 @@ public class LinkDecorationParser {
                 link.addAnno(newAnno);
             }
         } else if (link.getAssociationEntity() != null && isOwningSide) {
-            // TODO ?
             // this is not Many-To-Many relationship and if:
             // * there is an association class and
             // * this is the owning side of the link
@@ -120,39 +123,38 @@ public class LinkDecorationParser {
             Entity associationEntity = link.getAssociationEntity();
 
             // check association attributes do not already have FK annotation.
-            boolean noFK = true;
+            boolean hasFK = false;
             for (Attr attr : associationEntity.getAttrs()) {
                 if (attr.containsAnnoType(Anno.AnnoType.F_K)) {
-                    noFK = false;
+                    hasFK = true;
                     break;
                 }
             }
 
-            // create a foreign key annotation, name of FK is the name of the association entity.
-            Anno fKAnno = new Anno(Anno.AnnoType.F_K);
-            fKAnno.addParameter(ParameterFactory.CreateParameter(
-                    ParameterFactory.ValueType.STRING,
-                    associationEntity.getName()));
-            fKAnno.addParameter(ParameterFactory.CreateParameter(
-                    ParameterFactory.ValueType.LINK_ENTITY,
-                    link.getToEntity()));
+            if (!hasFK) {
+                // create a foreign key annotation, name of FK is the name of the association entity.
+                Anno fKAnno = new Anno(Anno.AnnoType.F_K);
+                fKAnno.addParameter(ParameterFactory.CreateParameter(
+                        ParameterFactory.ValueType.STRING,
+                        associationEntity.getName()));
+                fKAnno.addParameter(ParameterFactory.CreateParameter(
+                        ParameterFactory.ValueType.LINK_ENTITY,
+                        link.getToEntity()));
 
-            // add linkByFK to this link
-            Anno linkByFKAnno = new Anno(Anno.AnnoType.LINK_BY_FK);
-            if (!link.addAnno(linkByFKAnno)) {
-                // TODO error
-                return; // this link already contains this annotation
-            }
+                // add linkByFK to this link
+                Anno linkByFKAnno = new Anno(Anno.AnnoType.LINK_BY_FK);
+                link.addAnno(linkByFKAnno);
 
-            // add FK annotation to all FK attributes.
-            for (Attr attr : associationEntity.getAttrs()) {
-                attr.addAnno(fKAnno);
-            }
+                // add FK annotation to all FK attributes.
+                for (Attr attr : associationEntity.getAttrs()) {
+                    attr.addAnno(fKAnno);
+                }
 
-            // add association entity attributes to this entity
-            Entity thisEntity = link.getParentEntity();
-            for (Attr attr : associationEntity.getAttrs()) {
-                thisEntity.addAttr(attr);
+                // add association entity attributes to this entity
+                Entity thisEntity = link.getParentEntity();
+                for (Attr attr : associationEntity.getAttrs()) {
+                    thisEntity.addAttr(attr);
+                }
             }
         }
 

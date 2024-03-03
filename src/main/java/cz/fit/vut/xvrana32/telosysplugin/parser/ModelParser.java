@@ -279,10 +279,15 @@ public class ModelParser {
             Logger.log(String.format("phase 3 entity: %s", entity.getName()));
             for (Link link : entity.getLinks()) {
                 Logger.log(String.format("phase 3 link: %s", link.getName()));
+
                 try {
                     LinkDecorationParser.parse(vPProject, link);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    Logger.logE(String.format(
+                            "In Entity %s, link %s: %s",
+                            entity.getName(),
+                            link.getName(),
+                            e.getMessage()));
                 }
             }
         }

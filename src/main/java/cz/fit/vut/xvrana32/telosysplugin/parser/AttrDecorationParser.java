@@ -26,7 +26,7 @@ public class AttrDecorationParser {
                     {new ParamDeclaration("defaultValue", ITaggedValueDefinition.TYPE_TEXT)}),
             new AnnoFK("FK", Anno.AnnoType.F_K, new ParamDeclaration[]{
                     new ParamDeclaration("fkName", false),
-                    new ParamDeclaration("referenced", ITaggedValueDefinition.TYPE_MODEL_ELEMENT)}), // TODO change to referenced once the init is regenerated for testing models
+                    new ParamDeclaration("referenced", ITaggedValueDefinition.TYPE_MODEL_ELEMENT)}),
             new AnnoCommon("InputType", Anno.AnnoType.INPUT_TYPE, new ParamDeclaration[]
                     {new ParamDeclaration("inputType", ITaggedValueDefinition.TYPE_TEXT)}),
             new AnnoCommon("Label", Anno.AnnoType.LABEL, new ParamDeclaration[]

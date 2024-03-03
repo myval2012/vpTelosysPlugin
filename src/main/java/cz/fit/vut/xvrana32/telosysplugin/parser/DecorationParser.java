@@ -20,79 +20,54 @@ abstract public class DecorationParser {
             Entity entity) {
 
         Iterator stereotypes = vPModel.stereotypeModelIterator();
+        String msgCommonHeader = vPModel.getModelType().equals("Attribute") ?
+                String.format("In class %s, attribute %s,", vPModel.getParent().getName(), vPModel.getName()) :
+                String.format("In class %s,", vPModel.getName());
 
         while (stereotypes.hasNext()) {
             IStereotype vPStereotype = (IStereotype) stereotypes.next();
 
-            if (vPStereotype.getName().startsWith("@")) // annotation
-            {
+            if (vPStereotype.getName().startsWith("@")) {
+                // annotation
                 AnnoDeclaration annoDeclaration = getAnnoDeclarationByName(
                         vPStereotype.getName().substring(1),
                         annoDeclarations);
 
                 if (annoDeclaration == null) {
-                    if (vPModel.getModelType().equals("Attribute")) {
-                        Logger.logE(String.format("In class %s, attribute %s, stereotype %s: Unknown annotation, stereotype skipped.",
-                                vPModel.getParent().getName(),
-                                vPModel.getName(),
-                                vPStereotype.getName()));
-
-                    } else {
-                        Logger.logE(String.format("In class %s, stereotype %s: Unknown annotation, stereotype skipped.",
-                                vPModel.getName(),
-                                vPStereotype.getName()));
-                    }
-//                    Logger.logE(String.format(
-//                            "Unknown annotation %s, stereotype skipped",
-//                            vPStereotype.getName()));
+                    Logger.logE(String.format("%s stereotype %s: Unknown annotation, stereotype skipped.",
+                            msgCommonHeader,
+                            vPStereotype.getName()));
                     continue;
                 }
 
                 try {
                     Anno newAnno = annoDeclaration.createAnno(vPModel, vPStereotype, entity.getParentModel());
-                    // TODO remove null, if no longer needed
-                    if (newAnno != null) {
-                        decoratedElement.addAnno(newAnno);
-                    }
+//                    if (newAnno != null) {
+                    decoratedElement.addAnno(newAnno);
+//                    }
                 } catch (Exception e) {
-                    if (vPModel.getModelType().equals("Attribute")) {
-                        Logger.logE(String.format("In class %s, attribute %s, stereotype %s: %s",
-                                vPModel.getParent().getName(),
-                                vPModel.getName(),
-                                vPStereotype.getName(),
-                                e.getMessage()));
-
-                    } else {
-                        Logger.logE(String.format("In class %s, stereotype %s: %s",
-                                vPModel.getName(),
-                                vPStereotype.getName(),
-                                e.getMessage()));
-                    }
-
-
+                    Logger.logE(String.format("%s stereotype %s: %s",
+                            msgCommonHeader,
+                            vPStereotype.getName(),
+                            e.getMessage()));
                 }
 
-            } else if (vPStereotype.getName().startsWith("#")) // tags
-            {
-                decoratedElement.addTag(TagParser.parseTag(vPModel, vPStereotype, entity));
+            } else if (vPStereotype.getName().startsWith("#")) {
+                // tags
+                try {
+                    decoratedElement.addTag(TagParser.parseTag(vPModel, vPStereotype, entity));
+                } catch (Exception e) {
+                    Logger.logW(String.format("%s stereotype %s: %s",
+                            msgCommonHeader,
+                            vPStereotype.getName(),
+                            e.getMessage()));
+                }
             } else {
                 String msg = "All stereotypes have to start with @ or # to have an impact. Stereotype skipped.";
-                if (vPModel.getModelType().equals("Attribute")) {
-                    Logger.logE(String.format("In class %s, attribute %s, stereotype %s: %s",
-                            vPModel.getParent().getName(),
-                            vPModel.getName(),
-                            vPStereotype.getName(),
-                            msg));
-
-                } else {
-                    Logger.logE(String.format("In class %s, stereotype %s: %s",
-                            vPModel.getName(),
-                            vPStereotype.getName(),
-                            msg));
-                }
-//                Logger.logW(String.format(
-//                        "All stereotypes have to start with @ or # to have an impact. Stereotype %s skipped.",
-//                        vPStereotype.getName()));
+                Logger.logW(String.format("%s stereotype %s: %s",
+                        msgCommonHeader,
+                        vPStereotype.getName(),
+                        msg));
             }
         }
     }

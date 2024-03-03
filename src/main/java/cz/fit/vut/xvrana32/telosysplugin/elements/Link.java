@@ -9,8 +9,7 @@ public class Link extends DecoratedElement {
     private final Entity associationEntity; // Inner representation of association class.
     private final String vPAssociationId; // ID of associations
 
-    // TODO join with multiplicity from link parser
-    private final boolean isArray; // multiplicity
+    private final boolean isCollection; // multiplicity
 
     private final Entity linkTo;
     private Entity parentEntity = null; // Back ref to owning entity.
@@ -18,22 +17,26 @@ public class Link extends DecoratedElement {
     /**
      * Creates a link with no annotations or tags.
      *
-     * @param _vpId                ID of the {@link com.vp.plugin.model.IModelElement} representing
-     *                             link in VP project (the attribute).
-     * @param _name                Name of the link.
-     * @param _linkTo              Entity that this link points to.
-     * @param _vPAssociationId     ID of the {@link com.vp.plugin.model.IAssociationClass association class}
-     *                             in VP project.
+     * @param _vpId              ID of the {@link com.vp.plugin.model.IModelElement} representing
+     *                           link in VP project (the attribute).
+     * @param _name              Name of the link.
+     * @param _linkTo            Entity that this link points to.
+     * @param _vPAssociationId   ID of the {@link com.vp.plugin.model.IAssociationClass association class}
+     *                           in VP project.
      * @param _associationEntity Entity (that represents the association class) if relationship
-     *                             has an association class, null otherwise.
+     *                           has an association class, null otherwise.
      */
     public Link(String _vpId, String _name, Entity _linkTo, String _vPAssociationId,
-                Entity _associationEntity, boolean _isArray) {
+                Entity _associationEntity, boolean _isCollection) {
         super(_vpId, _name);
         linkTo = _linkTo;
         vPAssociationId = _vPAssociationId;
         associationEntity = _associationEntity;
-        isArray = _isArray;
+        isCollection = _isCollection;
+    }
+
+    public boolean getIsCollection() {
+        return isCollection;
     }
 
     /**
@@ -52,6 +55,7 @@ public class Link extends DecoratedElement {
 
     /**
      * Sets a reference to owning entity.
+     *
      * @param parentEntity Entity that owns this link.
      */
     public void setParentEntity(Entity parentEntity) {
@@ -67,7 +71,7 @@ public class Link extends DecoratedElement {
         stringBuilder.append(" : ");
         stringBuilder.append(linkTo.getName());
 
-        if (isArray){
+        if (isCollection) {
             stringBuilder.append("[]");
         }
 
