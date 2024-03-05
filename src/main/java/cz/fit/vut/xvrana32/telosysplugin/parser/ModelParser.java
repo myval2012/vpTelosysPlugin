@@ -7,6 +7,7 @@ import cz.fit.vut.xvrana32.telosysplugin.utils.Constants;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +21,7 @@ public class ModelParser {
 
     public Model parse(IModelElement vPModel) {
         Model model = new Model(vPModel.getName(), vPModel.getId());
+//        Logger.log("Looping through models");
         LoopThroughModel(vPModel, "");
         model.setEntities(standardEntities);
         model.setAssociationEntities(associationEntities);
@@ -83,29 +85,49 @@ public class ModelParser {
     }
 
     private void sortClass(IModelElement cls, String currentPackage) {
-        Entity entity = new Entity(cls.getName(), cls.getId());
+        IAssociationClass vPAssociationClass = getAssociationClass(cls);
+
+        Entity entity;
+        if (vPAssociationClass != null) {
+            Logger.logD(String.format("Association class: %s", cls.getName()));
+            IAssociation vPAssociation;
+            if (vPAssociationClass.getFrom().getModelType().equals("Association")) {
+                vPAssociation = (IAssociation) vPAssociationClass.getFrom();
+            } else {
+                vPAssociation = (IAssociation) vPAssociationClass.getTo();
+            }
+
+            entity = new AssociationEntity(cls.getName(), cls.getId(), vPAssociation.getDirection(),
+                    vPAssociation.getFromEnd().getEndRelationship());
+            associationEntities.add(entity);
+            associationVPIds.add(vPAssociation.getId());
+        } else {
+            entity = new Entity(cls.getName(), cls.getId());
+//            Logger.log(String.format("Class: %s", cls.getName()));
+            standardEntities.add(entity);
+        }
+
         if (!currentPackage.isEmpty()) {
             Anno newAnno = new Anno(Anno.AnnoType.PACKAGE);
             newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING, currentPackage));
             entity.addAnno(newAnno);
         }
 
-        // decide if this is an association class or standard
-        IAssociationClass vPAssociationClass = getAssociationClass(cls);
-        if (vPAssociationClass != null) {
-            IAssociation vPAssociation;
-//            Logger.Log(String.format("Association class: %s", cls.getName()));
-            associationEntities.add(entity);
-            if (vPAssociationClass.getFrom().getModelType().equals("Association")) {
-                vPAssociation = (IAssociation) vPAssociationClass.getFrom();
-            } else {
-                vPAssociation = (IAssociation) vPAssociationClass.getTo();
-            }
-            associationVPIds.add(vPAssociation.getId());
-        } else {
-//            Logger.Log(String.format("Class: %s", cls.getName()));
-            standardEntities.add(entity);
-        }
+//        // decide if this is an association class or standard
+//        if (vPAssociationClass != null) {
+//            IAssociation vPAssociation;
+////            Logger.Log(String.format("Association class: %s", cls.getName()));
+//            associationEntities.add(entity);
+//            if (vPAssociationClass.getFrom().getModelType().equals("Association")) {
+//                vPAssociation = (IAssociation) vPAssociationClass.getFrom();
+//            } else {
+//                vPAssociation = (IAssociation) vPAssociationClass.getTo();
+//            }
+//            associationVPIds.add(vPAssociation.getId());
+//        } else {
+////            Logger.Log(String.format("Class: %s", cls.getName()));
+//            standardEntities.add(entity);
+//        }
     }
 
     private IAssociationClass getAssociationClass(IModelElement cls) {
@@ -129,11 +151,11 @@ public class ModelParser {
 
     private void phase1(IProject vPProject) {
         // loop through all classes and create their annotations, tags, attributes and links
-        Logger.log("Phase1");
+        Logger.logD("Phase1");
 
         for (Entity entity : standardEntities) {
             // create annotations and tags of the class
-            Logger.log(String.format("phase 1 entity: %s", entity.getName()));
+            Logger.logD(String.format("phase 1 entity: %s", entity.getName()));
             EntityDecorationParser.parse(vPProject, entity);
 
             // create attributes and links
@@ -143,7 +165,7 @@ public class ModelParser {
 
         for (Entity entity : associationEntities) {
             // create annotations and tags of the class
-            Logger.log(String.format("phase 1 entity: %s", entity.getName()));
+            Logger.logD(String.format("phase 1 entity: %s", entity.getName()));
             EntityDecorationParser.parse(vPProject, entity);
 
             // create attributes and links
@@ -152,7 +174,7 @@ public class ModelParser {
 
         for (Entity entity : supportEntities) {
             // create annotations and tags of the class
-            Logger.log(String.format("phase 1 entity: %s", entity.getName()));
+            Logger.logD(String.format("phase 1 entity: %s", entity.getName()));
             EntityDecorationParser.parse(vPProject, entity);
 
             // create attributes and links
@@ -235,7 +257,7 @@ public class ModelParser {
 
     private void phase2(IProject vPProject) {
         for (Entity entity : standardEntities) {
-            Logger.log(String.format("phase 2 entity: %s", entity.getName()));
+            Logger.logD(String.format("phase 2 entity: %s", entity.getName()));
             for (Attr attr : entity.getAttrs()) {
 //                Logger.log(String.format("Parsing Attribute: %s", attr.getName()));
 
@@ -248,7 +270,7 @@ public class ModelParser {
         }
 
         for (Entity entity : associationEntities) {
-            Logger.log(String.format("phase 2 entity: %s", entity.getName()));
+            Logger.logD(String.format("phase 2 entity: %s", entity.getName()));
             for (Attr attr : entity.getAttrs()) {
 //                Logger.log(String.format("Parsing Attribute: %s", attr.getName()));
 
@@ -261,7 +283,7 @@ public class ModelParser {
         }
 
         for (Entity entity : supportEntities) {
-            Logger.log(String.format("phase 2 entity: %s", entity.getName()));
+            Logger.logD(String.format("phase 2 entity: %s", entity.getName()));
             for (Attr attr : entity.getAttrs()) {
 //                Logger.log(String.format("Parsing Attribute: %s", attr.getName()));
 
@@ -276,9 +298,9 @@ public class ModelParser {
 
     private void phase3(IProject vPProject) {
         for (Entity entity : standardEntities) {
-            Logger.log(String.format("phase 3 entity: %s", entity.getName()));
+            Logger.logD(String.format("phase 3 entity: %s", entity.getName()));
             for (Link link : entity.getLinks()) {
-                Logger.log(String.format("phase 3 link: %s", link.getName()));
+                Logger.logD(String.format("phase 3 link: %s", link.getName()));
 
                 try {
                     LinkDecorationParser.parse(vPProject, link);
@@ -294,8 +316,44 @@ public class ModelParser {
 
         // add association entities that are marked with @JoinEntity (should be printed as well) to standard entities
         for (Entity entity : associationEntities) {
-            if (entity.containsAnnoType(Anno.AnnoType.JOIN_ENTITY)) {
-                standardEntities.add(entity);
+//            if (entity.containsAnnoType(Anno.AnnoType.JOIN_ENTITY)) {
+//                standardEntities.add(entity);
+//            }
+
+            AssociationEntity associationEntity = (AssociationEntity) entity;
+            IEndRelationship iEndRelationship = associationEntity.getiEndRelationship();
+            String vPClassFromId = iEndRelationship.getFrom().getId();
+            String vPClassToId = iEndRelationship.getTo().getId();
+
+            if (associationEntity.getMultiplicityFrom().equals("0..*") &&
+                    associationEntity.getMultiplicityTo().equals("0..*")) {
+                // ManyToMany --> add JOIN_ENTITY
+                Anno newAnno = new Anno(Anno.AnnoType.JOIN_ENTITY);
+                associationEntity.addAnno(newAnno);
+                standardEntities.add(associationEntity);
+            } else {
+                // not ManyToMany --> merge with the right direction
+                try {
+                    Entity mergedEntity = associationEntity.getDirection() == 0 ?
+                            associationEntity.getParentModel().getEntityByVpId(vPClassFromId) :
+                            associationEntity.getParentModel().getEntityByVpId(vPClassToId);
+
+                    Logger.logD(String.format("Association entity %s will be merged into entity %s",
+                            associationEntity.getName(),
+                            mergedEntity.getName()));
+
+                    // merge
+                    for(Attr attr : associationEntity.getAttrs()){
+                        if (!mergedEntity.addAttr(attr)){
+                            mergedEntity.mergeAttr(attr);
+                        }
+                    }
+                } catch (Exception e) {
+                    Logger.logE(
+                            String.format("While merging Association Entity %s: %s",
+                                    associationEntity.getName(),
+                                    e.getMessage()));
+                }
             }
         }
     }

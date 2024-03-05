@@ -1,7 +1,6 @@
 package cz.fit.vut.xvrana32.telosysplugin.elements.decorations;
 
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
-import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;

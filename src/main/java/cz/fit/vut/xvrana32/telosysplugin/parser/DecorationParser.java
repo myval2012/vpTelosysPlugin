@@ -1,16 +1,15 @@
 package cz.fit.vut.xvrana32.telosysplugin.parser;
 
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IStereotype;
-import com.vp.plugin.model.ITaggedValue;
-import com.vp.plugin.model.ITaggedValueContainer;
+import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.DecoratedElement;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoDeclaration;
+import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ConstraintDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
 import java.util.Iterator;
+import java.util.List;
 
 abstract public class DecorationParser {
     static void parseNonSpecialAnnosAndTags(
@@ -96,6 +95,36 @@ abstract public class DecorationParser {
                 Logger.logW(String.format(
                         "Tagged value %s does not have a stereotype. This tagged value has no effect on compilation",
                         vPTaggedValue.getName()));
+            }
+        }
+    }
+
+    static void parseConstraints(
+            ConstraintDeclaration[] constraintList,
+            DecoratedElement decoratedElement,
+            IModelElement vPModelElement) {
+        Iterator iterator = vPModelElement.constraintsIterator();
+        while (iterator.hasNext()) {
+            IModelElement vPConstraint = (IModelElement) iterator.next();
+            boolean constraintFound = false;
+            for (ConstraintDeclaration constraintDeclaration : constraintList) {
+                if (constraintDeclaration.name.equals(vPConstraint.getName())) {
+                    constraintFound = true;
+                    if (!decoratedElement.addAnno(new Anno(constraintDeclaration.annoType))) {
+                        Logger.logW(String.format(
+                                "%s already contains annotation %s",
+                                decoratedElement.getName(), "@" + constraintDeclaration.annoType.toString()
+                        ));
+                    }
+                    break;
+                }
+            }
+
+            if (!constraintFound) {
+                Logger.logW(String.format(
+                        "Constraint %s doesn't exist or can't be assigned to %s",
+                        "@" + vPConstraint.getName(),
+                        decoratedElement.getName()));
             }
         }
     }

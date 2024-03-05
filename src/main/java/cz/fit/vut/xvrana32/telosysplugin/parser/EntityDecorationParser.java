@@ -5,13 +5,14 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoCommon;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoDeclaration;
+import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ConstraintDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ParamDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 
 public class EntityDecorationParser {
-    private static final AnnoDeclaration[] annoDeclarations = {
+    public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("Context", Anno.AnnoType.CONTEXT, new ParamDeclaration[]
                     {new ParamDeclaration("context", ITaggedValueDefinition.TYPE_TEXT)}),
             new AnnoCommon("DbCatalog", Anno.AnnoType.DB_CATALOG, new ParamDeclaration[]
@@ -31,10 +32,10 @@ public class EntityDecorationParser {
             new AnnoCommon("ReadOnly", Anno.AnnoType.READ_ONLY, new ParamDeclaration[]{}),
     };
 
-//    private static final String[] constraints = {
-//            "@InMemoryRepository",
-//            "@ReadOnly"
-//    };
+    private static final ConstraintDeclaration[] constraints = {
+            new ConstraintDeclaration("InMemoryRepository", Anno.AnnoType.IN_MEMORY_REPOSITORY),
+            new ConstraintDeclaration("ReadOnly", Anno.AnnoType.READ_ONLY),
+    };
 
     public static void parse(IProject vPProject, Entity entity) {
         IClass vPClass = (IClass) vPProject.getModelElementById(entity.getVpId());
@@ -68,9 +69,12 @@ public class EntityDecorationParser {
             }
         }
 
-        // TODO constraints
+
         DecorationParser.checkTaggedValuesStereotype(vPClass.getTaggedValues());
         DecorationParser.parseNonSpecialAnnosAndTags(annoDeclarations, vPClass, entity, entity);
+
+        // constraints
+        DecorationParser.parseConstraints(constraints, entity, vPClass);
 
 //        Iterator stereotypes = vPClass.stereotypeModelIterator();
 //        while (stereotypes.hasNext()) {

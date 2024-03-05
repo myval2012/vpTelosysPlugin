@@ -10,7 +10,7 @@ import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 public class LinkDecorationParser {
-    private static final AnnoDeclaration[] annoDeclarations = {
+    public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("Embedded", Anno.AnnoType.EMBEDDED, new ParamDeclaration[]{}),
             new AnnoCommon("FetchTypeEager", Anno.AnnoType.FETCH_TYPE_EAGER, new ParamDeclaration[]{}),
             new AnnoCommon("FetchTypeLazy", Anno.AnnoType.FETCH_TYPE_LAZY, new ParamDeclaration[]{}),
@@ -28,6 +28,7 @@ public class LinkDecorationParser {
                     {new ParamDeclaration("cascade", ITaggedValueDefinition.TYPE_MODEL_ELEMENT)}),
 
             new AnnoCommon("Optional", Anno.AnnoType.OPTIONAL, new ParamDeclaration[]{}),
+            new AnnoCommon("MappedBy", Anno.AnnoType.MAPPED_BY, new ParamDeclaration[]{}),
     };
 
     public static void parse(IProject vPProject, Link link) throws Exception {
@@ -101,67 +102,72 @@ public class LinkDecorationParser {
             link.addAnno(new Anno(Anno.AnnoType.MANY_TO_MANY));
             Entity joinEntity = link.getAssociationEntity();
 
-            if (joinEntity == null) {
-                // TODO automatically generate JoinEntity, add it to associationEntities?
-                // TODO how to create a unique name?
-                return; // Join entity does not exist
-            }
-            joinEntity.addAnno(new Anno(Anno.AnnoType.JOIN_ENTITY));
+            if (joinEntity != null) {
+//                joinEntity.addAnno(new Anno(Anno.AnnoType.JOIN_ENTITY));
 
-            // if this is the owning side add LinkByJoinEntity
-            if (isOwningSide) {
-                Anno newAnno = new Anno(Anno.AnnoType.LINK_BY_JOIN_ENTITY);
-                newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.LINK_ENTITY, joinEntity));
-                link.addAnno(newAnno);
+                // if this is the owning side add LinkByJoinEntity
+//                if (isOwningSide) {
+                    Anno newAnno = new Anno(Anno.AnnoType.LINK_BY_JOIN_ENTITY);
+                    newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.LINK_ENTITY, joinEntity));
+                    link.addAnno(newAnno);
+//                }
             }
-        } else if (link.getAssociationEntity() != null && isOwningSide) {
+        }
+//        else if (link.getAssociationEntity() != null && isOwningSide) {
             // this is not Many-To-Many relationship and if:
             // * there is an association class and
             // * this is the owning side of the link
             // then its attributes should be treated as FK attributes.
 
-            Entity associationEntity = link.getAssociationEntity();
+//            Entity associationEntity = link.getAssociationEntity();
 
             // check association attributes do not already have FK annotation.
-            boolean hasFK = false;
-            for (Attr attr : associationEntity.getAttrs()) {
-                if (attr.containsAnnoType(Anno.AnnoType.F_K)) {
-                    hasFK = true;
-                    break;
-                }
-            }
+//            boolean hasFK = false;
+//            for (Attr attr : associationEntity.getAttrs()) {
+//                if (attr.containsAnnoType(Anno.AnnoType.F_K)) {
+//                    hasFK = true;
+//                    break;
+//                }
+//            }
 
-            if (!hasFK) {
+//            if (!hasFK) {
                 // create a foreign key annotation, name of FK is the name of the association entity.
-                Anno fKAnno = new Anno(Anno.AnnoType.F_K);
-                fKAnno.addParameter(ParameterFactory.CreateParameter(
-                        ParameterFactory.ValueType.STRING,
-                        associationEntity.getName()));
-                fKAnno.addParameter(ParameterFactory.CreateParameter(
-                        ParameterFactory.ValueType.LINK_ENTITY,
-                        link.getToEntity()));
+//                Anno fKAnno = new Anno(Anno.AnnoType.F_K);
+//                fKAnno.addParameter(ParameterFactory.CreateParameter(
+//                        ParameterFactory.ValueType.STRING,
+//                        associationEntity.getName()));
+//                fKAnno.addParameter(ParameterFactory.CreateParameter(
+//                        ParameterFactory.ValueType.LINK_ENTITY,
+//                        link.getToEntity()));
 
-                // add linkByFK to this link
-                Anno linkByFKAnno = new Anno(Anno.AnnoType.LINK_BY_FK);
-                link.addAnno(linkByFKAnno);
-
-                // add FK annotation to all FK attributes.
-                for (Attr attr : associationEntity.getAttrs()) {
-                    attr.addAnno(fKAnno);
-                }
+//                // add linkByFK to this link
+//                Anno linkByFKAnno = new Anno(Anno.AnnoType.LINK_BY_FK);
+//                link.addAnno(linkByFKAnno);
+//
+//                // add FK annotation to all FK attributes.
+//                for (Attr attr : associationEntity.getAttrs()) {
+//                    attr.addAnno(fKAnno);
+//                }
 
                 // add association entity attributes to this entity
-                Entity thisEntity = link.getParentEntity();
-                for (Attr attr : associationEntity.getAttrs()) {
-                    thisEntity.addAttr(attr);
-                }
-            }
-        }
+//                Entity thisEntity = link.getParentEntity();
+//                for (Attr associationClassAttr : associationEntity.getAttrs()) {
+//                    Attr classAttr = link.getParentEntity().getAttrByName(associationClassAttr.getName());
+//                    if ( classAttr == null){
+//                        thisEntity.addAttr(associationClassAttr);
+//                    }
+//                    else{
+//                        // merge
+//                        mergeAnnos(classAttr, associationClassAttr);
+//                    }
+//                }
+//            }
+//        }
 
         // MappedBy
         // if this is the inverse side of the relationship and there is a link attribute on the owning side...
         if (isInverseSide && owningVPAttr != null) {
-            Logger.log("Generating MappedBy");
+            Logger.logD("Generating MappedBy");
             Anno newAnno = new Anno(Anno.AnnoType.MAPPED_BY);
             for (Link owningLink : link.getToEntity().getLinks()) {
 
@@ -178,8 +184,19 @@ public class LinkDecorationParser {
             link.addAnno(new Anno(Anno.AnnoType.ONE_TO_ONE));
         }
 
-        // TODO constraints
         DecorationParser.checkTaggedValuesStereotype(vPAttr.getTaggedValues());
         DecorationParser.parseNonSpecialAnnosAndTags(annoDeclarations, vPAttr, link, link.getParentEntity());
+    }
+
+    private static void mergeAnnos(Attr target, Attr source){
+        for (Anno anno : source.getAnnos()){
+            if (!target.addAnno(anno)){
+                Logger.logW(String.format(
+                        "Class: %s, Attribute: %s already contains annotation %s, annotation skipped.",
+                        target.getParentEntity().getName(),
+                        target.getName(),
+                        anno.getAnnoType().toString()));
+            }
+        }
     }
 }

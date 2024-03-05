@@ -1,9 +1,11 @@
 package cz.fit.vut.xvrana32.telosysplugin.parser;
 
+import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.CascadeOptions;
+import cz.fit.vut.xvrana32.telosysplugin.utils.Config;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Constants;
 
 import java.util.*;
@@ -48,23 +50,32 @@ public class ProjectParser {
         return models;
     }
 
-    private boolean checkGTTSuppModel(IModelElement vPModel) {
-        IModelElement[] vPCascadeOptionsClass = vPModel.toChildArray("Class");
+    private boolean checkGTTSuppModel(IModelElement vPModel) throws Exception {
+        IModelElement vPCascadeOptionsClass =
+                vPModel.getChildByName(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME);
         IModelElement[] vPConstraints = vPModel.toChildArray("ConstraintElement");
 
         // check the cascade options class
         // there must be only one stereotype <<enumeration>>
         // The name of the class must be GTT_CASCADE_OPTIONS_CLASS_NAME
-        if (vPCascadeOptionsClass.length != 1 ||
-                vPCascadeOptionsClass[0].stereotypeCount() != 1 ||
-                !vPCascadeOptionsClass[0].toStereotypeModelArray()[0].getName().equals("enumeration") ||
-                !vPCascadeOptionsClass[0].getName().equals(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME)) {
+//        if (vPCascadeOptionsClass.length != 1 ||
+//                vPCascadeOptionsClass[0].stereotypeCount() != 1 ||
+//                !vPCascadeOptionsClass[0].toStereotypeModelArray()[0].getName().equals("enumeration") ||
+//                !vPCascadeOptionsClass[0].getName().equals(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME)) {
+//            return false;
+//        }
+
+        if (vPCascadeOptionsClass == null ||
+                vPCascadeOptionsClass.stereotypeCount() != 1 ||
+                !vPCascadeOptionsClass.toStereotypeModelArray()[0].getName().equals("enumeration") ||
+                !vPCascadeOptionsClass.getName().equals(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME)) {
             return false;
         }
 
+
         // check each enumeration literal
         int literalsDefinedCount = 0;
-        for (IModelElement vpEnumLiteral : vPCascadeOptionsClass[0].toChildArray()) {
+        for (IModelElement vpEnumLiteral : vPCascadeOptionsClass.toChildArray()) {
             // the enumeration literal must be of model type EnumerationLiteral
             if (!vpEnumLiteral.getModelType().equals("EnumerationLiteral")) {
                 return false;
@@ -86,18 +97,25 @@ public class ProjectParser {
         }
 
         // all literals must be defined
-        if (literalsDefinedCount != CascadeOptions.values().length){
+        if (literalsDefinedCount != CascadeOptions.values().length) {
             return false;
         }
 
         // check constraints (there must be only constraints defined in the GTT_CONSTRAINT_NAMES)
         int constraintsDefinedCount = 0;
-        for (IModelElement vPConstraint : vPConstraints){
-            if (!Constants.GTTSuppModelConstants.GTT_CONSTRAINT_NAMES.contains(vPConstraint.getName())){
+        for (IModelElement vPConstraint : vPConstraints) {
+            if (!Constants.GTTSuppModelConstants.GTT_CONSTRAINT_NAMES.contains(vPConstraint.getName())) {
                 return false;
             }
             constraintsDefinedCount++;
         }
+
+        // check config and the validity of file path
+        IModelElement configClass = vPModel.getChildByName("config");
+        if (configClass == null){
+            return false;
+        }
+        Config.loadConfig((IClass) configClass);
 
         return constraintsDefinedCount == Constants.GTTSuppModelConstants.GTT_CONSTRAINT_NAMES.size();
     }

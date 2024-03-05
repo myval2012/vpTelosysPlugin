@@ -21,6 +21,13 @@
             <outputDirectory>classes/cz</outputDirectory>
         </fileSet>
         <fileSet>
+            <directory>${project.basedir}/target/unzipped-telosys</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>classes</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>${project.basedir}/target/classes/icons</directory>
             <includes>
                 <include>**</include>
@@ -29,14 +36,13 @@
         </fileSet>
     </fileSets>
 
-    <dependencySets>
-        <dependencySet>
-            <outputDirectory>lib</outputDirectory>
-            <useProjectArtifact>false</useProjectArtifact>
-            <excludes>
-                <exclude>com.vp:plugin</exclude>
-            </excludes>
-<!--            <scope>runtime</scope>-->
-        </dependencySet>
-    </dependencySets>
+<!--    <dependencySets>-->
+<!--        <dependencySet>-->
+<!--            <outputDirectory>lib</outputDirectory>-->
+<!--            <useProjectArtifact>false</useProjectArtifact>-->
+<!--            <excludes>-->
+<!--                <exclude>com.vp:plugin</exclude>-->
+<!--            </excludes>-->
+<!--        </dependencySet>-->
+<!--    </dependencySets>-->
 </assembly>

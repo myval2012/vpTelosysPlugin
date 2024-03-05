@@ -11,7 +11,7 @@ import org.apache.commons.collections.Factory;
 import java.util.Iterator;
 
 public class AttrDecorationParser {
-    private static final AnnoDeclaration[] annoDeclarations = {
+    public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("AggregateRoot", Anno.AnnoType.AGGREGATE_ROOT, new ParamDeclaration[]{}),
             new AnnoCommon("AutoIncremented", Anno.AnnoType.AUTO_INCREMENTED, new ParamDeclaration[]{}),
             new AnnoCommon("DbComment", Anno.AnnoType.DB_COMMENT, new ParamDeclaration[]
@@ -83,6 +83,14 @@ public class AttrDecorationParser {
                     {new ParamDeclaration("sizeMin", ITaggedValueDefinition.TYPE_INTEGER)}),
     };
 
+    private static final ConstraintDeclaration[] constraints = {
+            new ConstraintDeclaration("Future", Anno.AnnoType.FUTURE),
+            new ConstraintDeclaration("NotEmpty", Anno.AnnoType.NOT_EMPTY),
+            new ConstraintDeclaration("NotNull", Anno.AnnoType.NOT_NULL),
+            new ConstraintDeclaration("NotBlank", Anno.AnnoType.NOT_BLANK),
+            new ConstraintDeclaration("Past", Anno.AnnoType.PAST),
+    };
+
     public static void parse(IProject vPProject, Attr attr) {
 //        Iterator stereotypes;
 
@@ -100,10 +108,12 @@ public class AttrDecorationParser {
             attr.addAnno(newAnno);
         }
 
-        // TODO constraints
 
         DecorationParser.checkTaggedValuesStereotype(vPAttr.getTaggedValues());
         DecorationParser.parseNonSpecialAnnosAndTags(annoDeclarations, vPAttr, attr, attr.getParentEntity());
+
+        // constraints
+        DecorationParser.parseConstraints(constraints, attr, vPAttr);
 
 //        stereotypes = vPAttr.stereotypeModelIterator();
 //        while (stereotypes.hasNext()) {

@@ -25,6 +25,7 @@ public abstract class DecoratedElement extends Element {
 
     /**
      * Set can't contain two tags of the same name.
+     *
      * @param tag Tag to add.
      * @return True if tag was added successfully, false otherwise.
      */
@@ -59,14 +60,22 @@ public abstract class DecoratedElement extends Element {
 
     /**
      * Set can not contain two annotation of the same {@link Anno.AnnoType}.
+     *
      * @param anno Annotation to add.
      * @return True if annotation added successfully, false otherwise.
      */
     public boolean addAnno(Anno anno) {
-        if (containsAnnoType(anno.getAnnoType())) {
-            return false;
+        if (anno.getAnnoType() != Anno.AnnoType.F_K) {
+            if (containsAnnoType(anno.getAnnoType())) {
+                return false;
+            }
         }
+
         return annos.add(anno);
+    }
+
+    public List<Anno> getAnnos() {
+        return annos;
     }
 
     public boolean containsAnnoType(Anno.AnnoType annoType) {
@@ -95,12 +104,12 @@ public abstract class DecoratedElement extends Element {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (Anno anno : annos) {
-                stringBuilder.append(anno);
-                stringBuilder.append(separator);
+            stringBuilder.append(anno);
+            stringBuilder.append(separator);
         }
         for (Tag tag : tags) {
-                stringBuilder.append(tag);
-                stringBuilder.append(separator);
+            stringBuilder.append(tag);
+            stringBuilder.append(separator);
         }
 
         return stringBuilder.toString();

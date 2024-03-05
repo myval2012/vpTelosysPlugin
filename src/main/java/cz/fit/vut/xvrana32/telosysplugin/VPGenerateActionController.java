@@ -9,18 +9,22 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
 import cz.fit.vut.xvrana32.telosysplugin.parser.ProjectParser;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
+import org.telosys.tools.api.TelosysProject;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-public class VPHelloWorldActionController implements VPActionController {
+public class VPGenerateActionController implements VPActionController {
     @Override
     public void performAction(VPAction vpAction) {
+        Logger.resetStats();
+
         try {
             Logger.logFile = new FileWriter(Logger.LOG_FILE_PATH);
         } catch (IOException e) {
-            Logger.log(String.format("Something went wrong when opening log file: %s", e.getMessage()));
+            Logger.logE(String.format("Something went wrong when opening log file: %s", e.getMessage()));
             return;
         }
 
@@ -35,7 +39,7 @@ public class VPHelloWorldActionController implements VPActionController {
         } catch (Exception e) {
             if (e.getMessage() == null) {
                 Logger.logE(String.format("Unhandled error occurred: %s", e));
-                for (StackTraceElement stackTraceElement : e.getStackTrace()){
+                for (StackTraceElement stackTraceElement : e.getStackTrace()) {
                     Logger.log(stackTraceElement.toString());
                 }
             } else {
@@ -44,37 +48,50 @@ public class VPHelloWorldActionController implements VPActionController {
             return;
         }
 
-        // faster creation for debugging and testing
-        Logger.log("Creating log file...");
-        try {
-            for (Model model : models) {
-                Logger.logFile.write(model.toString());
-            }
-            Logger.log("Log file generated successfully");
-            Logger.logFile.close();
-        } catch (Exception e) {
-            Logger.log(String.format("Unable to write to log file: %s", e.getMessage()));
-        }
-
-//        Logger.log("Before...");
+//        // faster creation for debugging and testing
+//        Logger.log("Creating log file...");
 //        try {
-//            TelosysProject telosysProject = new TelosysProject(Logger.TELOSYS_TEST_FOLDER);
-//            telosysProject.initProject();
-//
-//            for (Model model: models){
-//                String modelName = model.getName();
-//                File modelF = telosysProject.createNewDslModel(modelName);
-//                for (Entity entity: model.getEntities()){
-//                    File entityF = telosysProject.createNewDslEntity(modelName, entity.getName());
-//                    FileWriter entityFW = new FileWriter(entityF);
-//                    entityFW.write(entity.toString());
-//                    entityFW.close();
-//                }
+//            for (Model model : models) {
+//                Logger.logFile.write(model.toString());
 //            }
+//            Logger.log("Log file generated successfully");
+//            Logger.logFile.close();
 //        } catch (Exception e) {
-//            Logger.log(e.getMessage());
+//            Logger.log(String.format("Unable to write to log file: %s", e.getMessage()));
 //        }
-//        Logger.log("After...");
+
+        try {
+            TelosysProject telosysProject = new TelosysProject(Logger.TELOSYS_TEST_FOLDER);
+            telosysProject.initProject();
+
+            for (Model model : models) {
+                String modelName = model.getName();
+
+                if (telosysProject.modelFolderExists(modelName)) {
+                    Logger.logD("Model already exists... updating model");
+                    for (Entity entity : model.getEntities()){
+                        File entityF = telosysProject.getDslEntityFile(modelName, entity.getName());
+                        if (!entityF.exists()){
+                            entityF = telosysProject.createNewDslEntity(modelName, entity.getName());
+                        }
+                        FileWriter entityFW = new FileWriter(entityF);
+                        entityFW.write(entity.toString());
+                        entityFW.close();
+                    }
+                } else {
+                    File modelF = telosysProject.createNewDslModel(modelName);
+                    for (Entity entity : model.getEntities()) {
+                        File entityF = telosysProject.createNewDslEntity(modelName, entity.getName());
+                        FileWriter entityFW = new FileWriter(entityF);
+                        entityFW.write(entity.toString());
+                        entityFW.close();
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            Logger.logE(e.getMessage());
+        }
 
         // get all root models and their model types
 //        Iterator iter = project.modelElementIterator();
@@ -103,6 +120,8 @@ public class VPHelloWorldActionController implements VPActionController {
 //        for (String modelType: modelTypes) {
 //            viewManager.showMessage("Found model type: " + modelType, "Telosys plugin");
 //        }
+        Logger.log("Generating Telosys models completed.");
+        Logger.logStats();
     }
 
     @Override
