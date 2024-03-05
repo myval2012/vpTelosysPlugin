@@ -15,17 +15,43 @@
                     id="cz.fit.vut.xvrana32.telosysplugin.toolbar1"
                     orientation="north"
                     index="last"/>
+
             <action
-                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet1.geneateAction"
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet1.InitAction"
                     actionType="generalAction"
-                    label="Hello World"
-                    tooltip="Hello World"
+                    label="Init Project"
+                    tooltip="Initializes Telosys, prepares VP project for Graphical Telosys."
                     style="normal"
-                    menuPath="Tools/#"
                     icon="icons/green.png"
                     toolbarPath="cz.fit.vut.xvrana32.telosysplugin.toolbar1/#">
-                <actionController class="cz.fit.vut.xvrana32.telosysplugin.VPHelloWorldActionController"/>
+                <!--                    menuPath="Tools/#"-->
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.VPInitActionController"/>
             </action>
+
+            <action
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet1.VerifyAction"
+                    actionType="generalAction"
+                    label="Verify Models"
+                    tooltip="Verifies the model by running compilation without outputting any files."
+                    style="normal"
+                    icon="icons/green.png"
+                    toolbarPath="cz.fit.vut.xvrana32.telosysplugin.toolbar1/#">
+<!--                    menuPath="Tools/#"-->
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.VPVerifyActionController"/>
+            </action>
+
+            <action
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet1.GenerateAction"
+                    actionType="generalAction"
+                    label="Generate Models"
+                    tooltip="Generate Telosys models, entities..."
+                    style="normal"
+                    icon="icons/green.png"
+                    toolbarPath="cz.fit.vut.xvrana32.telosysplugin.toolbar1/#">
+                <!--                    menuPath="Tools/#"-->
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.VPGenerateActionController"/>
+            </action>
+
         </actionSet>
 
     </actionSets>

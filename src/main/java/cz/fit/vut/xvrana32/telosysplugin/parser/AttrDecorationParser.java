@@ -11,7 +11,7 @@ import org.apache.commons.collections.Factory;
 import java.util.Iterator;
 
 public class AttrDecorationParser {
-    private static final AnnoDeclaration[] annoDeclarations = {
+    public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("AggregateRoot", Anno.AnnoType.AGGREGATE_ROOT, new ParamDeclaration[]{}),
             new AnnoCommon("AutoIncremented", Anno.AnnoType.AUTO_INCREMENTED, new ParamDeclaration[]{}),
             new AnnoCommon("DbComment", Anno.AnnoType.DB_COMMENT, new ParamDeclaration[]

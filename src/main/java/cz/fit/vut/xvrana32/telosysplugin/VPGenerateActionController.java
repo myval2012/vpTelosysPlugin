@@ -5,7 +5,6 @@ import com.vp.plugin.ViewManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.model.IProject;
-import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
 import cz.fit.vut.xvrana32.telosysplugin.parser.ProjectParser;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
@@ -14,7 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-public class VPHelloWorldActionController implements VPActionController {
+public class VPGenerateActionController implements VPActionController {
     @Override
     public void performAction(VPAction vpAction) {
         try {

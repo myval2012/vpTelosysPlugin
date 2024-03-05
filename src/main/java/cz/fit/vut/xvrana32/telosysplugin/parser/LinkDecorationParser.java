@@ -10,7 +10,7 @@ import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 public class LinkDecorationParser {
-    private static final AnnoDeclaration[] annoDeclarations = {
+    public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("Embedded", Anno.AnnoType.EMBEDDED, new ParamDeclaration[]{}),
             new AnnoCommon("FetchTypeEager", Anno.AnnoType.FETCH_TYPE_EAGER, new ParamDeclaration[]{}),
             new AnnoCommon("FetchTypeLazy", Anno.AnnoType.FETCH_TYPE_LAZY, new ParamDeclaration[]{}),

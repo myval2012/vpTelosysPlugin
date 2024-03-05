@@ -11,7 +11,7 @@ import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
 
 
 public class EntityDecorationParser {
-    private static final AnnoDeclaration[] annoDeclarations = {
+    public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("Context", Anno.AnnoType.CONTEXT, new ParamDeclaration[]
                     {new ParamDeclaration("context", ITaggedValueDefinition.TYPE_TEXT)}),
             new AnnoCommon("DbCatalog", Anno.AnnoType.DB_CATALOG, new ParamDeclaration[]
