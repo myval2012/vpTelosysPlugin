@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  Common annotation declaration. Used if VP stereotype (and its tagged values) are in 1:1 relationship
+ *  Common annotation declaration. Used if VP stereotype (and its tagged values) are in 1:1 mapping
  *  with the Telosys DSL annotation (and its parameters).
  */
 public class AnnoCommon extends AnnoDeclarationMultiple {

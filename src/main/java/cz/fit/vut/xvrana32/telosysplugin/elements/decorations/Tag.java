@@ -9,20 +9,20 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParamet
  * Each tag contains tag type (name of the tag) and can also contain {@link IParameter}.
  */
 public class Tag {
-    private final String tagType; // name
+    private final String name;
     private final IParameter parameter;
 
     /**
-     * @param _tagType Name of the tag.
+     * @param _name Name of the tag.
      * @param _parameter Parameter if tag has one, null otherwise.
      */
-    public Tag(String _tagType, IParameter _parameter) {
-        tagType = _tagType;
+    public Tag(String _name, IParameter _parameter) {
+        name = _name;
         parameter = _parameter;
     }
 
-    public String getTagType() {
-        return tagType;
+    public String getName() {
+        return name;
     }
 
     public IParameter getParameter() {
@@ -36,7 +36,7 @@ public class Tag {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("#");
-        stringBuilder.append(tagType);
+        stringBuilder.append(name);
 
         if (parameter == null) {
             return stringBuilder.toString();

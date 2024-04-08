@@ -1,12 +1,13 @@
 package cz.fit.vut.xvrana32.telosysplugin.parser.declarations;
 
 import com.vp.plugin.model.*;
+import com.vp.plugin.model.factory.IModelElementFactory;
 import cz.fit.vut.xvrana32.telosysplugin.elements.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.CascadeOptions;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Constants;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
-import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
 /**
  * Special annotation declaration for parsing @LinkByAttr
@@ -46,7 +47,7 @@ public class AnnoCascade extends AnnoDeclaration {
 
         // add all attributes of the support entity to both the ParentEntity and the Annotation
         Anno newAnno = new Anno(annoType);
-        for (IModelElement vPAttrAsModel : vPTaggedValue.getValueAsModel().toChildArray("Attribute")) {
+        for (IModelElement vPAttrAsModel : vPTaggedValue.getValueAsModel().toChildArray(IModelElementFactory.MODEL_TYPE_ATTRIBUTE)) {
             // check if they are all type "Cascade options"
             IAttribute vPAttr = (IAttribute) vPAttrAsModel;
             if (vPAttr.stereotypeCount() > 0) {
@@ -73,8 +74,11 @@ public class AnnoCascade extends AnnoDeclaration {
                 continue;
             }
 
-            newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.ENUM_CASCADE,
-                    CascadeOptions.valueOf(vPAttr.getInitialValue())));
+            newAnno.addParameter(ParameterFactory.CreateParameter(
+                    CascadeOptions.valueOf(vPAttr.getInitialValue()),
+                    ParameterFactory.ValueType.ENUM_CASCADE,
+                    false,
+                    false));
         }
 
         // check mandatory values, for cascade it is at least one cascade option

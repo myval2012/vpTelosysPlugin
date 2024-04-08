@@ -30,7 +30,7 @@ public abstract class DecoratedElement extends Element {
      * @return True if tag was added successfully, false otherwise.
      */
     public boolean addTag(Tag tag) {
-        if (containsTag(tag.getTagType())) {
+        if (containsTag(tag.getName())) {
             return false; // tag is already in the list
         }
         return tags.add(tag);
@@ -38,7 +38,7 @@ public abstract class DecoratedElement extends Element {
 
     public boolean containsTag(String tagName) {
         for (Tag tag : tags) {
-            if (tag.getTagType().equals(tagName)) {
+            if (tag.getName().equals(tagName)) {
                 return true;
             }
         }
@@ -51,7 +51,7 @@ public abstract class DecoratedElement extends Element {
      */
     public Tag getTag(String tagName) {
         for (Tag tag : tags) {
-            if (tag.getTagType().equals(tagName)) {
+            if (tag.getName().equals(tagName)) {
                 return tag;
             }
         }

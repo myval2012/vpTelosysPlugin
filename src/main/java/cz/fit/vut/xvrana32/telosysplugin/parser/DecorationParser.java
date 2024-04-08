@@ -1,6 +1,7 @@
 package cz.fit.vut.xvrana32.telosysplugin.parser;
 
 import com.vp.plugin.model.*;
+import com.vp.plugin.model.factory.IModelElementFactory;
 import cz.fit.vut.xvrana32.telosysplugin.elements.DecoratedElement;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
@@ -9,7 +10,6 @@ import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ConstraintDeclarati
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
 import java.util.Iterator;
-import java.util.List;
 
 abstract public class DecorationParser {
     static void parseNonSpecialAnnosAndTags(
@@ -19,7 +19,7 @@ abstract public class DecorationParser {
             Entity entity) {
 
         Iterator stereotypes = vPModel.stereotypeModelIterator();
-        String msgCommonHeader = vPModel.getModelType().equals("Attribute") ?
+        String msgCommonHeader = vPModel.getModelType().equals(IModelElementFactory.MODEL_TYPE_ATTRIBUTE) ?
                 String.format("In class %s, attribute %s,", vPModel.getParent().getName(), vPModel.getName()) :
                 String.format("In class %s,", vPModel.getName());
 
@@ -41,9 +41,7 @@ abstract public class DecorationParser {
 
                 try {
                     Anno newAnno = annoDeclaration.createAnno(vPModel, vPStereotype, entity.getParentModel());
-//                    if (newAnno != null) {
                     decoratedElement.addAnno(newAnno);
-//                    }
                 } catch (Exception e) {
                     Logger.logE(String.format("%s stereotype %s: %s",
                             msgCommonHeader,

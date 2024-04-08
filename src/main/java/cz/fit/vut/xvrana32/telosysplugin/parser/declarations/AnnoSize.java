@@ -5,7 +5,7 @@ import com.vp.plugin.model.IStereotype;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
-import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +29,22 @@ public class AnnoSize extends AnnoDeclarationMultiple {
     public Anno createAnno(IModelElement vPElement, IStereotype vPStereotype, Model model) throws Exception {
         Anno newAnno = new Anno(annoType);
         List<IParameter> splitParameters = new ArrayList<>(params.length);
-        findTaggedValues(vPElement, vPStereotype, model,splitParameters);
+        findTaggedValues(vPElement, vPStereotype, model, splitParameters);
 
         // check mandatory values, for size "precision" is mandatory
-        if (splitParameters.get(0).getValue() == null){
+        if (splitParameters.get(0).getValue() == null) {
             throw new Exception("The tagged value precision is mandatory for stereotype @Size.");
         }
 
-        newAnno.addParameter(
-                ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING,
-                splitParameters.get(0).getValue().toString() +
-                        (splitParameters.get(1).getValue() == null ? "" :
-                                "," + splitParameters.get(1).getValue().toString())));
+        newAnno.addParameters(splitParameters);
+//        newAnno.addParameter(
+//                ParameterFactory.CreateParameter(
+//                        splitParameters.get(0).getValue().toString() +
+//                                (splitParameters.get(1).getValue() == null ? "" :
+//                                        "," + splitParameters.get(1).getValue().toString()),
+//                        ParameterFactory.ValueType.STRING,
+//                        true,
+//                        false));
 
         return newAnno;
     }

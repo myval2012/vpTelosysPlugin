@@ -4,45 +4,55 @@ import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Attr;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.*;
-import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
-import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
-import org.apache.commons.collections.Factory;
-
-import java.util.Iterator;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
 public class AttrDecorationParser {
     public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("AggregateRoot", Anno.AnnoType.AGGREGATE_ROOT, new ParamDeclaration[]{}),
             new AnnoCommon("AutoIncremented", Anno.AnnoType.AUTO_INCREMENTED, new ParamDeclaration[]{}),
             new AnnoCommon("DbComment", Anno.AnnoType.DB_COMMENT, new ParamDeclaration[]
-                    {new ParamDeclaration("dbComment", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("dbComment", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("DbDefaultValue", Anno.AnnoType.DB_DEFAULT_VALUE, new ParamDeclaration[]
-                    {new ParamDeclaration("dbDefaultValue", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("dbDefaultValue", ITaggedValueDefinition.TYPE_TEXT,
+                            false, false)}),
             new AnnoCommon("DbName", Anno.AnnoType.DB_NAME, new ParamDeclaration[]
-                    {new ParamDeclaration("dbName", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("dbName", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("DbType", Anno.AnnoType.DB_TYPE, new ParamDeclaration[]
-                    {new ParamDeclaration("dbType", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("dbType", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("DefaultValue", Anno.AnnoType.DEFAULT_VALUE, new ParamDeclaration[]
-                    {new ParamDeclaration("defaultValue", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("defaultValue", ITaggedValueDefinition.TYPE_TEXT,
+                            false, false)}),
             new AnnoFK("FK", Anno.AnnoType.F_K, new ParamDeclaration[]{
-                    new ParamDeclaration("fkName", false),
-                    new ParamDeclaration("referenced", ITaggedValueDefinition.TYPE_MODEL_ELEMENT)}),
+                    new ParamDeclaration("fkName", ITaggedValueDefinition.TYPE_TEXT,
+                            false, false),
+                    new ParamDeclaration("referenced", ITaggedValueDefinition.TYPE_MODEL_ELEMENT,
+                            false, true)}),
             new AnnoCommon("InputType", Anno.AnnoType.INPUT_TYPE, new ParamDeclaration[]
-                    {new ParamDeclaration("inputType", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("inputType", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("Label", Anno.AnnoType.LABEL, new ParamDeclaration[]
-                    {new ParamDeclaration("label", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("label", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("LongText", Anno.AnnoType.LONG_TEXT, new ParamDeclaration[]{}),
             new AnnoCommon("Max", Anno.AnnoType.MAX, new ParamDeclaration[]
-                    {new ParamDeclaration("max", ITaggedValueDefinition.TYPE_FLOATING_POINT_NUMBER)}),
+                    {new ParamDeclaration("max", ITaggedValueDefinition.TYPE_FLOATING_POINT_NUMBER,
+                            false, false)}),
             new AnnoCommon("MaxLen", Anno.AnnoType.MAX_LEN, new ParamDeclaration[]
-                    {new ParamDeclaration("maxLen", ITaggedValueDefinition.TYPE_INTEGER)}),
+                    {new ParamDeclaration("maxLen", ITaggedValueDefinition.TYPE_INTEGER,
+                            false, false)}),
             new AnnoCommon("Min", Anno.AnnoType.MIN, new ParamDeclaration[]
-                    {new ParamDeclaration("min", ITaggedValueDefinition.TYPE_FLOATING_POINT_NUMBER)}),
+                    {new ParamDeclaration("min", ITaggedValueDefinition.TYPE_FLOATING_POINT_NUMBER,
+                            false, false)}),
             new AnnoCommon("MinLen", Anno.AnnoType.MIN_LEN, new ParamDeclaration[]
-                    {new ParamDeclaration("minLen", ITaggedValueDefinition.TYPE_INTEGER)}),
+                    {new ParamDeclaration("minLen", ITaggedValueDefinition.TYPE_INTEGER,
+                            false, false)}),
             new AnnoCommon("ObjectType", Anno.AnnoType.OBJECT_TYPE, new ParamDeclaration[]{}),
             new AnnoCommon("Pattern", Anno.AnnoType.PATTERN, new ParamDeclaration[]
-                    {new ParamDeclaration("pattern", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("pattern", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("PrimitiveType", Anno.AnnoType.PRIMITIVE_TYPE, new ParamDeclaration[]{}),
             new AnnoCommon("Transient", Anno.AnnoType.TRANSIENT, new ParamDeclaration[]{}),
             new AnnoCommon("Unique", Anno.AnnoType.UNIQUE, new ParamDeclaration[]{}),
@@ -56,31 +66,45 @@ public class AttrDecorationParser {
             new AnnoGeneratedValue("GeneratedValueAUTO", Anno.AnnoType.GENERATED_VALUE, new ParamDeclaration[]{}),
             new AnnoGeneratedValue("GeneratedValueIDENTITY", Anno.AnnoType.GENERATED_VALUE, new ParamDeclaration[]{}),
             new AnnoGeneratedValue("GeneratedValueSEQUENCE", Anno.AnnoType.GENERATED_VALUE, new ParamDeclaration[]{
-                    new ParamDeclaration("generatorName", ITaggedValueDefinition.TYPE_TEXT),
-                    new ParamDeclaration("sequenceName", ITaggedValueDefinition.TYPE_TEXT),
-                    new ParamDeclaration("allocatedSize", ITaggedValueDefinition.TYPE_TEXT)
+                    new ParamDeclaration("generatorName", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false),
+                    new ParamDeclaration("sequenceName", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false),
+                    new ParamDeclaration("allocatedSize", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)
             }),
             new AnnoGeneratedValue("GeneratedValueTABLE", Anno.AnnoType.GENERATED_VALUE, new ParamDeclaration[]{
-                    new ParamDeclaration("generatorName", ITaggedValueDefinition.TYPE_TEXT),
-                    new ParamDeclaration("tableName", ITaggedValueDefinition.TYPE_TEXT),
-                    new ParamDeclaration("pkColumnName", ITaggedValueDefinition.TYPE_TEXT),
-                    new ParamDeclaration("pkColumnValue", ITaggedValueDefinition.TYPE_TEXT),
-                    new ParamDeclaration("valueColumnName", ITaggedValueDefinition.TYPE_TEXT),
-                    new ParamDeclaration("allocatedSize", ITaggedValueDefinition.TYPE_TEXT)
+                    new ParamDeclaration("generatorName", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false),
+                    new ParamDeclaration("tableName", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false),
+                    new ParamDeclaration("pkColumnName", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false),
+                    new ParamDeclaration("pkColumnValue", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false),
+                    new ParamDeclaration("valueColumnName", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false),
+                    new ParamDeclaration("allocatedSize", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)
             }),
 
             new AnnoSize("Size", Anno.AnnoType.SIZE, new ParamDeclaration[]{
-                    new ParamDeclaration("precision", ITaggedValueDefinition.TYPE_INTEGER),
-                    new ParamDeclaration("scale", ITaggedValueDefinition.TYPE_INTEGER)
+                    new ParamDeclaration("precision", ITaggedValueDefinition.TYPE_INTEGER,
+                            false, false),
+                    new ParamDeclaration("scale", ITaggedValueDefinition.TYPE_INTEGER,
+                            false, false)
             }),
 
             // deprecated
             new AnnoCommon("DbSize", Anno.AnnoType.DB_SIZE, new ParamDeclaration[]
-                    {new ParamDeclaration("dbSize", false)}),
+                    {new ParamDeclaration("dbSize", ITaggedValueDefinition.TYPE_TEXT,
+                            false, false)}),
             new AnnoCommon("SizeMax", Anno.AnnoType.SIZE_MAX, new ParamDeclaration[]
-                    {new ParamDeclaration("sizeMax", ITaggedValueDefinition.TYPE_INTEGER)}),
+                    {new ParamDeclaration("sizeMax", ITaggedValueDefinition.TYPE_INTEGER,
+                            false, false)}),
             new AnnoCommon("SizeMin", Anno.AnnoType.SIZE_MIN, new ParamDeclaration[]
-                    {new ParamDeclaration("sizeMin", ITaggedValueDefinition.TYPE_INTEGER)}),
+                    {new ParamDeclaration("sizeMin", ITaggedValueDefinition.TYPE_INTEGER,
+                            false, false)}),
     };
 
     private static final ConstraintDeclaration[] constraints = {
@@ -92,8 +116,6 @@ public class AttrDecorationParser {
     };
 
     public static void parse(IProject vPProject, Attr attr) {
-//        Iterator stereotypes;
-
         IClass vPClass = (IClass) vPProject.getModelElementById(attr.getParentEntity().getVpId());
         IAttribute vPAttr = (IAttribute) vPClass.getChildById(attr.getVpId());
 
@@ -104,7 +126,11 @@ public class AttrDecorationParser {
 
         if (vPAttr.getInitialValue() != null && !vPAttr.getInitialValue().isEmpty()) {
             Anno newAnno = new Anno(Anno.AnnoType.INITIAL_VALUE);
-            newAnno.addParameter(ParameterFactory.CreateParameter(ParameterFactory.ValueType.STRING, vPAttr.getInitialValue()));
+            newAnno.addParameter(ParameterFactory.CreateParameter(
+                    vPAttr.getInitialValue(),
+                    ParameterFactory.ValueType.STRING,
+                    false,
+                    false));
             attr.addAnno(newAnno);
         }
 
@@ -114,47 +140,5 @@ public class AttrDecorationParser {
 
         // constraints
         DecorationParser.parseConstraints(constraints, attr, vPAttr);
-
-//        stereotypes = vPAttr.stereotypeModelIterator();
-//        while (stereotypes.hasNext()) {
-//            IStereotype stereotype = (IStereotype) stereotypes.next();
-//            if (stereotype.getName().startsWith("@")) // annotation
-//            {
-//                Logger.log(String.format("Found a annotation in attribute: %s, has name: %s",
-//                        vPAttr.getName(),
-//                        stereotype.getName()));
-//
-//                AnnoDeclaration annoDeclaration = getAnnoDeclarationByName(stereotype.getName().substring(1));
-//                if (annoDeclaration != null) {
-//                    Logger.log(String.format("Annotation declaration for %s was found",
-//                            stereotype.getName()));
-//                    Anno newAnno = annoDeclaration.createAnno(vPAttr,
-//                            stereotype, attr.getParentEntity().getParentModel());
-//                    if (newAnno != null) {
-//                        Logger.log("Annotation created successfully");
-//                        attr.addAnno(newAnno);
-//                    }
-//                }
-////                Anno newAnno = evaluateAnno(vPAttr, stereotype, attr);
-////                if (newAnno != null){
-////                    attr.addAnno(newAnno);
-////                }
-//            } else if (stereotype.getName().startsWith("#")) // tags
-//            {
-//                attr.addTag(TagParser.parseTag(vPAttr, stereotype, attr.getParentEntity()));
-////                Logger.log(String.format("Found a tag in attribute: %s, has name: %s",
-////                        vPAttr.getName(),
-////                        stereotype.getName()));
-//            }
-//        }
     }
-
-//    private static AnnoDeclaration getAnnoDeclarationByName(String name) {
-//        for (AnnoDeclaration annoDeclaration : annoDeclarations) {
-//            if (annoDeclaration.name.equals(name)) {
-//                return annoDeclaration;
-//            }
-//        }
-//        return null;
-//    }
 }

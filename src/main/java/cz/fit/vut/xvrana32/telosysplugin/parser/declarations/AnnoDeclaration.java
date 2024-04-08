@@ -6,11 +6,10 @@ import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
-import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
 /**
- * Base for annotation declaration.
- * Used for creating annotations that are represented by stereotype in VP project.
+ * Base for annotation declarations.
+ * Used for creating annotations that are represented by stereotype in VP project with at max one tagged value.
  */
 public abstract class AnnoDeclaration {
 
@@ -53,13 +52,18 @@ public abstract class AnnoDeclaration {
     protected boolean checkTaggedValue(IStereotype vPStereotype,
                                        ITaggedValue vPTaggedValue,
                                        ParamDeclaration paramDeclaration) {
-        return
-//                vPTaggedValue != null &&
-                vPTaggedValue.getTagDefinitionStereotype() != null &&
-                        vPTaggedValue.getTagDefinitionStereotype().equals(vPStereotype) &&
-                        vPTaggedValue.getType() == paramDeclaration.paramType;
+        return vPTaggedValue.getTagDefinitionStereotype() != null &&
+                vPTaggedValue.getTagDefinitionStereotype().equals(vPStereotype) &&
+                vPTaggedValue.getType() == paramDeclaration.paramType;
     }
 
+    /**
+     * Finds the tagged value associated with given stereotype.
+     * @param vPTaggedValueContainer Container containing the searched tagged value.
+     * @param vPStereotype Stereotype associated with tagged value.
+     * @param paramDeclaration Additional information to check.
+     * @return Tagged value if found, null otherwise
+     */
     protected ITaggedValue getValidTaggedValue(ITaggedValueContainer vPTaggedValueContainer,
                                                IStereotype vPStereotype,
                                                ParamDeclaration paramDeclaration) {

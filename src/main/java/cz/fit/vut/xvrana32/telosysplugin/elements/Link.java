@@ -35,7 +35,7 @@ public class Link extends DecoratedElement {
         isCollection = _isCollection;
     }
 
-    public boolean getIsCollection() {
+    public boolean isCollection() {
         return isCollection;
     }
 

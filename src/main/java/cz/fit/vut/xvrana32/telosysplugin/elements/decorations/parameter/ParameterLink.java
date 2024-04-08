@@ -19,8 +19,10 @@ public class ParameterLink extends ParameterBase {
      */
     @Override
     public String toString() {
-//        String str = isAbsolute ? ((Attr)value).getParentEntity().getName() + "." : "";
-//        return str + ((DecoratedElement) value).getName();
-        return ((DecoratedElement) value).getName();
+        String str = "";
+        if (isAbsolute && value instanceof Attr) {
+            str = ((Attr) value).getParentEntity().getName() + ".";
+        }
+        return str + ((DecoratedElement) value).getName();
     }
 }

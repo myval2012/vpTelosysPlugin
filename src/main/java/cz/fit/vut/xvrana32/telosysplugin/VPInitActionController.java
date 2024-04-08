@@ -11,6 +11,7 @@ import cz.fit.vut.xvrana32.telosysplugin.parser.EntityDecorationParser;
 import cz.fit.vut.xvrana32.telosysplugin.parser.LinkDecorationParser;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ParamDeclaration;
+import cz.fit.vut.xvrana32.telosysplugin.utils.Config;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Constants;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
@@ -63,23 +64,30 @@ public class VPInitActionController implements VPActionController {
         createStereotypes(IModelElementFactory.MODEL_TYPE_ATTRIBUTE, LinkDecorationParser.annoDeclarations);
         createStereotypes(IModelElementFactory.MODEL_TYPE_CLASS, EntityDecorationParser.annoDeclarations);
 
-        // create a generic model config
-        // code below is modified code from https://forums.visual-paradigm.com/t/how-to-stor-config-info-for-plugin/11772/4
-        IModelElement[] vPElements = gTTSuppModel.toChildArray(IModelElementFactory.MODEL_TYPE_CLASS);
-        for (IModelElement vPElement : vPElements) {
-            // find out the LoginInformation from project.
-            if (vPElement.getName().equals("config")) {
-                return; // the initialization is complete
-            }
-//            if ("LoginInformation".equals(((IGenericModel) lElement).getGenericModelType())) {
-//                IGenericModel lLoginInformation = (IGenericModel) lElement;
-//                String lConnectionString = lLoginInformation.getTaggedValues().getTaggedValueByName("Connection String").getValue();
-//                String lRepositoryName = lLoginInformation.getTaggedValues().getTaggedValueByName("Repository Name").getValue();
-//
+//        // create a generic model config
+//        // code below is modified code from https://forums.visual-paradigm.com/t/how-to-stor-config-info-for-plugin/11772/4
+//        IModelElement[] vPElements = gTTSuppModel.toChildArray(IModelElementFactory.MODEL_TYPE_CLASS);
+//        for (IModelElement vPElement : vPElements) {
+//            // find out the LoginInformation from project.
+//            if (vPElement.getName().equals("config")) {
+//                return; // the initialization is complete
 //            }
+////            if ("LoginInformation".equals(((IGenericModel) lElement).getGenericModelType())) {
+////                IGenericModel lLoginInformation = (IGenericModel) lElement;
+////                String lConnectionString = lLoginInformation.getTaggedValues().getTaggedValueByName("Connection String").getValue();
+////                String lRepositoryName = lLoginInformation.getTaggedValues().getTaggedValueByName("Repository Name").getValue();
+////
+////            }
+//        }
+//        createConfig(gTTSuppModel);
+
+        // create a generic model config
+        // code below is inspired by https://forums.visual-paradigm.com/t/how-to-stor-config-info-for-plugin/11772/4
+        IClass vPConfigClass = (IClass) gTTSuppModel.getChildByName(Config.CONFIG_CLASS_NAME);
+        if (vPConfigClass == null){
+            createConfig(gTTSuppModel);
         }
-        // config is not there create it
-        createConfig(gTTSuppModel);
+
         Logger.log("Project was initialized.");
         Logger.logStats();
     }
@@ -87,18 +95,18 @@ public class VPInitActionController implements VPActionController {
     private void createConfig(IModel gTTSuppModel) {
         // create the config model
         IClass configModel = (IClass) gTTSuppModel.createChild(IModelElementFactory.MODEL_TYPE_CLASS);
-        configModel.setName("config");
+        configModel.setName(Config.CONFIG_CLASS_NAME);
 
         // create the tagged values, for each key value pair in config
         ITaggedValueContainer taggedValueContainer = IModelElementFactory.instance().createTaggedValueContainer();
         configModel.setTaggedValues(taggedValueContainer);
 
         ITaggedValue packageSeparator = taggedValueContainer.createTaggedValue();
-        packageSeparator.setName("Package Separator");
+        packageSeparator.setName(Config.SEPARATOR_TAG_NAME);
         packageSeparator.setValue(".");
 
         ITaggedValue telosysProjectDir = taggedValueContainer.createTaggedValue();
-        telosysProjectDir.setName("Telosys project directory");
+        telosysProjectDir.setName(Config.TELOSYS_PROJECT_FOLDER_TAG_NAME);
         telosysProjectDir.setValue(
                 ApplicationManager.instance().getProjectManager().getProject().getProjectFile().getParent());
     }

@@ -1,6 +1,7 @@
 package cz.fit.vut.xvrana32.telosysplugin.parser;
 
 import com.vp.plugin.model.*;
+import com.vp.plugin.model.factory.IModelElementFactory;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoCommon;
@@ -8,26 +9,33 @@ import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.AnnoDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ConstraintDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ParamDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
-import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
 
 public class EntityDecorationParser {
     public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("Context", Anno.AnnoType.CONTEXT, new ParamDeclaration[]
-                    {new ParamDeclaration("context", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("context", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("DbCatalog", Anno.AnnoType.DB_CATALOG, new ParamDeclaration[]
-                    {new ParamDeclaration("dbCatalog", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("dbCatalog", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("DbComment", Anno.AnnoType.DB_COMMENT, new ParamDeclaration[]
-                    {new ParamDeclaration("dbComment", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("dbComment", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("DbSchema", Anno.AnnoType.DB_SCHEMA, new ParamDeclaration[]
-                    {new ParamDeclaration("dbSchema", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("dbSchema", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("DbTable", Anno.AnnoType.DB_TABLE, new ParamDeclaration[]
-                    {new ParamDeclaration("dbTable", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("dbTable", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("DbTableSpace", Anno.AnnoType.DB_TABLESPACE, new ParamDeclaration[]
-                    {new ParamDeclaration("dbTableSpace", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("dbTableSpace", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("DbView", Anno.AnnoType.DB_VIEW, new ParamDeclaration[]{}),
             new AnnoCommon("Domain", Anno.AnnoType.DOMAIN, new ParamDeclaration[]
-                    {new ParamDeclaration("domain", ITaggedValueDefinition.TYPE_TEXT)}),
+                    {new ParamDeclaration("domain", ITaggedValueDefinition.TYPE_TEXT,
+                            true, false)}),
             new AnnoCommon("InMemoryRepository", Anno.AnnoType.IN_MEMORY_REPOSITORY, new ParamDeclaration[]{}),
             new AnnoCommon("ReadOnly", Anno.AnnoType.READ_ONLY, new ParamDeclaration[]{}),
     };
@@ -48,13 +56,15 @@ public class EntityDecorationParser {
         if (vPClass.toRelationshipCount() > 0) {
             ISimpleRelationship[] vPRels = vPClass.toToRelationshipArray();
             for (ISimpleRelationship vPRel : vPRels) {
-                if (vPRel.getModelType().equals("Generalization")) {
+                if (vPRel.getModelType().equals(IModelElementFactory.MODEL_TYPE_GENERALIZATION)) {
                     Anno newAnno = new Anno(Anno.AnnoType.EXTENDS);
 
                     try {
                         newAnno.addParameter(ParameterFactory.CreateParameter(
-                                ParameterFactory.ValueType.LINK_ENTITY,
-                                entity.getParentModel().getEntityByVpId(vPRel.getFrom().getId())
+                                entity.getParentModel().getEntityByVpId(vPRel.getFrom().getId()),
+                                ParameterFactory.ValueType.LINK,
+                                false,
+                                false
                         ));
                         entity.addAnno(newAnno);
                     }
@@ -75,40 +85,5 @@ public class EntityDecorationParser {
 
         // constraints
         DecorationParser.parseConstraints(constraints, entity, vPClass);
-
-//        Iterator stereotypes = vPClass.stereotypeModelIterator();
-//        while (stereotypes.hasNext()) {
-//            IStereotype stereotype = (IStereotype) stereotypes.next();
-//            if (stereotype.getName().startsWith("@")) // annotation
-//            {
-////                Logger.log(String.format("Found an annotation in class: %s, has name: %s",
-////                        vPClass.getName(),
-////                        stereotype.getName()));
-//                AnnoDeclaration annoDeclaration = getAnnoDeclarationByName(stereotype.getName().substring(1));
-//                if (annoDeclaration != null) {
-//                    Anno newAnno = annoDeclaration.createAnno(vPClass,
-//                            stereotype, entity.getParentModel());
-//                    if (newAnno != null){
-//                        entity.addAnno(newAnno);
-//                    }
-//                }
-////                entity.addAnno(evaluateAnno(vPClass, stereotype, entity));
-//            } else if (stereotype.getName().startsWith("#")) // tags
-//            {
-//                entity.addTag(TagParser.parseTag(vPClass, stereotype, entity));
-////                Logger.log(String.format("Found a tag in class: %s, has name: %s",
-////                        vPClass.getName(),
-////                        stereotype.getName()));
-//            }
-//        }
     }
-
-//    private static AnnoDeclaration getAnnoDeclarationByName(String name) {
-//        for (AnnoDeclaration annoDeclaration : annoDeclarations) {
-//            if (annoDeclaration.name.equals(name)) {
-//                return annoDeclaration;
-//            }
-//        }
-//        return null;
-//    }
 }

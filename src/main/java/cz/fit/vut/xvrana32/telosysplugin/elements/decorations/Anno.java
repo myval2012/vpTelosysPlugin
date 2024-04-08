@@ -83,7 +83,7 @@ public class Anno {
         UPDATABLE;
 
         /**
-         * @return Name of annotation in Telosys DSL format.
+         * @return Name of annotation in Telosys DSL format without '@'.
          */
         @Override
         public String toString() {
@@ -119,13 +119,6 @@ public class Anno {
     public AnnoType getAnnoType() {
         return annotationType;
     }
-
-//    public boolean equals(Object obj) {
-//        if (!(obj instanceof Anno)) {
-//            return false;
-//        }
-//        return ((Anno) obj).annotationType == annotationType;
-//    }
 
     public List<IParameter> getParameters() {
         return parameters;

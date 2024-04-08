@@ -5,11 +5,11 @@ import com.vp.plugin.ApplicationManager;
 import java.io.FileWriter;
 
 public class Logger {
-    public static String LOG_FILE_PATH =
-            "C:\\Users\\mrmar\\Documents\\_Folder\\Dokumenty\\BP\\telosys xample projects vpp\\log\\telosysLogFile.txt";
-    public static String TELOSYS_TEST_FOLDER =
-            "C:\\Users\\mrmar\\Documents\\_Folder\\Dokumenty\\BP\\telosys xample projects vpp\\log";
-    public static FileWriter logFile;
+//    public static String LOG_FILE_PATH =
+//            "C:\\Users\\mrmar\\Documents\\_Folder\\Dokumenty\\BP\\telosys xample projects vpp\\log\\telosysLogFile.txt";
+//    public static String TELOSYS_TEST_FOLDER =
+//            "C:\\Users\\mrmar\\Documents\\_Folder\\Dokumenty\\BP\\telosys xample projects vpp\\log";
+//    public static FileWriter logFile;
 
     private static int warningCount;
     private static int errorCount;
@@ -23,13 +23,17 @@ public class Logger {
         ApplicationManager.instance().getViewManager().showMessage(msg, Constants.PluginConstants.MESSAGE_TAG);
     }
 
+    /**
+     * Logging function for debugging purposes.
+     * @param msg Message to print.
+     */
     public static void logD(String msg){
         log(msg);
     }
 
     /**
      * Prints a user message of severity level WARNING.
-     *
+     * Adds calling to stats
      * @param msg Message to print.
      */
     public static void logW(String msg) {
@@ -39,7 +43,7 @@ public class Logger {
 
     /**
      * Prints a user message of severity level ERROR.
-     *
+     * Adds calling to stats.
      * @param msg Message to print.
      */
     public static void logE(String msg) {

@@ -4,47 +4,28 @@ import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IEndRelationship;
 import com.vp.plugin.model.IModelElement;
 
+/**
+ * Represents association class and all values that are needed for proper merge / Join entity creation.
+ */
 public class AssociationEntity extends Entity{
-//    private AssociationEnd associationEndOne;
-//    private AssociationEnd associationEndTwo;
-//    public AssociationEnd getAssociationEndOne() {
-//        return associationEndOne;
-//    }
-
     /**
+     * Direction of association.
      * 0 --> merge into from
      * 1 --> merge into to
      */
-    private final int direction;
-    private final IEndRelationship iEndRelationship;
+    public final int direction;
 
-    private final String multiplicityFrom;
-    private final String multiplicityTo;
+    /**
+     * Both association ends and elements are navigable from this element.
+     */
+    public final IEndRelationship iEndRelationship;
+
+    public final String multiplicityFrom;
+    public final String multiplicityTo;
 
 
-//    public AssociationEnd getAssociationEndTwo() {
-//        return associationEndTwo;
-//    }
-
-    public int getDirection() {
-        return direction;
-    }
-
-//    public class AssociationEnd {
-//        private final String multiplicity;
-//        private final Entity referencedEntity;
-//        public AssociationEnd(String _multiplicity, Entity _referencedEntity){
-//            multiplicity = _multiplicity;
-//            referencedEntity = _referencedEntity;
-//        }
-//
-//        public String getMultiplicity() {
-//            return multiplicity;
-//        }
-//
-//        public Entity getReferencedEntity() {
-//            return referencedEntity;
-//        }
+//    public int getDirection() {
+//        return direction;
 //    }
 
     /**
@@ -61,23 +42,15 @@ public class AssociationEntity extends Entity{
         multiplicityTo = ((IAssociationEnd)iEndRelationship.getToEnd()).getMultiplicity();
     }
 
-    public IEndRelationship getiEndRelationship() {
-        return iEndRelationship;
-    }
-
-    public String getMultiplicityFrom() {
-        return multiplicityFrom;
-    }
-
-    public String getMultiplicityTo() {
-        return multiplicityTo;
-    }
-
-
-//    public void setAssociationEndOne(AssociationEnd associationEnd){
-//        associationEndOne = associationEnd;
+//    public IEndRelationship getiEndRelationship() {
+//        return iEndRelationship;
 //    }
-//    public void setAssociationEndTwo(AssociationEnd associationEnd){
-//        associationEndTwo = associationEnd;
+
+//    public String getMultiplicityFrom() {
+//        return multiplicityFrom;
+//    }
+
+//    public String getMultiplicityTo() {
+//        return multiplicityTo;
 //    }
 }

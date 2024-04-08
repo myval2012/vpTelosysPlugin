@@ -10,8 +10,7 @@ import java.util.List;
  */
 public class Model extends Element {
     private List<Entity> entities = new ArrayList<>();
-    private List<Entity> associationEntities = new ArrayList<>();
-
+    private List<AssociationEntity> associationEntities = new ArrayList<>();
     private List<Entity> supportEntities = new ArrayList<>();
 
     /**
@@ -26,6 +25,16 @@ public class Model extends Element {
 
     public void addEntity(Entity entity) {
         entities.add(entity);
+        entity.setParentModel(this);
+    }
+
+    public void addSupportEntity(Entity entity) {
+        supportEntities.add(entity);
+        entity.setParentModel(this);
+    }
+
+    public void addAssociationEntity(AssociationEntity entity) {
+        associationEntities.add(entity);
         entity.setParentModel(this);
     }
 
@@ -46,7 +55,7 @@ public class Model extends Element {
     /**
      * Replaces internal list of association entities with given list.
      */
-    public void setAssociationEntities(List<Entity> associationEntities) {
+    public void setAssociationEntities(List<AssociationEntity> associationEntities) {
         this.associationEntities = associationEntities;
         for (Entity entity : this.associationEntities) {
             entity.setParentModel(this);
@@ -66,9 +75,9 @@ public class Model extends Element {
         return null;
     }
 
-    public Entity getAssociationEntityByVpId(String vpId) throws Exception {
-        return getEntityFromSetByVpId(associationEntities, vpId);
-    }
+//    public Entity getAssociationEntityByVpId(String vpId) throws Exception {
+//        return getEntityFromSetByVpId(associationEntities, vpId);
+//    }
 
     private Entity getEntityFromSetByVpId(List<Entity> entities, String vpId) throws Exception {
         for (Entity entity : entities) {
@@ -97,7 +106,7 @@ public class Model extends Element {
         return str.toString();
     }
 
-    public List<Entity> getAssociationEntities() {
+    public List<AssociationEntity> getAssociationEntities() {
         return associationEntities;
     }
 

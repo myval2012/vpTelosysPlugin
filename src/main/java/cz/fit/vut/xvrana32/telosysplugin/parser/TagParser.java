@@ -4,7 +4,7 @@ import com.vp.plugin.model.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Tag;
-import cz.fit.vut.xvrana32.telosysplugin.utils.ParameterFactory;
+import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
 public class TagParser {
     public static Tag parseTag(IModelElement vpElement, IStereotype vPStereotype, Entity entity) throws Exception {
@@ -21,7 +21,8 @@ public class TagParser {
                         throw new Exception("The only supported tagged value types for Telosys tags are model element and text. Stereotype skipped.");
                     }
 
-                    param = ParameterFactory.CreateParameter(vPTaggedValue, entity.getParentModel(), true); // always quoted
+                    param = ParameterFactory.CreateParameter(vPTaggedValue, entity.getParentModel(),
+                            true, true); // always quoted
                 }
             }
         }

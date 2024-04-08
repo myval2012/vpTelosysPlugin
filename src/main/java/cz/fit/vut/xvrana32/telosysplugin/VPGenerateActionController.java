@@ -8,6 +8,7 @@ import com.vp.plugin.model.IProject;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Entity;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
 import cz.fit.vut.xvrana32.telosysplugin.parser.ProjectParser;
+import cz.fit.vut.xvrana32.telosysplugin.utils.Config;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import org.telosys.tools.api.TelosysProject;
 
@@ -21,14 +22,14 @@ public class VPGenerateActionController implements VPActionController {
     public void performAction(VPAction vpAction) {
         Logger.resetStats();
 
-        try {
-            Logger.logFile = new FileWriter(Logger.LOG_FILE_PATH);
-        } catch (IOException e) {
-            Logger.logE(String.format("Something went wrong when opening log file: %s", e.getMessage()));
-            return;
-        }
+//        try {
+//            Logger.logFile = new FileWriter(Logger.LOG_FILE_PATH);
+//        } catch (IOException e) {
+//            Logger.logE(String.format("Something went wrong when opening log file: %s", e.getMessage()));
+//            return;
+//        }
 
-        ViewManager viewManager = ApplicationManager.instance().getViewManager();
+//        ViewManager viewManager = ApplicationManager.instance().getViewManager();
 
         IProject project = ApplicationManager.instance().getProjectManager().getProject();
         ProjectParser projectParser = new ProjectParser();
@@ -61,7 +62,7 @@ public class VPGenerateActionController implements VPActionController {
 //        }
 
         try {
-            TelosysProject telosysProject = new TelosysProject(Logger.TELOSYS_TEST_FOLDER);
+            TelosysProject telosysProject = new TelosysProject(Config.getTelosysProjectFolder().getAbsolutePath());
             telosysProject.initProject();
 
             for (Model model : models) {

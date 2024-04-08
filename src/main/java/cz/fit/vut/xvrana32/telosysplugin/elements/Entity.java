@@ -26,26 +26,28 @@ public class Entity extends DecoratedElement {
         super(_vpId, _name);
     }
 
+    /**
+     * Adds attribute if the entity does not contain an attribute with the same name.
+     * @param attr Attribute to add.
+     * @return true if added, false otherwise.
+     */
     public boolean addAttr(Attr attr) {
-        for (Attr innerAttr : attrs) {
-            if (innerAttr.name.equals(attr.name)) {
-                return false;
-            }
+        Attr innerAttr = getAttrByName(attr.name);
+        if (innerAttr != null){
+            return false;
         }
 
         attr.setParentEntity(this);
         return attrs.add(attr);
     }
 
+    /**
+     * Merges decorations of attr and attribute in entity with the same name as attr.
+     * If there is no attribute of same name, method doesn't do anything.
+     * @param attr Attribute with annotations and tags.
+     */
     public void mergeAttr(Attr attr) {
-        Attr mergedAttr = null;
-        for (Attr innerAttr : attrs) {
-            if (innerAttr.name.equals(attr.name)) {
-                mergedAttr = innerAttr;
-                break;
-            }
-        }
-
+        Attr mergedAttr = getAttrByName(attr.name);
         if (mergedAttr == null) {
             return;
         }

@@ -1,8 +1,6 @@
 package cz.fit.vut.xvrana32.telosysplugin.utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
