@@ -84,7 +84,7 @@ public class VPInitActionController implements VPActionController {
         // create a generic model config
         // code below is inspired by https://forums.visual-paradigm.com/t/how-to-stor-config-info-for-plugin/11772/4
         IClass vPConfigClass = (IClass) gTTSuppModel.getChildByName(Config.CONFIG_CLASS_NAME);
-        if (vPConfigClass == null){
+        if (vPConfigClass == null) {
             createConfig(gTTSuppModel);
         }
 
@@ -107,8 +107,15 @@ public class VPInitActionController implements VPActionController {
 
         ITaggedValue telosysProjectDir = taggedValueContainer.createTaggedValue();
         telosysProjectDir.setName(Config.TELOSYS_PROJECT_FOLDER_TAG_NAME);
-        telosysProjectDir.setValue(
-                ApplicationManager.instance().getProjectManager().getProject().getProjectFile().getParent());
+
+        if (ApplicationManager.instance().getProjectManager().getProject().getProjectFile() == null) {
+            Logger.logW(String.format("Your project is not saved, therefore config.'%s' was not initialized.",
+                    Config.TELOSYS_PROJECT_FOLDER_TAG_NAME));
+        } else {
+            telosysProjectDir.setValue(
+                    ApplicationManager.instance().getProjectManager().getProject().getProjectFile().getParent());
+        }
+
     }
 
     private IClass findGTTCascadeOptionClass(IModel gTTSuppModel) {

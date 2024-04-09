@@ -22,7 +22,7 @@ public class TagParser {
                     }
 
                     param = ParameterFactory.CreateParameter(vPTaggedValue, entity.getParentModel(),
-                            true, true); // always quoted
+                            false, true);
                 }
             }
         }

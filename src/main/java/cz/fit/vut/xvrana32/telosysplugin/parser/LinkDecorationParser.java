@@ -19,7 +19,7 @@ public class LinkDecorationParser {
             new AnnoLinkByAttr("LinkByAttr", Anno.AnnoType.LINK_BY_ATTR, new ParamDeclaration[]
                     {new ParamDeclaration("linkByAttrClass", ITaggedValueDefinition.TYPE_MODEL_ELEMENT,
                             false, false)}),
-            new AnnoCommon("LinkByFK", Anno.AnnoType.LINK_BY_FK, new ParamDeclaration[]
+            new AnnoCommon("LinkByFK", Anno.AnnoType.LINK_BY_F_K, new ParamDeclaration[]
                     {new ParamDeclaration("fkName", ITaggedValueDefinition.TYPE_TEXT,
                             false, false)}),
             new AnnoCommon("OrphanRemoval", Anno.AnnoType.ORPHAN_REMOVAL, new ParamDeclaration[]{}),

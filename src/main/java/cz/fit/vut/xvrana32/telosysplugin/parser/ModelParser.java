@@ -211,14 +211,25 @@ public class ModelParser {
             if (vpRelEnd.getModelType().equals(IModelElementFactory.MODEL_TYPE_ASSOCIATION_END)) {
                 IAttribute vPLink = ((IAssociationEnd) vpRelEnd.getOppositeEnd()).getRepresentativeAttribute();
 
-                if (vPLink == null) {
+                if (!(((IAssociationEnd) vpRelEnd).getMultiplicity().equals("0..*") ||
+                        ((IAssociationEnd) vpRelEnd).getMultiplicity().equals("0..1"))) {
+                    Logger.logE(String.format("Entity: %s: The multiplicity of association ends has to be set to '0..1' or '0..*'.",
+                            entity.getName()));
                     vPLinksIds.add(null);
-                } else if (vPLink.getMultiplicity().equals("0..*") || vPLink.getMultiplicity().equals("0..1")) {
-                    vPLinksIds.add(vPLink.getId());
+                } else if (vPLink == null) {
+                    vPLinksIds.add(null);
                 } else {
-                    Logger.logE("The multiplicity of association ends has to be set to '0..1' or '0..*'.");
-                    vPLinksIds.add(null);
+                    vPLinksIds.add(vPLink.getId());
                 }
+
+//                if (vPLink == null) {
+//                    vPLinksIds.add(null);
+//                } else if (vPLink.getMultiplicity().equals("0..*") || vPLink.getMultiplicity().equals("0..1")) {
+//                    vPLinksIds.add(vPLink.getId());
+//                } else {
+//                    Logger.logE("The multiplicity of association ends has to be set to '0..1' or '0..*'.");
+//                    vPLinksIds.add(null);
+//                }
             }
         }
 

@@ -53,7 +53,7 @@ public class Anno {
         JOIN_ENTITY,
         LABEL,
         LINK_BY_ATTR,
-        LINK_BY_FK,
+        LINK_BY_F_K,
         LINK_BY_JOIN_ENTITY,
         LONG_TEXT,
         MANY_TO_MANY,

@@ -69,9 +69,9 @@ public class AttrDecorationParser {
                     new ParamDeclaration("generatorName", ITaggedValueDefinition.TYPE_TEXT,
                             true, false),
                     new ParamDeclaration("sequenceName", ITaggedValueDefinition.TYPE_TEXT,
-                            true, false),
+                            false, false),
                     new ParamDeclaration("allocatedSize", ITaggedValueDefinition.TYPE_TEXT,
-                            true, false)
+                            false, false)
             }),
             new AnnoGeneratedValue("GeneratedValueTABLE", Anno.AnnoType.GENERATED_VALUE, new ParamDeclaration[]{
                     new ParamDeclaration("generatorName", ITaggedValueDefinition.TYPE_TEXT,
@@ -81,11 +81,11 @@ public class AttrDecorationParser {
                     new ParamDeclaration("pkColumnName", ITaggedValueDefinition.TYPE_TEXT,
                             true, false),
                     new ParamDeclaration("pkColumnValue", ITaggedValueDefinition.TYPE_TEXT,
-                            true, false),
+                            false, false),
                     new ParamDeclaration("valueColumnName", ITaggedValueDefinition.TYPE_TEXT,
                             true, false),
                     new ParamDeclaration("allocatedSize", ITaggedValueDefinition.TYPE_TEXT,
-                            true, false)
+                            false, false)
             }),
 
             new AnnoSize("Size", Anno.AnnoType.SIZE, new ParamDeclaration[]{

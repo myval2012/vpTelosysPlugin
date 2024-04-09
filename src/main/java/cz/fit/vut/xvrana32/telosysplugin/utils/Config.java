@@ -43,9 +43,14 @@ public class Config {
     private static String loadValue(ITaggedValueContainer vPTaggedValues, String valueName) throws Exception {
         ITaggedValue vPTaggedValue = vPTaggedValues.getTaggedValueByName(valueName);
         if (vPTaggedValue == null) {
-            throw new Exception(String.format("config.'%s' was not found.", valueName));
+            throw new Exception(String.format("config.'%s' wasn't found.", valueName));
         }
-        return vPTaggedValue.getValueAsString();
+
+        String value = vPTaggedValue.getValueAsString();
+        if (value == null){
+            throw new Exception(String.format("config.'%s' can't be empty.", valueName));
+        }
+        return value;
     }
 
     public static String getSeparator() {
