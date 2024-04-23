@@ -10,6 +10,7 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.Paramete
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class ModelParser {
@@ -26,7 +27,7 @@ public class ModelParser {
         model = new Model(vPModel.getName(), vPModel.getId());
         LoopThroughModel(vPModel, "");
 
-        if (model.getEntities().size() == 0) {
+        if (model.getEntitiesCount() == 0) {
             Logger.logW(String.format("No class found in model %s, created Telosys model will be empty",
                     model.getName()));
         }
@@ -47,7 +48,8 @@ public class ModelParser {
      * Recursive method looking for classes in model hierarchy.
      *
      * @param vPModel        Model element to search.
-     * @param currentPackage Concatenated names of all on the way encountered packages.
+     * @param currentPackage Concatenated names of all on
+     *                       the way encountered packages.
      */
     private void LoopThroughModel(IModelElement vPModel, String currentPackage) {
         IModelElement[] vPChildren = vPModel.toChildArray();
@@ -58,7 +60,8 @@ public class ModelParser {
 
                 String nextPackage = currentPackage;
                 if (vPChild.getName().isEmpty()) {
-                    Logger.logW("Name of the package cannot be empty. Package name skipped in concatenation.");
+                    Logger.logW("Name of the package cannot be empty. " +
+                            "Package name skipped in concatenation.");
                 } else {
                     nextPackage = currentPackage.isEmpty() ? vPChild.getName() :
                             currentPackage + Config.getSeparator() + vPChild.getName();
@@ -163,7 +166,8 @@ public class ModelParser {
         Logger.logD("Phase1");
 
         // phase one for entities
-        for (Entity entity : model.getEntities()) {
+        for (Iterator<Entity> it = model.getEntitiesIterator(); it.hasNext(); ) {
+            Entity entity = it.next();
             // create annotations and tags of the class
             Logger.logD(String.format("phase 1 entity: %s", entity.getName()));
             EntityDecorationParser.parse(vPProject, entity);
@@ -174,7 +178,8 @@ public class ModelParser {
         }
 
         // phase one for association entities
-        for (Entity entity : model.getAssociationEntities()) {
+        for (Iterator<AssociationEntity> it = model.getAssociationEntitiesIterator(); it.hasNext(); ) {
+            Entity entity = it.next();
             // create annotations and tags of the class
             Logger.logD(String.format("phase 1 entity: %s", entity.getName()));
             EntityDecorationParser.parse(vPProject, entity);
@@ -240,8 +245,17 @@ public class ModelParser {
                 String vPAssociationId =
                         vPRelEnds.get(vPLinksIds.indexOf(vPAttr.getId())).getEndRelationship().getId();
                 int associationEntityIndex = associationVPIds.indexOf(vPAssociationId);
-                Entity associationEntity = associationEntityIndex == -1
-                        ? null : model.getAssociationEntities().get(associationEntityIndex);
+
+                Iterator<AssociationEntity> entities = model.getAssociationEntitiesIterator();
+                AssociationEntity associationEntity = null;
+                if (associationEntityIndex != -1){
+                    associationEntity = entities.next();
+                    for (int i = 0; i != associationEntityIndex; associationEntity = entities.next(), i++)
+                        ;
+                }
+
+//                Entity associationEntity = associationEntityIndex == -1
+//                        ? null : model.getAssociationEntities().get(associationEntityIndex);
 
                 boolean isArray = ((IAttribute) vPAttr).getMultiplicity().endsWith("*");
                 try {
@@ -289,16 +303,20 @@ public class ModelParser {
      */
     private void phase2(IProject vPProject) {
         // loop through all classes and add annotations and tags to attributes
-        for (Entity entity : model.getEntities()) {
+        for (Iterator<Entity> it = model.getEntitiesIterator(); it.hasNext(); ) {
+            Entity entity = it.next();
             Logger.logD(String.format("phase 2 entity: %s", entity.getName()));
-            for (Attr attr : entity.getAttrs()) {
+            for (Iterator<Attr> iter = entity.getAttrsIterator(); iter.hasNext(); ) {
+                Attr attr = iter.next();
                 AttrDecorationParser.parse(vPProject, attr);
             }
         }
 
-        for (Entity entity : model.getAssociationEntities()) {
+        for (Iterator<AssociationEntity> it = model.getAssociationEntitiesIterator(); it.hasNext(); ) {
+            Entity entity = it.next();
             Logger.logD(String.format("phase 2 entity: %s", entity.getName()));
-            for (Attr attr : entity.getAttrs()) {
+            for (Iterator<Attr> iter = entity.getAttrsIterator(); iter.hasNext(); ) {
+                Attr attr = iter.next();
                 AttrDecorationParser.parse(vPProject, attr);
             }
         }
@@ -322,9 +340,11 @@ public class ModelParser {
      */
     private void phase3(IProject vPProject) {
         // loop through all classes and add annotations and tags to links
-        for (Entity entity : model.getEntities()) {
+        for (Iterator<Entity> it = model.getEntitiesIterator(); it.hasNext(); ) {
+            Entity entity = it.next();
             Logger.logD(String.format("phase 3 entity: %s", entity.getName()));
-            for (Link link : entity.getLinks()) {
+            for (Iterator<Link> iter = entity.getLinksIterator(); iter.hasNext(); ) {
+                Link link = iter.next();
                 Logger.logD(String.format("phase 3 link: %s", link.getName()));
 
                 try {
@@ -340,7 +360,8 @@ public class ModelParser {
         }
 
         // add association entities that are marked with @JoinEntity (should be printed as well) to standard entities
-        for (AssociationEntity associationEntity : model.getAssociationEntities()) {
+        for (Iterator<AssociationEntity> it = model.getAssociationEntitiesIterator(); it.hasNext(); ) {
+            AssociationEntity associationEntity = it.next();
 
             IEndRelationship iEndRelationship = associationEntity.iEndRelationship;
             String vPClassFromId = iEndRelationship.getFrom().getId();
@@ -364,7 +385,8 @@ public class ModelParser {
                             mergedEntity.getName()));
 
                     // merge
-                    for (Attr attr : associationEntity.getAttrs()) {
+                    for (Iterator<Attr> iter = associationEntity.getAttrsIterator(); iter.hasNext(); ) {
+                        Attr attr = iter.next();
                         if (!mergedEntity.addAttr(attr)) {
                             mergedEntity.mergeAttr(attr);
                         }

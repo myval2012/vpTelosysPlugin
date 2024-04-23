@@ -82,7 +82,7 @@ public class AnnoCascade extends AnnoDeclaration {
         }
 
         // check mandatory values, for cascade it is at least one cascade option
-        if (newAnno.getParameters().size() == 0) {
+        if (newAnno.getParametersCount() == 0) {
             throw new Exception(String.format(
                     "There has to be at least one Cascade option with initial value in the %s support class.",
                     supportEntity.getName()));

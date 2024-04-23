@@ -4,6 +4,7 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Tag;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -66,14 +67,17 @@ public class Entity extends DecoratedElement {
         link.setParentEntity(this);
     }
 
-    public List<Attr> getAttrs() {
-        return attrs;
+    public Iterator<Attr> getAttrsIterator() {
+        return attrs.iterator();
     }
 
-    public List<Link> getLinks() {
-        return links;
+    public int getAttrsCount() {return attrs.size();}
+
+    public Iterator<Link> getLinksIterator() {
+        return links.iterator();
     }
 
+    public int getLinksCount() { return links.size();}
     public Attr getAttrByName(String name) {
         for (Attr attr : attrs) {
             if (attr.name.equals(name)) {

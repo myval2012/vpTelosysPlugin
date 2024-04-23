@@ -1,6 +1,7 @@
 package cz.fit.vut.xvrana32.telosysplugin.elements;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  * <br> <br>
  * Used mostly as a data class for storing and accessing information during the project compilation.
  */
-public class Model extends Element {
+    public class Model extends Element {
     private List<Entity> entities = new ArrayList<>();
     private List<AssociationEntity> associationEntities = new ArrayList<>();
     private List<Entity> supportEntities = new ArrayList<>();
@@ -38,9 +39,11 @@ public class Model extends Element {
         entity.setParentModel(this);
     }
 
-    public List<Entity> getEntities() {
-        return entities;
+    public Iterator<Entity> getEntitiesIterator() {
+        return entities.iterator();
     }
+
+    public int getEntitiesCount() {return entities.size();}
 
     /**
      * Replaces internal list of entities with given list.
@@ -106,13 +109,15 @@ public class Model extends Element {
         return str.toString();
     }
 
-    public List<AssociationEntity> getAssociationEntities() {
-        return associationEntities;
+    public Iterator<AssociationEntity> getAssociationEntitiesIterator() {
+        return associationEntities.iterator();
     }
+    public int getAssociationEntitiesCount() {return associationEntities.size();}
 
-    public List<Entity> getSupportEntities() {
-        return supportEntities;
+    public Iterator<Entity> getSupportEntitiesIterator() {
+        return supportEntities.iterator();
     }
+    public int getSupportEntitiesCount() {return supportEntities.size();}
 
     /**
      * Replaces internal list of support entities with given list.

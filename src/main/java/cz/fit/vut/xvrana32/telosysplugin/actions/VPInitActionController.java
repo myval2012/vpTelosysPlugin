@@ -1,4 +1,4 @@
-package cz.fit.vut.xvrana32.telosysplugin;
+package cz.fit.vut.xvrana32.telosysplugin.actions;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;

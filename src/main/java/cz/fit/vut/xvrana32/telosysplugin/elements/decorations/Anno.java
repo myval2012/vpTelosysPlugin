@@ -4,6 +4,7 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParamet
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -120,8 +121,12 @@ public class Anno {
         return annotationType;
     }
 
-    public List<IParameter> getParameters() {
-        return parameters;
+    public Iterator<IParameter> getParametersIterator() {
+        return parameters.iterator();
+    }
+
+    public int getParametersCount() {
+        return parameters.size();
     }
 
     public void addParameter(IParameter parameter) {

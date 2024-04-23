@@ -4,6 +4,7 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Tag;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -74,8 +75,8 @@ public abstract class DecoratedElement extends Element {
         return annos.add(anno);
     }
 
-    public List<Anno> getAnnos() {
-        return annos;
+    public Iterator<Anno> getAnnosIterator() {
+        return annos.iterator();
     }
 
     public boolean containsAnnoType(Anno.AnnoType annoType) {

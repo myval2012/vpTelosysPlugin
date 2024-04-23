@@ -25,7 +25,7 @@
                     icon="icons/green.png"
                     toolbarPath="cz.fit.vut.xvrana32.telosysplugin.toolbar1/#">
                 <!--                    menuPath="Tools/#"-->
-                <actionController class="cz.fit.vut.xvrana32.telosysplugin.VPInitActionController"/>
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.VPInitActionController"/>
             </action>
 
             <action
@@ -37,7 +37,7 @@
                     icon="icons/green.png"
                     toolbarPath="cz.fit.vut.xvrana32.telosysplugin.toolbar1/#">
 <!--                    menuPath="Tools/#"-->
-                <actionController class="cz.fit.vut.xvrana32.telosysplugin.VPVerifyActionController"/>
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.VPVerifyActionController"/>
             </action>
 
             <action
@@ -49,9 +49,80 @@
                     icon="icons/green.png"
                     toolbarPath="cz.fit.vut.xvrana32.telosysplugin.toolbar1/#">
                 <!--                    menuPath="Tools/#"-->
-                <actionController class="cz.fit.vut.xvrana32.telosysplugin.VPGenerateActionController"/>
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.VPGenerateActionController"/>
             </action>
         </actionSet>
 
+        <contextSensitiveActionSet id="cz.fit.vut.xvrana32.telosysplugin.actionSet2">
+            <menu
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu"
+                    label="MyMenu"
+                    mnemonic="M"
+                    menuPath="#"/>
+
+            <contextTypes all="false">
+                <include type="Association"/>
+            </contextTypes>
+            <!--            advanced actions-->
+            <action
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.CreateLinksFKs"
+                    label="Create links and FK(s)"
+                    icon="icons/green.png"
+                    style="normal"
+                    menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/
+                    cz.fit.vut.xvrana32.telosysplugin.actionSet2.CreateLinks">
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.contextactions.VPCreateLinksFKsContextActionController"/>
+            </action>
+
+            <action
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.CreateFKs"
+                    label="Create FK(s)"
+                    icon="icons/green.png"
+                    style="normal"
+                    menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/
+                    cz.fit.vut.xvrana32.telosysplugin.actionSet2.CreateLinks">
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.contextactions.VPCreateFKsContextActionController"/>
+            </action>
+
+            <action
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.CreateLinks"
+                    label="Create links"
+                    icon="icons/green.png"
+                    style="normal"
+                    menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/
+                    cz.fit.vut.xvrana32.telosysplugin.actionSet2.ManyToMany">
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.contextactions.VPCreateLinksContextActionController"/>
+            </action>
+
+            <!--            basic actions -->
+            <action
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ManyToMany"
+                    label="ManyToMany"
+                    icon="icons/green.png"
+                    style="normal"
+                    menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/
+                    cz.fit.vut.xvrana32.telosysplugin.actionSet2.OneToMany">
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.contextactions.VPManyToManyContextActionController"/>
+            </action>
+
+            <action
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.OneToMany"
+                    label="OneToMany"
+                    icon="icons/green.png"
+                    style="normal"
+                    menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/
+                    cz.fit.vut.xvrana32.telosysplugin.actionSet2.OneToOne">
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.contextactions.VPOneToManyContextActionController"/>
+            </action>
+
+            <action
+                    id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.OneToOne"
+                    label="OneToOne"
+                    icon="icons/green.png"
+                    style="normal"
+                    menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/#">
+                <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.contextactions.VPOneToOneContextActionController"/>
+            </action>
+        </contextSensitiveActionSet>
     </actionSets>
 </plugin>

@@ -1,4 +1,4 @@
-package cz.fit.vut.xvrana32.telosysplugin;
+package cz.fit.vut.xvrana32.telosysplugin.actions;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ViewManager;
@@ -15,6 +15,7 @@ import org.telosys.tools.api.TelosysProject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 public class VPGenerateActionController implements VPActionController {
@@ -70,7 +71,8 @@ public class VPGenerateActionController implements VPActionController {
 
                 if (telosysProject.modelFolderExists(modelName)) {
                     Logger.logD("Model already exists... updating model");
-                    for (Entity entity : model.getEntities()){
+                    for (Iterator<Entity> it = model.getEntitiesIterator(); it.hasNext(); ) {
+                        Entity entity = it.next();
                         File entityF = telosysProject.getDslEntityFile(modelName, entity.getName());
                         if (!entityF.exists()){
                             entityF = telosysProject.createNewDslEntity(modelName, entity.getName());
@@ -81,7 +83,8 @@ public class VPGenerateActionController implements VPActionController {
                     }
                 } else {
                     File modelF = telosysProject.createNewDslModel(modelName);
-                    for (Entity entity : model.getEntities()) {
+                    for (Iterator<Entity> it = model.getEntitiesIterator(); it.hasNext(); ) {
+                        Entity entity = it.next();
                         File entityF = telosysProject.createNewDslEntity(modelName, entity.getName());
                         FileWriter entityFW = new FileWriter(entityF);
                         entityFW.write(entity.toString());

@@ -10,6 +10,8 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.parser.AttrDecorationParser;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
+import java.util.Iterator;
+
 /**
  * Special annotation declaration for parsing @LinkByAttr
  * <br> <br>
@@ -57,7 +59,7 @@ public class AnnoLinkByAttr extends AnnoDeclaration {
         }
 
         // check mandatory values, for link by attr at least one parameter in supp class
-        if (supportEntity.getAttrs().size() == 0) {
+        if (supportEntity.getAttrsCount() == 0) {
             throw new Exception(String.format(
                     "There has to be at least one attribute in the %s support class.",
                     supportEntity.getName()));
@@ -66,7 +68,8 @@ public class AnnoLinkByAttr extends AnnoDeclaration {
         // add all attributes of the support entity to both the ParentEntity and the Annotation
         Entity parentEntity = model.getEntityByVpId(vPElement.getParent().getId());
         Anno newAnno = new Anno(annoType);
-        for (Attr attr : supportEntity.getAttrs()) {
+        for (Iterator<Attr> it = supportEntity.getAttrsIterator(); it.hasNext(); ) {
+            Attr attr = it.next();
             if (!parentEntity.addAttr(attr)){
                 parentEntity.mergeAttr(attr);
             }

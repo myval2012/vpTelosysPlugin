@@ -8,6 +8,8 @@ import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.*;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
+import java.util.Iterator;
+
 public class LinkDecorationParser {
     public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("Embedded", Anno.AnnoType.EMBEDDED, new ParamDeclaration[]{}),
@@ -92,6 +94,7 @@ public class LinkDecorationParser {
             link.addAnno(new Anno(Anno.AnnoType.MANY_TO_MANY));
             Entity joinEntity = link.getAssociationEntity();
 
+
             if (joinEntity != null) {
                 Anno newAnno = new Anno(Anno.AnnoType.LINK_BY_JOIN_ENTITY);
                 newAnno.addParameter(ParameterFactory.CreateParameter(
@@ -108,7 +111,8 @@ public class LinkDecorationParser {
         if (isInverseSide && owningVPAttr != null) {
             Logger.logD("Generating MappedBy");
             Anno newAnno = new Anno(Anno.AnnoType.MAPPED_BY);
-            for (Link owningLink : link.getToEntity().getLinks()) {
+            for (Iterator<Link> it = link.getToEntity().getLinksIterator(); it.hasNext(); ) {
+                Link owningLink = it.next();
 
                 if (owningLink.getVpId().equals(owningVPAttr.getId())) {
                     newAnno.addParameter(ParameterFactory.CreateParameter(
