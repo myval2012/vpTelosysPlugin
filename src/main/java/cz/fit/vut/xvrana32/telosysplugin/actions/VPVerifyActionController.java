@@ -10,6 +10,21 @@ import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 public class VPVerifyActionController implements VPActionController {
     @Override
     public void performAction(VPAction vpAction) {
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                performActionHelper(vpAction);
+            }
+        };
+        thread.start();
+    }
+
+    @Override
+    public void update(VPAction vpAction) {
+
+    }
+
+    private void performActionHelper(VPAction vpAction){
         Logger.resetStats();
 
         IProject project = ApplicationManager.instance().getProjectManager().getProject();
@@ -21,19 +36,14 @@ public class VPVerifyActionController implements VPActionController {
             if (e.getMessage() == null) {
                 Logger.logE(String.format("Unhandled error occurred: %s", e));
                 for (StackTraceElement stackTraceElement : e.getStackTrace()){
-                    Logger.log(stackTraceElement.toString());
+                    Logger.logE(stackTraceElement.toString());
                 }
             } else {
                 Logger.logE(e.getMessage());
             }
         }
 
-        Logger.log("Verification completed");
+        Logger.logI("Verification completed");
         Logger.logStats();
-    }
-
-    @Override
-    public void update(VPAction vpAction) {
-
     }
 }

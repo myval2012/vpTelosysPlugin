@@ -18,78 +18,13 @@ import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 public class VPInitActionController implements VPActionController {
     @Override
     public void performAction(VPAction vpAction) {
-        Logger.resetStats();
-
-        // if GTTSuppModel is not defined, create it
-        IModel gTTSuppModel = findGTTSuppModel();
-        if (gTTSuppModel == null) {
-            gTTSuppModel = IModelElementFactory.instance().createModel();
-            gTTSuppModel.setName(Constants.GTTSuppModelConstants.GTT_SUPP_MODEL_NAME);
-        }
-
-        // if Cascade class is not defined, create it
-        IClass gTTCascadeOptionClass = findGTTCascadeOptionClass(gTTSuppModel);
-        if (gTTCascadeOptionClass == null) {
-            gTTCascadeOptionClass = (IClass) gTTSuppModel.createChild(IModelElementFactory.MODEL_TYPE_CLASS);
-            gTTCascadeOptionClass.setName(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME);
-
-            // define the enum literals etc.
-            gTTCascadeOptionClass.addStereotype("enumeration");
-            for (CascadeOptions cascadeOption : CascadeOptions.values()) {
-                IEnumerationLiteral demoEnumLit = (IEnumerationLiteral)
-                        gTTCascadeOptionClass.createChild(IModelElementFactory.MODEL_TYPE_ENUMERATION_LITERAL);
-                demoEnumLit.setName(cascadeOption.toString());
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                performActionHelper(vpAction);
             }
-        }
-
-        // add constraints that are missing
-        IModelElement[] gTTConstraints = gTTSuppModel.toChildArray(IModelElementFactory.MODEL_TYPE_CONSTRAINT_ELEMENT);
-        for (String gTTConstraintName : Constants.GTTSuppModelConstants.GTT_CONSTRAINT_NAMES) {
-            boolean found = false;
-            for (IModelElement gTTConstraint : gTTConstraints) {
-                if (gTTConstraint.getName().equals(gTTConstraintName)) {
-                    found = true;
-                }
-            }
-
-            if (!found) {
-                IConstraintElement gTTNewConstraint = (IConstraintElement)
-                        gTTSuppModel.createChild(IModelElementFactory.MODEL_TYPE_CONSTRAINT_ELEMENT);
-                gTTNewConstraint.setName(gTTConstraintName);
-            }
-        }
-
-        // add stereotypes, if they do not exist
-        createStereotypes(IModelElementFactory.MODEL_TYPE_ATTRIBUTE, AttrDecorationParser.annoDeclarations);
-        createStereotypes(IModelElementFactory.MODEL_TYPE_ATTRIBUTE, LinkDecorationParser.annoDeclarations);
-        createStereotypes(IModelElementFactory.MODEL_TYPE_CLASS, EntityDecorationParser.annoDeclarations);
-
-//        // create a generic model config
-//        // code below is modified code from https://forums.visual-paradigm.com/t/how-to-stor-config-info-for-plugin/11772/4
-//        IModelElement[] vPElements = gTTSuppModel.toChildArray(IModelElementFactory.MODEL_TYPE_CLASS);
-//        for (IModelElement vPElement : vPElements) {
-//            // find out the LoginInformation from project.
-//            if (vPElement.getName().equals("config")) {
-//                return; // the initialization is complete
-//            }
-////            if ("LoginInformation".equals(((IGenericModel) lElement).getGenericModelType())) {
-////                IGenericModel lLoginInformation = (IGenericModel) lElement;
-////                String lConnectionString = lLoginInformation.getTaggedValues().getTaggedValueByName("Connection String").getValue();
-////                String lRepositoryName = lLoginInformation.getTaggedValues().getTaggedValueByName("Repository Name").getValue();
-////
-////            }
-//        }
-//        createConfig(gTTSuppModel);
-
-        // create a generic model config
-        // code below is inspired by https://forums.visual-paradigm.com/t/how-to-stor-config-info-for-plugin/11772/4
-        IClass vPConfigClass = (IClass) gTTSuppModel.getChildByName(Config.CONFIG_CLASS_NAME);
-        if (vPConfigClass == null) {
-            createConfig(gTTSuppModel);
-        }
-
-        Logger.log("Project was initialized.");
-        Logger.logStats();
+        };
+        thread.start();
     }
 
     private void createConfig(IModel gTTSuppModel) {
@@ -181,5 +116,63 @@ public class VPInitActionController implements VPActionController {
             }
 //            Logger.log("continuing...");
         }
+    }
+
+    private void performActionHelper(VPAction vpAction){
+        Logger.resetStats();
+
+        // if GTTSuppModel is not defined, create it
+        IModel gTTSuppModel = findGTTSuppModel();
+        if (gTTSuppModel == null) {
+            gTTSuppModel = IModelElementFactory.instance().createModel();
+            gTTSuppModel.setName(Constants.GTTSuppModelConstants.GTT_SUPP_MODEL_NAME);
+        }
+
+        // if Cascade class is not defined, create it
+        IClass gTTCascadeOptionClass = findGTTCascadeOptionClass(gTTSuppModel);
+        if (gTTCascadeOptionClass == null) {
+            gTTCascadeOptionClass = (IClass) gTTSuppModel.createChild(IModelElementFactory.MODEL_TYPE_CLASS);
+            gTTCascadeOptionClass.setName(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME);
+
+            // define the enum literals etc.
+            gTTCascadeOptionClass.addStereotype("enumeration");
+            for (CascadeOptions cascadeOption : CascadeOptions.values()) {
+                IEnumerationLiteral demoEnumLit = (IEnumerationLiteral)
+                        gTTCascadeOptionClass.createChild(IModelElementFactory.MODEL_TYPE_ENUMERATION_LITERAL);
+                demoEnumLit.setName(cascadeOption.toString());
+            }
+        }
+
+        // add constraints that are missing
+        IModelElement[] gTTConstraints = gTTSuppModel.toChildArray(IModelElementFactory.MODEL_TYPE_CONSTRAINT_ELEMENT);
+        for (String gTTConstraintName : Constants.GTTSuppModelConstants.GTT_CONSTRAINT_NAMES) {
+            boolean found = false;
+            for (IModelElement gTTConstraint : gTTConstraints) {
+                if (gTTConstraint.getName().equals(gTTConstraintName)) {
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                IConstraintElement gTTNewConstraint = (IConstraintElement)
+                        gTTSuppModel.createChild(IModelElementFactory.MODEL_TYPE_CONSTRAINT_ELEMENT);
+                gTTNewConstraint.setName(gTTConstraintName);
+            }
+        }
+
+        // add stereotypes, if they do not exist
+        createStereotypes(IModelElementFactory.MODEL_TYPE_ATTRIBUTE, AttrDecorationParser.annoDeclarations);
+        createStereotypes(IModelElementFactory.MODEL_TYPE_ATTRIBUTE, LinkDecorationParser.annoDeclarations);
+        createStereotypes(IModelElementFactory.MODEL_TYPE_CLASS, EntityDecorationParser.annoDeclarations);
+
+        // create a generic model config
+        // code below is inspired by https://forums.visual-paradigm.com/t/how-to-stor-config-info-for-plugin/11772/4
+        IClass vPConfigClass = (IClass) gTTSuppModel.getChildByName(Config.CONFIG_CLASS_NAME);
+        if (vPConfigClass == null) {
+            createConfig(gTTSuppModel);
+        }
+
+        Logger.logI("Project was initialized.");
+        Logger.logStats();
     }
 }
