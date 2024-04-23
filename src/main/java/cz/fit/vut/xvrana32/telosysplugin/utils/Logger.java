@@ -19,7 +19,7 @@ public class Logger {
      *
      * @param msg Message to print.
      */
-    public static void log(String msg) {
+    private static void log(String msg) {
         ApplicationManager.instance().getViewManager().showMessage(msg, Constants.PluginConstants.MESSAGE_TAG);
     }
 
@@ -28,7 +28,7 @@ public class Logger {
      * @param msg Message to print.
      */
     public static void logD(String msg){
-        log(msg);
+//        log(msg);
     }
 
     /**
@@ -61,8 +61,14 @@ public class Logger {
     }
 
     public static void logStats() {
-        log(String.format("Total errors: %d", errorCount));
-        log(String.format("Total warnings: %d", warningCount));
+        log("**********************************");
+        log(String.format("* Total errors: %d", errorCount));
+        log(String.format("* Total warnings: %d", warningCount));
+        if (errorCount == 0 && warningCount == 0){
+            log("**********************************");
+            log("* SUCCESS                        *");
+        }
+        log("**********************************");
     }
 
     public static void resetStats() {
