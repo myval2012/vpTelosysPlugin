@@ -1,7 +1,7 @@
 # Annotations
-Below are all annotations of Telosys DSL and their representation in Graphical Telosys DSL. 
+Below are all annotations of Telosys DSL and their representation in Telosys diagram. 
 ### @Abstract
-Class modifier (in general class properties).
+Class modifier (in `general` class properties).
 
 ### @AggregateRoot
 Class stereotype.
@@ -15,13 +15,13 @@ Attribute stereotype with tagged value:
  <li>cascade - Reference to a support inner class. </li>
 </ul>
 
-Uses inner support class that contains only attributes of type `Telosys DSL defs.Cascade Options`. 
+Uses inner meta class that contains only attributes of type `"Telosys DSL defs"/"Cascade Options"`. 
 The initial value property of these attributes is set to the desired option. Name of the attributes 
 and class does not matter.   
 
 ![Cascade support class](imgs/cascadeSupp.png)
 
-*Support class*
+*meta class*
 
 ![Tagged value](imgs/cascadeTaggedValue.png)
 
@@ -152,7 +152,7 @@ Represented by 4 stereotypes:
 </ul>
 
 ### @Id
-Attribute modifier (in general attribute properties).
+Attribute modifier (in `general` attribute properties).
 
 ### @InitialValue(string)
 Attribute property initial value.
@@ -173,7 +173,7 @@ Attribute stereotype with tagged value:
 </ul>
 
 ### @JoinEntity
-Generated automatically on association class of Many-To-Many relationship.
+Generated automatically on association class of ManyToMany relationship.
 
 ### @Label(string)
 Attribute stereotype.
@@ -207,16 +207,17 @@ Attribute stereotype with tagged value:
 </ul>
 
 ### @LinkByJoinEntity(string)
-Generated automatically for Many-To-Many relationship with association class.
+Generated automatically for ManyToMany relationship with association class.
 
 ### @LongText
 Attribute stereotype.
 
 ### @ManyToMany
-Multiplicity on both sides of a relationship set to 0..*.
+Multiplicity on both sides of a relationship set to "0..*".
 
 ### @MappedBy(attributeName)
-Generated automatically on inverse side of bidirectional relationship. 
+Generated automatically on inverse side of bidirectional relationship. The inverse side is determined by 
+association direction. owning side -> inverse side
 
 ### @Max(decimal)
 Attribute stereotype with tagged value:
@@ -269,7 +270,7 @@ UML Package element. The name in annotation is created by concatenating names of
 
 ![@Package(com.package)](imgs/package.png)
 
-*With default separator creates annotation @Package(com.example).*
+*With default separator creates annotation @Package("com.example").*
 
 ### @Past
 Constraint or attribute stereotype.

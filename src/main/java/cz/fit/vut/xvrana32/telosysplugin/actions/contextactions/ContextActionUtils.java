@@ -48,7 +48,7 @@ public class ContextActionUtils {
             vPAttribute.setMultiplicity(multiplicity);
 
             vPClass.addChild(vPAttribute);
-            vPAttribute.setType(vPClass);
+            vPAttribute.setType(vPAssociationEnd.getModelElement());
             vPAttribute.setVisibility(IAttribute.VISIBILITY_UNSPECIFIED);
             vPAssociationEnd.setRepresentativeAttribute(vPAttribute);
         }

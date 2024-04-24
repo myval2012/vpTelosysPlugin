@@ -54,7 +54,7 @@
         <contextSensitiveActionSet id="cz.fit.vut.xvrana32.telosysplugin.actionSet2">
             <menu
                     id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu"
-                    label="MyMenu"
+                    label="Telosys"
                     mnemonic="M"
                     menuPath="#"/>
 

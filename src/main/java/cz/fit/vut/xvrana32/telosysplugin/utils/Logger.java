@@ -73,7 +73,7 @@ public class Logger {
         log(String.format("| Total warnings: %d", warningCount));
         if (errorCount == 0 && warningCount == 0){
             log("**********************************");
-            log("* SUCCESS");
+            log("| SUCCESS");
         }
         log("**********************************");
     }
