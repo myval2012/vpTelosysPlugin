@@ -25,7 +25,13 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.Paramete
 
 import java.util.Iterator;
 
+/**
+ * Parser for link decorations
+ */
 public class LinkDecorationParser {
+    /**
+     * All stereotypes accepted on link
+     */
     public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("Embedded", Anno.AnnoType.EMBEDDED, new ParamDeclaration[]{}),
             new AnnoCommon("FetchTypeEager", Anno.AnnoType.FETCH_TYPE_EAGER, new ParamDeclaration[]{}),
@@ -52,22 +58,16 @@ public class LinkDecorationParser {
             new AnnoCommon("MappedBy", Anno.AnnoType.MAPPED_BY, new ParamDeclaration[]{}),
     };
 
-    public static void parse(IProject vPProject, Link link) throws Exception {
+    public static void parse(IProject vPProject, Link link) {
         IClass vPClass = (IClass) vPProject.getModelElementById(link.getParentEntity().getVpId());
         IAssociation vPAssociation = (IAssociation) vPProject.getModelElementById(link.getVPAssociationId());
         IAttribute vPAttr = (IAttribute) vPClass.getChildById(link.getVpId());
 
-        // special annotations
+        // special annotation section
         // direction == 0 if direction is from RelationshipEndFrom to RelationshipEndTo
         // direction == 1 if direction is not from RelationshipEndFrom to RelationshipEndTo
         String multiplicityFrom = ((IAssociationEnd) vPAssociation.getFromEnd()).getMultiplicity();
         String multiplicityTo = ((IAssociationEnd) vPAssociation.getToEnd()).getMultiplicity();
-
-        // multiplicity has to be either 0..1 or 0..* other are not allowed --> error
-//        if ((!multiplicityFrom.equals("0..1") && !multiplicityFrom.equals("0..*")) ||
-//                !multiplicityTo.equals("0..1") && !multiplicityTo.equals("0..*")) {
-//            throw new Exception("The multiplicity of association ends has to be set to '0..1' or '0..*'.");
-//        }
 
         boolean isOnToSide = vPAssociation.getFrom().getId().equals(link.getParentEntity().getVpId());
         boolean isOnFromSide = !isOnToSide;
@@ -80,17 +80,12 @@ public class LinkDecorationParser {
         boolean isCollection = link.isCollection(); // this link has multiplicity ToMany
         boolean isOtherSideCollection = multiplicityOtherSide.endsWith("*"); // opposite link has multiplicity ToMany
         boolean isManyToMany = isCollection && isOtherSideCollection;
-//        boolean isManyToOne = !isCollection && isOtherSideCollection;
-//        boolean isOneToMany = isCollection && !isOtherSideCollection;
         boolean isOneToOne = !isCollection && !isOtherSideCollection;
         boolean isOwningSide = (isOnFromSide && isFromSideOwning) || (isOnToSide && isToSideOwning);
         boolean isInverseSide = !isOwningSide;
         IAttribute owningVPAttr = isFromSideOwning ?
                 ((IAssociationEnd) vPAssociation.getFromEnd()).getRepresentativeAttribute() :
                 ((IAssociationEnd) vPAssociation.getToEnd()).getRepresentativeAttribute();
-//        IAttribute inverseVPAttr = isToSideOwning ?
-//                ((IAssociationEnd) vPAssociation.getFromEnd()).getRepresentativeAttribute() :
-//                ((IAssociationEnd) vPAssociation.getToEnd()).getRepresentativeAttribute();
 
         // preconditions:
         // * in case of a non-ManyToMany relationship, the many side cannot be owning side.
@@ -149,16 +144,4 @@ public class LinkDecorationParser {
         DecorationParser.checkTaggedValuesStereotype(vPAttr.getTaggedValues());
         DecorationParser.parseNonSpecialAnnosAndTags(annoDeclarations, vPAttr, link, link.getParentEntity());
     }
-
-//    private static void mergeAnnos(Attr target, Attr source) {
-//        for (Anno anno : source.getAnnos()) {
-//            if (!target.addAnno(anno)) {
-//                Logger.logW(String.format(
-//                        "Class: %s, Attribute: %s already contains annotation %s, annotation skipped.",
-//                        target.getParentEntity().getName(),
-//                        target.getName(),
-//                        anno.getAnnoType().toString()));
-//            }
-//        }
-//    }
 }

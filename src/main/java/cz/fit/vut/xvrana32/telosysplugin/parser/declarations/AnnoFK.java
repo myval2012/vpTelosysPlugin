@@ -20,7 +20,6 @@ import com.vp.plugin.model.IStereotype;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
-import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;

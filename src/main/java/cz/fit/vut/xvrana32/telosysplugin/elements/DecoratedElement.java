@@ -19,7 +19,6 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Tag;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -62,19 +61,6 @@ public abstract class DecoratedElement extends Element {
     }
 
     /**
-     * @param tagName Name of the searched tag.
-     * @return Tag if found, null otherwise.
-     */
-    public Tag getTag(String tagName) {
-        for (Tag tag : tags) {
-            if (tag.getName().equals(tagName)) {
-                return tag;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Set can not contain two annotation of the same {@link Anno.AnnoType}.
      *
      * @param anno Annotation to add.
@@ -90,10 +76,6 @@ public abstract class DecoratedElement extends Element {
         return annos.add(anno);
     }
 
-    public Iterator<Anno> getAnnosIterator() {
-        return annos.iterator();
-    }
-
     public boolean containsAnnoType(Anno.AnnoType annoType) {
         for (Anno anno : annos) {
             if (anno.getAnnoType() == annoType) {
@@ -101,15 +83,6 @@ public abstract class DecoratedElement extends Element {
             }
         }
         return false;
-    }
-
-    public Anno getAnno(Anno.AnnoType annoType) {
-        for (Anno anno : annos) {
-            if (anno.getAnnoType() == annoType) {
-                return anno;
-            }
-        }
-        return null;
     }
 
     /**

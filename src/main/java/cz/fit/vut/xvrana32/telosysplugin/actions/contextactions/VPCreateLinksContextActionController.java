@@ -18,12 +18,15 @@ package cz.fit.vut.xvrana32.telosysplugin.actions.contextactions;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
-import com.vp.plugin.model.factory.IModelElementFactory;
-import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
-import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * Context action controller for association. Creates representative attributes for both ends of the association
+ * in context.
+ * <br> <br>
+ * If representative attribute already exists, then the action does nothing
+ */
 public class VPCreateLinksContextActionController implements com.vp.plugin.action.VPContextActionController {
     // make sure there is a constructor without any parameters
     public void performAction(

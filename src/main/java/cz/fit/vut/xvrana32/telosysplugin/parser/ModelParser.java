@@ -28,8 +28,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Parser for entire model
+ */
 public class ModelParser {
-    Model model;
+
+    Model model; // Inner representation of parsed model
     List<String> associationVPIds = new ArrayList<>();
 
     /**
@@ -202,16 +206,6 @@ public class ModelParser {
             // create attributes and links
             createAttrsLinksOfEntity(entity, vPProject);
         }
-
-//        // phase one for support entities
-//        for (Entity entity : model.getSupportEntities()) {
-//            // create annotations and tags of the class
-//            Logger.logD(String.format("phase 1 entity: %s", entity.getName()));
-//            EntityDecorationParser.parse(vPProject, entity);
-//
-//            // create attributes and links
-//            createAttrsLinksOfEntity(entity, vPProject);
-//        }
     }
 
     /**
@@ -241,15 +235,6 @@ public class ModelParser {
                 } else {
                     vPLinksIds.add(vPLink.getId());
                 }
-
-//                if (vPLink == null) {
-//                    vPLinksIds.add(null);
-//                } else if (vPLink.getMultiplicity().equals("0..*") || vPLink.getMultiplicity().equals("0..1")) {
-//                    vPLinksIds.add(vPLink.getId());
-//                } else {
-//                    Logger.logE("The multiplicity of association ends has to be set to '0..1' or '0..*'.");
-//                    vPLinksIds.add(null);
-//                }
             }
         }
 
@@ -268,9 +253,6 @@ public class ModelParser {
                     for (int i = 0; i != associationEntityIndex; associationEntity = entities.next(), i++)
                         ;
                 }
-
-//                Entity associationEntity = associationEntityIndex == -1
-//                        ? null : model.getAssociationEntities().get(associationEntityIndex);
 
                 boolean isArray = ((IAttribute) vPAttr).getMultiplicity().endsWith("*");
                 try {
@@ -292,11 +274,6 @@ public class ModelParser {
                 }
             } else {
                 // this attribute is just an attribute
-//                if (((IAttribute) vPAttr).getTypeAsString().equals(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME)) {
-//                    // Attributes of type Cascade Option will be parsed later
-//                    continue;
-//                }
-
                 try {
                     entity.addAttr(new Attr(vPAttr.getId(), vPAttr.getName(),
                             Attr.AttrType.valueOf(((IAttribute) vPAttr).getTypeAsString().toUpperCase())));
@@ -335,17 +312,6 @@ public class ModelParser {
                 AttrDecorationParser.parse(vPProject, attr);
             }
         }
-
-//        for (Entity entity : model.getSupportEntities()) {
-//            Logger.logD(String.format("phase 2 entity: %s", entity.getName()));
-//            for (Attr attr : entity.getAttrs()) {
-//                try {
-//                    AttrDecorationParser.parse(vPProject, attr);
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }
     }
 
     /**
@@ -374,7 +340,7 @@ public class ModelParser {
             }
         }
 
-        // add association entities that are marked with @JoinEntity (should be printed as well) to standard entities
+        // add ManyToMany association entities to list of printed entities (standard entities), annotate them with @JoinEntity
         for (Iterator<AssociationEntity> it = model.getAssociationEntitiesIterator(); it.hasNext(); ) {
             AssociationEntity associationEntity = it.next();
 

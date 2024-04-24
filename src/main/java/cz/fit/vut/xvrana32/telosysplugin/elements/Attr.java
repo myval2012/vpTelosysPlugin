@@ -78,10 +78,6 @@ public class Attr extends DecoratedElement {
         this.parentEntity = parentEntity;
     }
 
-    public AttrType getAttrType() {
-        return attrType;
-    }
-
     /**
      * @return Attribute in Telosys DSL format.
      */

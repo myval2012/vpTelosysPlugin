@@ -20,7 +20,6 @@ import com.vp.plugin.model.IStereotype;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
 import cz.fit.vut.xvrana32.telosysplugin.elements.Model;
-import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,15 +51,6 @@ public class AnnoSize extends AnnoDeclarationMultiple {
         }
 
         newAnno.addParameters(splitParameters);
-//        newAnno.addParameter(
-//                ParameterFactory.CreateParameter(
-//                        splitParameters.get(0).getValue().toString() +
-//                                (splitParameters.get(1).getValue() == null ? "" :
-//                                        "," + splitParameters.get(1).getValue().toString()),
-//                        ParameterFactory.ValueType.STRING,
-//                        true,
-//                        false));
-
         return newAnno;
     }
 }

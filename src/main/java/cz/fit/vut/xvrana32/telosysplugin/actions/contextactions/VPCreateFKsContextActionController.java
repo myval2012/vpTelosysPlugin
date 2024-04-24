@@ -22,6 +22,13 @@ import com.vp.plugin.model.IClass;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * Context action controller for association. Creates association class for association from context and adds
+ * FK part attributes and @FK stereotype a.k.a. sets up @FK annotation in association class.
+ * <br> <br>
+ * If ManyToMany association is given, creates FK parts for both sides and sets ID property of each FK part
+ * attribute to true.
+ */
 public class VPCreateFKsContextActionController implements com.vp.plugin.action.VPContextActionController {
     // make sure there is a constructor without any parameters
     public void performAction(

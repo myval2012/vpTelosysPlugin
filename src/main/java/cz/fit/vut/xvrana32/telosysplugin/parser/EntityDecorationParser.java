@@ -26,8 +26,13 @@ import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.ParamDeclaration;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
-
+/**
+ * Parser for entity decorations
+ */
 public class EntityDecorationParser {
+    /**
+     * All stereotypes accepted on entity
+     */
     public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("Context", Anno.AnnoType.CONTEXT, new ParamDeclaration[]
                     {new ParamDeclaration("context", ITaggedValueDefinition.TYPE_TEXT,
@@ -55,6 +60,9 @@ public class EntityDecorationParser {
             new AnnoCommon("ReadOnly", Anno.AnnoType.READ_ONLY, new ParamDeclaration[]{}),
     };
 
+    /**
+     * All constraints accepted on attribute
+     */
     private static final ConstraintDeclaration[] constraints = {
             new ConstraintDeclaration("InMemoryRepository", Anno.AnnoType.IN_MEMORY_REPOSITORY),
             new ConstraintDeclaration("ReadOnly", Anno.AnnoType.READ_ONLY),

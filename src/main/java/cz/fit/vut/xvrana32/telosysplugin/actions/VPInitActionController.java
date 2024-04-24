@@ -30,21 +30,62 @@ import cz.fit.vut.xvrana32.telosysplugin.utils.Config;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Constants;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
+/**
+ * Create metamodel inside the Visual Paradigm project. If metamodel exists add non-existing definitions to it.
+ */
 public class VPInitActionController implements VPActionController {
     @Override
     public void performAction(VPAction vpAction) {
-        Thread thread = new Thread(){
-            @Override
-            public void run() {
-                performActionHelper(vpAction);
-            }
-        };
+        Thread thread = new Thread(() -> performActionHelper(vpAction));
         thread.start();
     }
 
-    private void createConfig(IModel gTTSuppModel) {
+    @Override
+    public void update(VPAction vpAction) {
+
+    }
+
+    /**
+     * Creates configuration class with project variables inside given metamodel.
+     * @param telosysMetamodel metamodel in which to create config.
+     */
+    private void createConfig(IModel telosysMetamodel) {
+        // code below is inspired by https://forums.visual-paradigm.com/t/how-to-stor-config-info-for-plugin/11772/4
+        // original code by: peter.wong
+        // the original code:
+
+        /*
+        // SAVE
+        IGenericModel lLoginInfo = IModelElementFactory.createGenericModel();
+        lLoginInfo.setGenericModelType("LoginInformation"); // I categorize this GenericModel is a "Login Information"
+
+        ITaggedValueContainer lTaggedValues = IModelElementFactory.createTaggedValueContainer();
+        lLoginInfo.setTaggedValues(lTaggedValues);
+
+        ITaggedValue lConnectionString = lTaggedValues.createTaggedValue(); // create a tagged value to store Connection String
+        lConnectionString.setName("Connection String");
+        lConnectionString.setValue(...);
+
+        ITaggedValue lRepositoryName = lTaggedValues.createTaggedValue(); // create another tagged value to store RepositoryName
+        lRepositoryName.setName("Repository Name");
+        lRepositoryName.setValue(...);
+
+        // LOAD
+        IProject lProject = ...;
+        IModelElement[] lElements = lProject.toModelElementArray(IModelElementFactory.MODEL_TYPE_GENERIC_MODEL);
+        for (IModelElement lElement : lElements) {
+            // find out the LoginInformation from project.
+            if ("LoginInformation".equals(((IGenericModel) lElement).getGenericModelType())) {
+                IGenericModel lLoginInformation = (IGenericModel) lElement;
+                String lConnectionString = lLoginInformation.getTaggedValues().getTaggedValueByName("Connection String").getValue();
+                String lRepositoryName = lLoginInformation.getTaggedValues().getTaggedValueByName("Repository Name").getValue();
+
+            }
+        }
+        */
+
         // create the config model
-        IClass configModel = (IClass) gTTSuppModel.createChild(IModelElementFactory.MODEL_TYPE_CLASS);
+        IClass configModel = (IClass) telosysMetamodel.createChild(IModelElementFactory.MODEL_TYPE_CLASS);
         configModel.setName(Config.CONFIG_CLASS_NAME);
 
         // create the tagged values, for each key value pair in config
@@ -65,26 +106,26 @@ public class VPInitActionController implements VPActionController {
             telosysProjectDir.setValue(
                     ApplicationManager.instance().getProjectManager().getProject().getProjectFile().getParent());
         }
-
     }
 
-    private IClass findGTTCascadeOptionClass(IModel gTTSuppModel) {
-        return (IClass) findModelElementHelper(gTTSuppModel.toChildArray(IModelElementFactory.MODEL_TYPE_CLASS),
-                Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME);
+    private IClass findCascadeOptionClass(IModel telosysMetamodel) {
+        return (IClass) findModelElementHelper(telosysMetamodel.toChildArray(IModelElementFactory.MODEL_TYPE_CLASS),
+                Constants.TelosysMetamodelConstants.CASCADE_OPTIONS_CLASS_NAME);
     }
 
-    @Override
-    public void update(VPAction vpAction) {
-
-    }
-
-    private IModel findGTTSuppModel() {
+    private IModel findTelosysMetamodel() {
         IProject project = ApplicationManager.instance().getProjectManager().getProject();
 
         return (IModel) findModelElementHelper(project.toModelElementArray(IModelElementFactory.MODEL_TYPE_MODEL),
-                Constants.GTTSuppModelConstants.GTT_SUPP_MODEL_NAME);
+                Constants.TelosysMetamodelConstants.METAMODEL_NAME);
     }
 
+    /**
+     * Finds model element with given name inside given array.
+     * @param vpModelElements Array to search in.
+     * @param searchedModel model element name to search for.
+     * @return Model element if found, null otherwise
+     */
     private IModelElement findModelElementHelper(IModelElement[] vpModelElements, String searchedModel) {
         for (IModelElement vPModelElement : vpModelElements) {
             if (vPModelElement.getName().equals(searchedModel)) {
@@ -94,6 +135,11 @@ public class VPInitActionController implements VPActionController {
         return null;
     }
 
+    /**
+     * Create stereotypes from given array for given model type. If stereotypes is already defined skip it.
+     * @param modelType Model type of created stereotypes.
+     * @param annoDeclarations Array of stereotype declarations used as base for creating stereotypes.
+     */
     private void createStereotypes(String modelType, AnnoDeclaration[] annoDeclarations) {
         IModelElement[] vPStereotypes = ApplicationManager.instance().getProjectManager().getSelectableStereotypesForModelType(
                 modelType,
@@ -102,18 +148,15 @@ public class VPInitActionController implements VPActionController {
 
         // check if attribute annotation stereotype
         for (AnnoDeclaration annoDeclaration : annoDeclarations) {
-//            Logger.log(String.format("Checking for stereotype %s in modelType %s", annoDeclaration.name, modelType));
             boolean isDefined = false;
             for (IModelElement vPStereotype : vPStereotypes) {
                 if (annoDeclaration.name.equals(vPStereotype.getName().substring(1))) {
-//                    Logger.log("I have found the stereotype!!!");
                     isDefined = true;
                     break;
                 }
             }
 
             if (!isDefined) {
-//                Logger.log("The stereotype was not found.");
                 // create the stereotype
                 IStereotype newStereotype = IModelElementFactory.instance().createStereotype();
                 newStereotype.setBaseType(modelType);
@@ -129,7 +172,6 @@ public class VPInitActionController implements VPActionController {
                     taggedDef.setType(paramDeclaration.paramType);
                 }
             }
-//            Logger.log("continuing...");
         }
     }
 
@@ -137,17 +179,17 @@ public class VPInitActionController implements VPActionController {
         Logger.resetStats();
 
         // if GTTSuppModel is not defined, create it
-        IModel gTTSuppModel = findGTTSuppModel();
+        IModel gTTSuppModel = findTelosysMetamodel();
         if (gTTSuppModel == null) {
             gTTSuppModel = IModelElementFactory.instance().createModel();
-            gTTSuppModel.setName(Constants.GTTSuppModelConstants.GTT_SUPP_MODEL_NAME);
+            gTTSuppModel.setName(Constants.TelosysMetamodelConstants.METAMODEL_NAME);
         }
 
         // if Cascade class is not defined, create it
-        IClass gTTCascadeOptionClass = findGTTCascadeOptionClass(gTTSuppModel);
+        IClass gTTCascadeOptionClass = findCascadeOptionClass(gTTSuppModel);
         if (gTTCascadeOptionClass == null) {
             gTTCascadeOptionClass = (IClass) gTTSuppModel.createChild(IModelElementFactory.MODEL_TYPE_CLASS);
-            gTTCascadeOptionClass.setName(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME);
+            gTTCascadeOptionClass.setName(Constants.TelosysMetamodelConstants.CASCADE_OPTIONS_CLASS_NAME);
 
             // define the enum literals etc.
             gTTCascadeOptionClass.addStereotype("enumeration");
@@ -160,7 +202,7 @@ public class VPInitActionController implements VPActionController {
 
         // add constraints that are missing
         IModelElement[] gTTConstraints = gTTSuppModel.toChildArray(IModelElementFactory.MODEL_TYPE_CONSTRAINT_ELEMENT);
-        for (String gTTConstraintName : Constants.GTTSuppModelConstants.GTT_CONSTRAINT_NAMES) {
+        for (String gTTConstraintName : Constants.TelosysMetamodelConstants.CONSTRAINT_NAMES) {
             boolean found = false;
             for (IModelElement gTTConstraint : gTTConstraints) {
                 if (gTTConstraint.getName().equals(gTTConstraintName)) {
@@ -181,7 +223,7 @@ public class VPInitActionController implements VPActionController {
         createStereotypes(IModelElementFactory.MODEL_TYPE_CLASS, EntityDecorationParser.annoDeclarations);
 
         // create a generic model config
-        // code below is inspired by https://forums.visual-paradigm.com/t/how-to-stor-config-info-for-plugin/11772/4
+
         IClass vPConfigClass = (IClass) gTTSuppModel.getChildByName(Config.CONFIG_CLASS_NAME);
         if (vPConfigClass == null) {
             createConfig(gTTSuppModel);

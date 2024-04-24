@@ -21,11 +21,13 @@ import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
-import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
-import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * Context action controller for association. Combination of {@link VPCreateFKsContextActionController}
+ * and {@link VPCreateFKsContextActionController}.
+ */
 public class VPCreateLinksFKsContextActionController implements com.vp.plugin.action.VPContextActionController {
     // make sure there is a constructor without any parameters
     public void performAction(

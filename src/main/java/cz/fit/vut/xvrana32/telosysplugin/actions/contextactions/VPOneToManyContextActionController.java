@@ -20,6 +20,11 @@ import com.vp.plugin.model.IAssociationEnd;
 
 import java.awt.event.ActionEvent;
 
+
+/**
+ * Context action controller for association. Sets end of association to either "0..1" or "0..*" depending
+ * on association direction. Owning side -> Inverse side, the owning side has toMany multiplicity.
+ */
 public class VPOneToManyContextActionController implements com.vp.plugin.action.VPContextActionController {
     // make sure there is a constructor without any parameters
     public void performAction(

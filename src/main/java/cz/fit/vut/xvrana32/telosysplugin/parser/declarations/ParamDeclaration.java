@@ -15,8 +15,6 @@
  */
 package cz.fit.vut.xvrana32.telosysplugin.parser.declarations;
 
-import com.vp.plugin.model.ITaggedValueDefinition;
-
 /**
  * Declaration of Parameter for {@link AnnoDeclaration}.
  */
@@ -30,17 +28,6 @@ public class ParamDeclaration {
      */
     public final boolean textQuoted;
     public final boolean isAbsolute;
-
-//    /**
-//     * {@link ParamDeclaration#paramType} is set to true.
-//     * @param _name Parameter name that matches the auto-created parameters in VP.
-//     * @param _paramType Data type of parameter.
-//     */
-//    public ParamDeclaration(String _name, int _paramType){
-//        name = _name;
-//        paramType = _paramType;
-//        textQuoted = true;
-//    }
 
     /**
      * Create a ParamDeclaration with {@link ParamDeclaration#paramType} of value ITaggedValueDefinition.TYPE_TEXT.

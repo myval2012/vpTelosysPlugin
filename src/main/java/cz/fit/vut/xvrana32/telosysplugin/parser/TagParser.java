@@ -21,6 +21,9 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParamet
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Tag;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
+/**
+ * Parser for tag.
+ */
 public class TagParser {
     public static Tag parseTag(IModelElement vpElement, IStereotype vPStereotype, Entity entity) throws Exception {
         ITaggedValueContainer vPTaggedValueContainer = vpElement.getTaggedValues();

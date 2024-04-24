@@ -25,9 +25,9 @@ import java.util.List;
  * Used mostly as a data class for storing and accessing information during the project compilation.
  */
     public class Model extends Element {
-    private List<Entity> entities = new ArrayList<>();
-    private List<AssociationEntity> associationEntities = new ArrayList<>();
-    private List<Entity> supportEntities = new ArrayList<>();
+    private final List<Entity> entities = new ArrayList<>();
+    private final List<AssociationEntity> associationEntities = new ArrayList<>();
+    private final List<Entity> supportEntities = new ArrayList<>();
 
     /**
      * Creates an empty model.
@@ -60,26 +60,6 @@ import java.util.List;
 
     public int getEntitiesCount() {return entities.size();}
 
-    /**
-     * Replaces internal list of entities with given list.
-     */
-    public void setEntities(List<Entity> entities) {
-        this.entities = entities;
-        for (Entity entity : entities) {
-            entity.setParentModel(this);
-        }
-    }
-
-    /**
-     * Replaces internal list of association entities with given list.
-     */
-    public void setAssociationEntities(List<AssociationEntity> associationEntities) {
-        this.associationEntities = associationEntities;
-        for (Entity entity : this.associationEntities) {
-            entity.setParentModel(this);
-        }
-    }
-
     public Entity getEntityByVpId(String vpId) throws Exception {
         return getEntityFromSetByVpId(entities, vpId);
     }
@@ -92,10 +72,6 @@ import java.util.List;
         }
         return null;
     }
-
-//    public Entity getAssociationEntityByVpId(String vpId) throws Exception {
-//        return getEntityFromSetByVpId(associationEntities, vpId);
-//    }
 
     private Entity getEntityFromSetByVpId(List<Entity> entities, String vpId) throws Exception {
         for (Entity entity : entities) {
@@ -126,21 +102,5 @@ import java.util.List;
 
     public Iterator<AssociationEntity> getAssociationEntitiesIterator() {
         return associationEntities.iterator();
-    }
-    public int getAssociationEntitiesCount() {return associationEntities.size();}
-
-    public Iterator<Entity> getSupportEntitiesIterator() {
-        return supportEntities.iterator();
-    }
-    public int getSupportEntitiesCount() {return supportEntities.size();}
-
-    /**
-     * Replaces internal list of support entities with given list.
-     */
-    public void setSupportEntities(List<Entity> supportEntities) {
-        this.supportEntities = supportEntities;
-        for (Entity entity : this.supportEntities) {
-            entity.setParentModel(this);
-        }
     }
 }

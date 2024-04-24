@@ -17,15 +17,7 @@ package cz.fit.vut.xvrana32.telosysplugin.utils;
 
 import com.vp.plugin.ApplicationManager;
 
-import java.io.FileWriter;
-
 public class Logger {
-//    public static String LOG_FILE_PATH =
-//            "C:\\Users\\mrmar\\Documents\\_Folder\\Dokumenty\\BP\\telosys xample projects vpp\\log\\telosysLogFile.txt";
-//    public static String TELOSYS_TEST_FOLDER =
-//            "C:\\Users\\mrmar\\Documents\\_Folder\\Dokumenty\\BP\\telosys xample projects vpp\\log";
-//    public static FileWriter logFile;
-
     private static int warningCount;
     private static int errorCount;
 
@@ -77,11 +69,11 @@ public class Logger {
 
     public static void logStats() {
         log("**********************************");
-        log(String.format("* Total errors: %d", errorCount));
-        log(String.format("* Total warnings: %d", warningCount));
+        log(String.format("| Total errors: %d", errorCount));
+        log(String.format("| Total warnings: %d", warningCount));
         if (errorCount == 0 && warningCount == 0){
             log("**********************************");
-            log("* SUCCESS                        *");
+            log("* SUCCESS");
         }
         log("**********************************");
     }

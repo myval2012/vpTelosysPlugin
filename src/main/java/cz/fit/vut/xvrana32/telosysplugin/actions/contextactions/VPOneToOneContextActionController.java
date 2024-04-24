@@ -19,6 +19,9 @@ import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import java.awt.event.ActionEvent;
 
+/**
+ * Context action controller for association. Sets both ends of association in context to "0..1".
+ */
 public class VPOneToOneContextActionController implements com.vp.plugin.action.VPContextActionController {
     // make sure there is a constructor without any parameters
     public void performAction(

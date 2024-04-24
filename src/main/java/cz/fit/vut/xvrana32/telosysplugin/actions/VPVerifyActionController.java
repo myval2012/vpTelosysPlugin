@@ -22,15 +22,14 @@ import com.vp.plugin.model.IProject;
 import cz.fit.vut.xvrana32.telosysplugin.parser.ProjectParser;
 import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
+/**
+ * Verifies the syntax etc. of project by compiling it. No files in Telosys project are generated or modified using
+ * this action.
+ */
 public class VPVerifyActionController implements VPActionController {
     @Override
     public void performAction(VPAction vpAction) {
-        Thread thread = new Thread(){
-            @Override
-            public void run() {
-                performActionHelper(vpAction);
-            }
-        };
+        Thread thread = new Thread(() -> performActionHelper(vpAction));
         thread.start();
     }
 

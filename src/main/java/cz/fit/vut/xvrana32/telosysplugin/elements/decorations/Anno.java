@@ -18,8 +18,6 @@ package cz.fit.vut.xvrana32.telosysplugin.elements.decorations;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.IParameter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -136,25 +134,12 @@ public class Anno {
         return annotationType;
     }
 
-    public Iterator<IParameter> getParametersIterator() {
-        return parameters.iterator();
-    }
-
     public int getParametersCount() {
         return parameters.size();
     }
 
     public void addParameter(IParameter parameter) {
         parameters.add(parameter);
-    }
-
-    /**
-     * Adds all {@link IParameter parameters} into the list.
-     *
-     * @param ps Parameters to add.
-     */
-    public void addParameters(IParameter... ps) {
-        parameters.addAll(Arrays.asList(ps));
     }
 
     /**

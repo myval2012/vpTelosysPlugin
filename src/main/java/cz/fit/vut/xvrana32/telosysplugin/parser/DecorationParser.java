@@ -26,7 +26,18 @@ import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
 import java.util.Iterator;
 
+/**
+ * Common parser methods.
+ */
 abstract public class DecorationParser {
+    /**
+     * Parses all stereotypes and creates annotations and tags.
+     * @param annoDeclarations Array of accepted stereotype annotation declarations.
+     * @param vPModel Model of currently parsed model element for context.
+     * @param decoratedElement Inner representation of currently parsed element.
+     * @param entity Entity to which the element belongs to, if decoratedElement is itself the entity,
+     *               pass the decorated element here
+     */
     static void parseNonSpecialAnnosAndTags(
             AnnoDeclaration[] annoDeclarations,
             IModelElement vPModel,
@@ -84,6 +95,12 @@ abstract public class DecorationParser {
         }
     }
 
+    /**
+     * Finds the appropriate annotation declaration by given name.
+     * @param name Name of searched annotation.
+     * @param annoDeclarations Array of annotation declarations in which to search.
+     * @return Declaration of annotation if exists, null otherwise
+     */
     static AnnoDeclaration getAnnoDeclarationByName(String name, AnnoDeclaration[] annoDeclarations) {
         for (AnnoDeclaration annoDeclaration : annoDeclarations) {
             if (annoDeclaration.name.equals(name)) {
@@ -112,6 +129,12 @@ abstract public class DecorationParser {
         }
     }
 
+    /**
+     * Parses all constraints and creates their annotations.
+     * @param constraintList Array of all accepted constraints.
+     * @param decoratedElement Inner representation of currently parsed element.
+     * @param vPModelElement Currently parsed model element.
+     */
     static void parseConstraints(
             ConstraintDeclaration[] constraintList,
             DecoratedElement decoratedElement,

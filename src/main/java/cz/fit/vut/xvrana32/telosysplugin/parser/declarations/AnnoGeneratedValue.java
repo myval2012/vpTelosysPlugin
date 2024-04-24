@@ -84,22 +84,6 @@ public class AnnoGeneratedValue extends AnnoDeclarationMultiple {
                 }
             }
             newAnno.addParameter(firstParameter);
-
-//            List<IParameter> parameters = new ArrayList<>(params.length);
-//            findTaggedValues(vPElement, vPStereotype, model, parameters);
-//
-//            // check mandatory values, for GeneratedValue if first parameter from list has value,
-//            // then all except last have to have value too.
-//            boolean mustHaveValues = parameters.get(0).getValue() != null;
-//            for (int i = 0; i < parameters.size() - 1; i++) {
-//                IParameter parameter = parameters.get(i);
-//                if ((parameter.getValue() == null && mustHaveValues) ||
-//                        (parameter.getValue() != null && !mustHaveValues)) {
-//                    throw new Exception(String.format("Tagged value %s does not have a value.",
-//                            params[i].name));
-//                }
-//            }
-
             newAnno.addParameters(parameters);
             return newAnno;
         }

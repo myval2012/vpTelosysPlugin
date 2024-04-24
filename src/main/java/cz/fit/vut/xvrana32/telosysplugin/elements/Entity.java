@@ -92,7 +92,6 @@ public class Entity extends DecoratedElement {
         return links.iterator();
     }
 
-    public int getLinksCount() { return links.size();}
     public Attr getAttrByName(String name) {
         for (Attr attr : attrs) {
             if (attr.name.equals(name)) {
@@ -116,15 +115,6 @@ public class Entity extends DecoratedElement {
      */
     public Model getParentModel() {
         return parentModel;
-    }
-
-    public Link getLinkByName(String name) {
-        for (Link link : links) {
-            if (link.name.equals(name)) {
-                return link;
-            }
-        }
-        return null;
     }
 
     /**

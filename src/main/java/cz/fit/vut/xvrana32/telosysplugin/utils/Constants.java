@@ -29,15 +29,15 @@ public class Constants {
         public static final String MESSAGE_TAG = "Telosys plugin";
     }
 
-    public static class GTTSuppModelConstants {
+    public static class TelosysMetamodelConstants {
         /**
          * Name of the auto-created model in VP.
          */
-        public static final String GTT_SUPP_MODEL_NAME = "Telosys DSL defs";
+        public static final String METAMODEL_NAME = "Telosys DSL defs";
 
-        public static final String GTT_CASCADE_OPTIONS_CLASS_NAME = "Cascade options";
+        public static final String CASCADE_OPTIONS_CLASS_NAME = "Cascade options";
 
-        public static final List<String> GTT_CONSTRAINT_NAMES = Arrays.asList(
+        public static final List<String> CONSTRAINT_NAMES = Arrays.asList(
                 "Future",
                 "InMemoryRepository",
                 "NotBlank",

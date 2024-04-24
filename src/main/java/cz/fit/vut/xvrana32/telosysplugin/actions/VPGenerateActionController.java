@@ -16,7 +16,6 @@
 package cz.fit.vut.xvrana32.telosysplugin.actions;
 
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.ViewManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 import com.vp.plugin.model.IProject;
@@ -29,19 +28,17 @@ import org.telosys.tools.api.TelosysProject;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Compiles all models and creates Telosys project with compiled models. If project already exists in location given in
+ * {@link Config}, only update existing models / create new.
+ */
 public class VPGenerateActionController implements VPActionController {
     @Override
     public void performAction(VPAction vpAction) {
-        Thread thread = new Thread(){
-            @Override
-            public void run() {
-                performActionHelper(vpAction);
-            }
-        };
+        Thread thread = new Thread(() -> performActionHelper(vpAction));
         thread.start();
     }
 

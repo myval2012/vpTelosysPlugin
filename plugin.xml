@@ -16,13 +16,13 @@
                     orientation="north"
                     index="last"/>
 
+<!--                    icon="icons/green.png"-->
             <action
                     id="cz.fit.vut.xvrana32.telosysplugin.actionSet1.InitAction"
                     actionType="generalAction"
                     label="Init Project"
                     tooltip="Initializes Telosys, prepares VP project for Graphical Telosys."
                     style="normal"
-                    icon="icons/green.png"
                     toolbarPath="cz.fit.vut.xvrana32.telosysplugin.toolbar1/#">
                 <!--                    menuPath="Tools/#"-->
                 <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.VPInitActionController"/>
@@ -34,7 +34,6 @@
                     label="Verify Models"
                     tooltip="Verifies the model by running compilation without outputting any files."
                     style="normal"
-                    icon="icons/green.png"
                     toolbarPath="cz.fit.vut.xvrana32.telosysplugin.toolbar1/#">
 <!--                    menuPath="Tools/#"-->
                 <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.VPVerifyActionController"/>
@@ -46,7 +45,6 @@
                     label="Generate Models"
                     tooltip="Generate Telosys models, entities..."
                     style="normal"
-                    icon="icons/green.png"
                     toolbarPath="cz.fit.vut.xvrana32.telosysplugin.toolbar1/#">
                 <!--                    menuPath="Tools/#"-->
                 <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.VPGenerateActionController"/>
@@ -67,7 +65,6 @@
             <action
                     id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.CreateLinksFKs"
                     label="Create links and FK(s)"
-                    icon="icons/green.png"
                     style="normal"
                     menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/
                     cz.fit.vut.xvrana32.telosysplugin.actionSet2.CreateLinks">
@@ -77,7 +74,6 @@
             <action
                     id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.CreateFKs"
                     label="Create FK(s)"
-                    icon="icons/green.png"
                     style="normal"
                     menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/
                     cz.fit.vut.xvrana32.telosysplugin.actionSet2.CreateLinks">
@@ -87,7 +83,6 @@
             <action
                     id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.CreateLinks"
                     label="Create links"
-                    icon="icons/green.png"
                     style="normal"
                     menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/
                     cz.fit.vut.xvrana32.telosysplugin.actionSet2.ManyToMany">
@@ -98,7 +93,6 @@
             <action
                     id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ManyToMany"
                     label="ManyToMany"
-                    icon="icons/green.png"
                     style="normal"
                     menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/
                     cz.fit.vut.xvrana32.telosysplugin.actionSet2.OneToMany">
@@ -108,7 +102,6 @@
             <action
                     id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.OneToMany"
                     label="OneToMany"
-                    icon="icons/green.png"
                     style="normal"
                     menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/
                     cz.fit.vut.xvrana32.telosysplugin.actionSet2.OneToOne">
@@ -118,7 +111,6 @@
             <action
                     id="cz.fit.vut.xvrana32.telosysplugin.actionSet2.OneToOne"
                     label="OneToOne"
-                    icon="icons/green.png"
                     style="normal"
                     menuPath="cz.fit.vut.xvrana32.telosysplugin.actionSet2.ContextActionMenu/#">
                 <actionController class="cz.fit.vut.xvrana32.telosysplugin.actions.contextactions.VPOneToOneContextActionController"/>

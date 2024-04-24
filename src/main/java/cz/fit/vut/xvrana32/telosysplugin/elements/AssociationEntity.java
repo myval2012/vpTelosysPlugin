@@ -38,11 +38,6 @@ public class AssociationEntity extends Entity{
     public final String multiplicityFrom;
     public final String multiplicityTo;
 
-
-//    public int getDirection() {
-//        return direction;
-//    }
-
     /**
      * Creates an entity with no annotations or tags.
      *
@@ -56,16 +51,4 @@ public class AssociationEntity extends Entity{
         multiplicityFrom = ((IAssociationEnd)iEndRelationship.getFromEnd()).getMultiplicity();
         multiplicityTo = ((IAssociationEnd)iEndRelationship.getToEnd()).getMultiplicity();
     }
-
-//    public IEndRelationship getiEndRelationship() {
-//        return iEndRelationship;
-//    }
-
-//    public String getMultiplicityFrom() {
-//        return multiplicityFrom;
-//    }
-
-//    public String getMultiplicityTo() {
-//        return multiplicityTo;
-//    }
 }

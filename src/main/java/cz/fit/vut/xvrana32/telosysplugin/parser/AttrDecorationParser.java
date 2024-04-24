@@ -21,7 +21,13 @@ import cz.fit.vut.xvrana32.telosysplugin.elements.Attr;
 import cz.fit.vut.xvrana32.telosysplugin.parser.declarations.*;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.parameter.ParameterFactory;
 
+/**
+ * Parser for attribute decorations
+ */
 public class AttrDecorationParser {
+    /**
+     * All stereotypes accepted on attribute
+     */
     public static final AnnoDeclaration[] annoDeclarations = {
             new AnnoCommon("AggregateRoot", Anno.AnnoType.AGGREGATE_ROOT, new ParamDeclaration[]{}),
             new AnnoCommon("AutoIncremented", Anno.AnnoType.AUTO_INCREMENTED, new ParamDeclaration[]{}),
@@ -122,6 +128,9 @@ public class AttrDecorationParser {
                             false, false)}),
     };
 
+    /**
+     * All constraints accepted on attribute
+     */
     private static final ConstraintDeclaration[] constraints = {
             new ConstraintDeclaration("Future", Anno.AnnoType.FUTURE),
             new ConstraintDeclaration("NotEmpty", Anno.AnnoType.NOT_EMPTY),

@@ -1,6 +1,5 @@
 /**
  *
- *
  *  Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -17,7 +16,6 @@ package cz.fit.vut.xvrana32.telosysplugin.actions.contextactions;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.DiagramManager;
-import com.vp.plugin.RelationshipRetriever;
 import com.vp.plugin.diagram.IClassDiagramUIModel;
 import com.vp.plugin.diagram.connector.IAssociationClassUIModel;
 import com.vp.plugin.diagram.connector.IAssociationUIModel;
@@ -25,13 +23,24 @@ import com.vp.plugin.diagram.shape.IClassUIModel;
 import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
 import cz.fit.vut.xvrana32.telosysplugin.elements.decorations.Anno;
-import cz.fit.vut.xvrana32.telosysplugin.utils.Logger;
 
 import java.util.Iterator;
 
+/**
+ * Common methods used by other XXXContextActionController controllers.
+ */
 public class ContextActionUtils {
+
+    /**
+     * Retrieves a representative attribute of given association end, if representative attribute does not exist create
+     * new representative attribute. The created attribute is assigned as representative attribute of given
+     * association end.
+     * @param vPAssociationEnd association end of wanted representative attribute.
+     * @return Representative attribute of given association end, new attribute if null.
+     */
     public static IAttribute getOrCreateRepresentativeAttribute(IAssociationEnd vPAssociationEnd) {
         IAttribute vPAttribute = vPAssociationEnd.getRepresentativeAttribute();
+        // create new representative attribute
         if (vPAttribute == null) {
             IClass vPClass = (IClass) vPAssociationEnd.getOppositeEnd().getModelElement();
             String multiplicity = vPAssociationEnd.getMultiplicity();
@@ -46,9 +55,13 @@ public class ContextActionUtils {
         return vPAttribute;
     }
 
+    /**
+     * Finds an association class that is in relationship with given association.
+     * @param vPAssociation Association linked with wanted association class.
+     * @return Association class of given association, null if association class does not exist.
+     */
     public static IClass getAssociationClass(IAssociation vPAssociation) {
-        IProject vPProject = vPAssociation.getProject();
-        IClass vPAssociationClass = null;
+        IClass vPAssociationClass;
 
         vPAssociationClass = getAssociationClassHelper(vPAssociation.toFromRelationshipArray());
         if (vPAssociationClass != null) {
@@ -69,6 +82,12 @@ public class ContextActionUtils {
         return null;
     }
 
+    /**
+     * Create FK attributes within given Association class and adds @FK stereotype with "referenced"
+     * tagged value set appropriately.
+     * @param vPAssociationClass Association class within which to create the attributes.
+     * @param vPAssociation Association on which to base FK attributes and referenced class on.
+     */
     public static void createAttributesAndFKs(IClass vPAssociationClass, IAssociation vPAssociation) {
         if (((IAssociationEnd) vPAssociation.getToEnd()).getMultiplicity().equals(IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY) &&
                 ((IAssociationEnd) vPAssociation.getFromEnd()).getMultiplicity().equals(IAssociationEnd.MULTIPLICITY_ZERO_TO_MANY)) {
@@ -99,7 +118,7 @@ public class ContextActionUtils {
                 fkPart.setType(vPAttribute.getTypeAsModel());
 
                 // create FK
-                fkPart.addStereotype("@" + Anno.AnnoType.F_K.toString());
+                fkPart.addStereotype("@" + Anno.AnnoType.F_K);
                 ITaggedValueContainer taggedValues = fkPart.getTaggedValues();
                 ITaggedValue taggedValue = taggedValues.getTaggedValueByName("referenced");
                 taggedValue.setValue(vPAttribute);

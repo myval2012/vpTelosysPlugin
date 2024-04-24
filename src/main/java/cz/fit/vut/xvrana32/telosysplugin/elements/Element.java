@@ -32,7 +32,7 @@ public abstract class Element {
     }
 
     /**
-     * @return Id of {@link com.vp.plugin.model.IModelElement} representing this element in VP project.
+     * @return ID of {@link com.vp.plugin.model.IModelElement} representing this element in VP project.
      */
     public String getVpId() {
         return vpId;

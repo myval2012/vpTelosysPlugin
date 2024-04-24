@@ -72,12 +72,12 @@ public class AnnoCascade extends AnnoDeclaration {
                         vPAttr.getName()));
             }
 
-            if (!vPAttr.getTypeAsString().equals(Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME)) {
+            if (!vPAttr.getTypeAsString().equals(Constants.TelosysMetamodelConstants.CASCADE_OPTIONS_CLASS_NAME)) {
 
                 Logger.logW(String.format(
                         "Support class %s for stereotype @Cascade only uses attribute of type %s, attribute %s of type %s ignored.",
                         vPAttr.getParent().getName(),
-                        Constants.GTTSuppModelConstants.GTT_CASCADE_OPTIONS_CLASS_NAME,
+                        Constants.TelosysMetamodelConstants.CASCADE_OPTIONS_CLASS_NAME,
                         vPAttr.getName(),
                         vPAttr.getTypeAsString()));
                 continue;
