@@ -53,7 +53,7 @@ is located in the metamodel `"Telosys DSL defs"/config`
 7. Use generate action to generate telosys project
 
 Show how the plugin works (project init, build, setting variables...).
-### Graphical Telosys DSL
+### Telosys diagram
 Basic overview of Telosys diagram components can be accessed [here](doc/overview.md). <br>
 Overview of all plugin actions can be found [here](doc/actions.md) <br>
 Detailed description of the representation of all annotations can be found [here](doc/annotations.md). <br>
