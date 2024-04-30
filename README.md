@@ -57,3 +57,15 @@ Show how the plugin works (project init, build, setting variables...).
 Basic overview of Telosys diagram components can be accessed [here](doc/overview.md). <br>
 Overview of all plugin actions can be found [here](doc/actions.md) <br>
 Detailed description of the representation of all annotations can be found [here](doc/annotations.md). <br>
+
+## LICENSE
+This project is under [GNU LESSER GENERAL PUBLIC LICENSE Version 3](COPYING.LESSER)
+
+## NOTICE
+This project contains [Telosys](https://github.com/telosys-tools-bricks) by [Laurent Guerin](https://github.com/l-gu). <br>
+This project uses [Visual Paradigm's](https://www.visual-paradigm.com/) openapi. <br>
+Special thanks to [Peter Wong](https://forums.visual-paradigm.com/u/peter.wong/summary) for a [project configuration problem solution](https://forums.visual-paradigm.com/t/how-to-stor-config-info-for-plugin/11772/4?u=ondrej_vrana). <br>
+
+Plugin was written with help of the Visual Paradigm [Plugin development guide](https://www.visual-paradigm.com/support/documents/vpuserguide/124/254/7039_introduction.html),
+[sample projects](https://www.visual-paradigm.com/support/documents/pluginsample.jsp), 
+and other [official openapi guides](https://knowhow.visual-paradigm.com/openapi/).
