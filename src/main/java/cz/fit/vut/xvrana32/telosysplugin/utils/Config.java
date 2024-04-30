@@ -15,6 +15,7 @@
  */
 package cz.fit.vut.xvrana32.telosysplugin.utils;
 
+import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
@@ -41,7 +42,21 @@ public class Config {
         ITaggedValueContainer vPTaggedValues = vPConfigClass.getTaggedValues();
 
         separator = loadValue(vPTaggedValues, "Package Separator");
+//        telosysProjectFolder = new File(loadValue(vPTaggedValues, "Telosys project directory"));
         telosysProjectFolder = new File(loadValue(vPTaggedValues, "Telosys project directory"));
+//        Logger.logD(telosysProjectFolder.getAbsolutePath());
+        if (!telosysProjectFolder.isAbsolute()){
+            // change the path so that it is relative to the current Visual Paradigm project folder
+            File newFolder = vPConfigClass.getProject().getProjectFile();
+            if (newFolder == null){
+                throw new Exception(String.format(
+                        "The specified path is relative but the project is not saved. Save the project " +
+                        "or use absolute path for %s.'%s'", CONFIG_CLASS_NAME, TELOSYS_PROJECT_FOLDER_TAG_NAME));
+            }
+            telosysProjectFolder = new File(newFolder.getParentFile().getAbsolutePath(),telosysProjectFolder.getPath());
+//            Logger.logD(telosysProjectFolder.getAbsolutePath());
+        }
+
 
         if (!(telosysProjectFolder.exists() && telosysProjectFolder.isDirectory())){
             throw new Exception("Specified folder in config.'Telosys project directory' is not a directory.");
